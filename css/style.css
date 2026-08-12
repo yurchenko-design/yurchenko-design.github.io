@@ -224,7 +224,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border-radius: 24px;
 }
 .hero-photo-frame {
-  width: min(320px, 70vw);
+  width: min(400px, 70vw);
   aspect-ratio: 2 / 3;
   border-radius: 24px;
   overflow: hidden;
