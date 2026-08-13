@@ -225,7 +225,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .hero-photo-frame {
   width: min(400px, 70vw);
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 5 / 6;
   border-radius: 24px;
   overflow: hidden;
   position: relative;
@@ -255,7 +255,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   color: var(--text);
   line-height: 1.7;
   max-width: 760px;
-  margin-bottom: 48px;
+  margin-bottom: 14px;
   padding: 28px 64px 28px 32px;
   border-radius: var(--radius);
   background: var(--bg-elevated);
@@ -413,7 +413,68 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .step-body { display: flex; align-items: center; gap: 10px; }
 .step-icon { display: none; }
 .step-text { font-size: 15px; color: var(--text); line-height: 1.4; }
-.process-note { color: var(--text-muted); font-size: 14.5px; }
+
+.facts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+@media (min-width: 560px) {
+  .facts-row { grid-template-columns: repeat(2, 1fr); }
+}
+.fact-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px 28px 26px 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.fact-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(217, 31, 191, 0.4);
+}
+/* Градиентная полоса у левого края — тот же приём, что у цитаты .positioning.
+   Вырастает снизу вверх, когда карточка попадает в вьюпорт: класс is-visible
+   вешает наблюдатель в main.js, отдельный скрипт не нужен. */
+.fact-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--gradient);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.7s var(--ease);
+}
+.fact-card.is-visible::before { transform: scaleY(1); }
+@media (prefers-reduced-motion: reduce) {
+  .fact-card::before { transform: scaleY(1); transition: none; }
+}
+.fact-num {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+/* Предлог «от» — тем же начертанием и кеглем, что и подпись под числом */
+.fact-from {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.fact-label { color: var(--text-muted); font-size: 15px; }
+.fact-mark { color: var(--accent-pink); }
+.facts-note { color: var(--text-muted); font-size: 13.5px; }
 
 /* ===== Works ===== */
 .works { padding: 40px 0 96px; border-top: 1px solid var(--border); }
@@ -422,7 +483,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
-  margin-bottom: 24px;
+  margin-bottom: 64px;
 }
 @media (min-width: 720px) {
   .gallery { grid-template-columns: repeat(2, 1fr); }
@@ -548,13 +609,6 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-caption p {
   color: var(--text-muted);
   font-size: 14.5px;
-}
-
-.nda-note {
-  color: var(--text-muted);
-  font-size: 14px;
-  font-style: italic;
-  margin-bottom: 40px;
 }
 
 .reviews-grid {

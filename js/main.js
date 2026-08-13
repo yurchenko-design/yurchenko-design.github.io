@@ -24,6 +24,44 @@
     animated.forEach((el) => el.classList.add('is-visible'));
   }
 
+  /* ===== Count-up для блоков с цифрами =====
+     В разметке лежит уже готовое значение — если скрипт не отработает,
+     посетитель увидит правильное число, а не ноль. На ноль сбрасываем
+     только в момент старта анимации. */
+  const counters = document.querySelectorAll('[data-count-to]');
+  if (counters.length) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+    const animate = (el) => {
+      const to = Number(el.dataset.countTo);
+      // requestAnimationFrame не тикает в скрытой вкладке — число застыло бы на нуле
+      if (reduceMotion || document.hidden || !to) {
+        el.textContent = fmt(to);
+        return;
+      }
+      const dur = to > 100 ? 1100 : 700;
+      const t0 = performance.now();
+      const step = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const co = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          co.unobserve(entry.target);
+          animate(entry.target);
+        });
+      }, { threshold: 0.4 });
+      counters.forEach((el) => co.observe(el));
+    }
+  }
+
   /* ===== Lightbox ===== */
   const cases = {
     'inner-health': {
