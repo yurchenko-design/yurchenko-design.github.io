@@ -8,18 +8,42 @@
   /* ===== Scroll-reveal animations ===== */
   const animated = document.querySelectorAll('[data-animate]');
   if ('IntersectionObserver' in window && animated.length) {
+    // Задержки каскада ополовинены и ограничены сверху. В разметке они доходят
+    // до 350 мс, а вместе с переходом в 0.5 с блок проявлялся почти секунду —
+    // при быстрой прокрутке экран успевал уехать, и страница выглядела
+    // сломанной. Значения в разметке не трогаем: порядок появления карточек
+    // в них задан верно, длинным был только шаг
+    const reveal = (el) => {
+      const raw = Number(el.getAttribute('data-animate-delay')) || 0;
+      el.style.transitionDelay = `${Math.min(raw * 0.5, 140)}ms`;
+      el.classList.add('is-visible');
+    };
+
+    // threshold: 0 вместо 0.15 — высокому блоку больше не нужно показать
+    // седьмую часть себя, хватает первого пикселя. Нижний отступ теперь
+    // положительный, а не -40px: корень наблюдателя продлён на 20% высоты
+    // экрана вниз, поэтому блок начинает проявляться ещё до того, как въедет
+    // в кадр, и к моменту появления анимация уже отыграна
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const el = entry.target;
-          const delay = el.getAttribute('data-animate-delay') || 0;
-          el.style.transitionDelay = `${delay}ms`;
-          el.classList.add('is-visible');
-          io.unobserve(el);
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        io.unobserve(el);
+        if (el.classList.contains('carousel-track')) {
+          el.querySelectorAll('[data-animate]').forEach(reveal);
+        } else {
+          reveal(el);
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    animated.forEach((el) => io.observe(el));
+    }, { threshold: 0, rootMargin: '0px 0px 20% 0px' });
+
+    // Карточки внутри карусели наблюдаем не поштучно, а через саму ленту.
+    // Третий и четвёртый кейс стоят за правым краем экрана и обрезаны
+    // overflow-x ленты, поэтому для наблюдателя они не пересекают окно никогда
+    // и остаются прозрачными: пролистав карусель, посетитель упирался
+    // в пустую карточку. Теперь вся лента проявляется разом, когда въезжает
+    // в кадр по вертикали — как обычный блок
+    animated.forEach((el) => io.observe(el.closest('.carousel-track') || el));
   } else {
     animated.forEach((el) => el.classList.add('is-visible'));
   }
@@ -50,6 +74,12 @@
       requestAnimationFrame(step);
     };
 
+    /* Перед печатью досчитываем все счётчики до конца: иначе в PDF попадает
+       случайное промежуточное значение вроде «1 495 ₽» вместо «1 500 ₽» */
+    window.addEventListener('beforeprint', () => {
+      counters.forEach((el) => { el.textContent = fmt(Number(el.dataset.countTo)); });
+    });
+
     if ('IntersectionObserver' in window) {
       const co = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -62,6 +92,129 @@
     }
   }
 
+  /* ===== Гигантская надпись в Hero =====
+     Кегль подгоняется под ширину сцены, чтобы слово шло ровно от края до края
+     при любой ширине экрана и при любом шрифте. */
+  const heroWord = document.querySelector('[data-fit-word]');
+  if (heroWord) {
+    const stage = heroWord.parentElement;
+    let lastWidth = 0;
+
+    const ctx = document.createElement('canvas').getContext('2d');
+
+    /* Считаем по ЧЕРНИЛАМ букв, а не по рамке строки. В рамку входят боковые
+       полуапроши — у Big Shoulders это по 8px на кегле 200, то есть на странице
+       слово недотягивалось до полей по 15px с каждой стороны и не сходилось
+       с именем слева и меню справа. Рамку сдвигаем влево на левый полуапрош. */
+    const fitWord = () => {
+      const target = stage.clientWidth;
+      if (!target) return; // блок ещё без ширины (скрытая вкладка) — пересчитаем позже
+      const probe = 200;
+      const cs = getComputedStyle(heroWord);
+      let scale = null;
+      let bearingLeft = 0;
+
+      ctx.font = `${cs.fontWeight} ${probe}px ${cs.fontFamily}`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      const m = ctx.measureText(heroWord.textContent.trim());
+      if (m && typeof m.actualBoundingBoxRight === 'number') {
+        const ink = m.actualBoundingBoxRight + m.actualBoundingBoxLeft;
+        if (ink > 0) {
+          scale = target / ink;
+          bearingLeft = -m.actualBoundingBoxLeft;
+        }
+      }
+
+      if (scale === null) {
+        // запасной путь, если браузер не отдаёт метрики чернил
+        heroWord.style.fontSize = probe + 'px';
+        const natural = heroWord.getBoundingClientRect().width;
+        if (!natural) return;
+        scale = target / natural;
+      }
+
+      heroWord.style.fontSize = (probe * scale) + 'px';
+      heroWord.style.left = (-bearingLeft * scale) + 'px';
+      lastWidth = target;
+      // высотой слова CSS выравнивает контент под ним на мобильном
+      stage.style.setProperty('--word-h', heroWord.getBoundingClientRect().height + 'px');
+    };
+
+    fitWord();
+    window.addEventListener('resize', fitWord);
+    window.addEventListener('load', fitWord);
+    document.addEventListener('visibilitychange', fitWord);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitWord);
+
+    if ('ResizeObserver' in window) {
+      // пересчёт, когда сцена получает реальную ширину; сверка с lastWidth
+      // нужна, чтобы правка --word-h не вызывала наблюдателя по кругу
+      new ResizeObserver(() => {
+        if (stage.clientWidth !== lastWidth) fitWord();
+      }).observe(stage);
+    }
+  }
+
+  /* ===== Карусели =====
+     Листают ровно на ширину видимой области, то есть на «страницу» карточек.
+     Сколько карточек в странице — решает CSS, скрипт про это не знает.
+     Управление ищется внутри той же секции, поэтому каруселей может быть
+     сколько угодно и они не мешают друг другу. */
+  document.querySelectorAll('[data-carousel]').forEach((track) => {
+    const scope = track.closest('section') || document;
+    const prev = scope.querySelector('[data-carousel-prev]');
+    const next = scope.querySelector('[data-carousel-next]');
+    const dotsBox = scope.querySelector('[data-carousel-dots]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // на мобильном карусель выключена в CSS: лента становится обычной колонкой
+    const isCarousel = () => track.scrollWidth > track.clientWidth + 1;
+    const pageCount = () => Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
+    const pageIndex = () => Math.round(track.scrollLeft / track.clientWidth);
+
+    const buildDots = () => {
+      if (!dotsBox) return;
+      if (!isCarousel()) { dotsBox.textContent = ''; return; }
+      const need = pageCount();
+      if (dotsBox.children.length === need) return;
+      dotsBox.textContent = '';
+      if (need < 2) return;
+      for (let i = 0; i < need; i += 1) {
+        const dot = document.createElement('span');
+        dot.className = 'carousel-dot';
+        dotsBox.appendChild(dot);
+      }
+    };
+
+    const sync = () => {
+      // 1px запаса: дробные ширины иначе не дают доехать до самого края
+      const atStart = track.scrollLeft <= 1;
+      const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+      if (prev) prev.disabled = atStart;
+      if (next) next.disabled = atEnd;
+      if (dotsBox) {
+        const active = pageIndex();
+        [...dotsBox.children].forEach((dot, i) => dot.classList.toggle('is-active', i === active));
+      }
+    };
+
+    const go = (dir) => {
+      track.scrollBy({
+        left: dir * track.clientWidth,
+        behavior: reduce.matches ? 'auto' : 'smooth',
+      });
+    };
+
+    if (prev) prev.addEventListener('click', () => go(-1));
+    if (next) next.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', () => { buildDots(); sync(); });
+
+    buildDots();
+    sync();
+  });
+
   /* ===== Lightbox ===== */
   const cases = {
     'inner-health': {
@@ -69,16 +222,19 @@
       images: ['images/gallery/inner-health-3.jpg', 'images/gallery/inner-health-2.jpg', 'images/gallery/inner-health-1.jpg'],
     },
     'webinar': {
-      title: 'Антикризисный sales-маркетинг',
+      title: 'Презентация для вебинара',
       images: ['images/gallery/webinar-1.jpg', 'images/gallery/webinar-2.jpg', 'images/gallery/webinar-3.jpg'],
     },
     'marketing-strategy': {
       title: 'Маркетинговая стратегия',
-      images: ['images/gallery/marketing-strategy-3.jpg', 'images/gallery/marketing-strategy-2.jpg', 'images/gallery/marketing-strategy-1.jpg'],
+      // Порядок 1-2-3, а не 3-2-1 как у других кейсов: новые слайды пришли
+      // уже пронумерованными в нужной последовательности. Здесь он обязан
+      // совпадать с разметкой — иначе лайтбокс листает не то, что в карточке
+      images: ['images/gallery/marketing-strategy-1.jpg', 'images/gallery/marketing-strategy-2.jpg', 'images/gallery/marketing-strategy-3.jpg'],
     },
-    'aina': {
-      title: 'Инструкция по продукту',
-      images: ['images/gallery/aina-1.jpg', 'images/gallery/aina-2.jpg', 'images/gallery/aina-3.jpg'],
+    'dashboards': {
+      title: 'Примеры графиков и дашбордов',
+      images: ['images/gallery/dashboards-1.jpg', 'images/gallery/dashboards-2.jpg', 'images/gallery/dashboards-3.jpg'],
     },
   };
 
@@ -166,6 +322,17 @@
     });
   });
 
+  /* ===== Раскрытие описания кейса ===== */
+  document.querySelectorAll('[data-case-toggle]').forEach((btn) => {
+    const card = btn.closest('.case-card');
+    const title = card.querySelector('h3').textContent.trim();
+    btn.addEventListener('click', () => {
+      const open = card.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', `${open ? 'Скрыть' : 'Показать'} описание кейса «${title}»`);
+    });
+  });
+
   document.querySelectorAll('[data-close-lightbox]').forEach((el) => {
     el.addEventListener('click', closeLightbox);
   });
@@ -199,7 +366,9 @@
       const name = form.name.value.trim();
       const contact = form.contact.value.trim();
       const projectType = form.project_type.value;
-      const message = form.message.value.trim();
+      // поле комментария убрано из формы 19 августа 2026 — читаем его
+      // только если оно есть, иначе скрипт падал бы на form.message
+      const message = form.message ? form.message.value.trim() : '';
 
       if (!name || !contact || !projectType) {
         setStatus('Заполните, пожалуйста, обязательные поля.', 'error');

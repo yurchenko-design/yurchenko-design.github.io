@@ -1,17 +1,92 @@
 /* ===== Design tokens — magenta variant ===== */
 :root {
   --bg: #000000;
-  --bg-elevated: #150e1e;
+  /* Почти чёрный, а не тёмно-фиолетовый (решение 22 августа 2026). Прежний
+     #150e1e был из того же семейства, что градиент кнопки и панель-цитата,
+     и притуплял их. На нейтральной плашке розовый и фиолетовый остаются
+     единственным цветом на экране. Побочно вырос контраст розового акцента
+     на плашке: 4,40 → 4,53, то есть норма AA наконец проходится */
+  --bg-elevated: #0d0d0d;
   --border: rgba(255, 255, 255, 0.12);
   --text: #ffffff;
   --text-muted: #b9adc4;
   --accent-pink: #D91FBF;
   --accent-purple: #A855F7;
   --gradient: linear-gradient(135deg, #D91FBF, #9333EA);
+  /* Заливка гигантской надписи DESIGN — приглушённые тона той же палитры.
+     Ярче её на странице только кнопка: градиент действия не должен спорить
+     с фоновой графикой (контраст к фону 2,15 и 1,82:1 против 4,90 у кнопки).
+     Третья точка уводит низ букв почти в фон — слово будто выходит из темноты.
+     Растворение начинается с 34% и завершается к 82% — буквы гаснут выше
+     середины, к низу остаётся только намёк на форму */
+  /* Приглушено на 50% по светлоте 22 августа 2026 (решение заказчицы).
+     Тон и насыщенность прежние — значения получены переводом старых стопов
+     #7C106D / #4F1789 / #0A0512 в HLS и умножением только светлоты на 0,5.
+     Контраст верхней точки к фону упал с 2,15:1 до 1,29:1 — надпись стала
+     заметно тише кнопки (4,90:1) и читается почти как текстура фона */
+  --word-gradient: linear-gradient(180deg, #3E0836 0%, #270C44 48%, #050309 92%);
+  /* Смягчение выреза фото. Тень тёмная: на чёрном фоне она не видна, но там,
+     где за фигурой лежит надпись, гасит буквы у самого контура — силуэт
+     перестаёт резать их бритвой. Маска растворяет низ вместо ровного среза */
+  --photo-shadow: drop-shadow(0 0 40px rgba(0, 0, 0, 0.95));
+  --photo-mask: linear-gradient(to bottom, #000 62%, rgba(0, 0, 0, 0.35) 84%, transparent 100%);
+  /* Насыщенность цвета в полосе «Инструменты · Как проходит работа»:
+     обводки плашек и кружков и заливка номеров шагов. Акцент в этом разделе
+     должен держать только панель с цитатой */
+  --outline-grad: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+  --pill-bg: var(--bg-elevated);
+  --num-fill: linear-gradient(#ffffff, #ffffff);
+  --slide-inset: 10px;
+  /* 4.4vw, а не 6.4: при 6.4 имя на ширинах 960–1040 не помещалось в свою
+     колонку и заезжало под фигуру — особенно заметно с крупным фото */
+  --hero-name-size: clamp(34px, 4.4vw, 60px);
+  --photo-w: clamp(300px, 31vw, 400px);
+  --photo-w-mobile: 270px;
+  /* ОБЩИЙ ЭЛЕМЕНТ: «искра» — горящий ромб, помечает важное. Радиусы свечения
+     считаются от размера ромба, поэтому при уменьшении ромба свечение ужимается
+     вместе с ним, а не остаётся ореолом вокруг мелкой искры. Решение заказчицы
+     19 августа 2026: элемент переиспользуется в других блоках */
+  --badge-size: 22px;
+  --badge-halo-size: 50px;
+  --badge-glow:
+    drop-shadow(0 0 calc(var(--badge-size) * 0.12) rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 calc(var(--badge-size) * 0.35) rgba(217, 31, 191, 0.9))
+    drop-shadow(0 0 calc(var(--badge-size) * 0.88) rgba(217, 31, 191, 0.5));
+  --badge-halo: radial-gradient(circle, rgba(217, 31, 191, 0.5) 0%, rgba(147, 51, 234, 0.22) 42%, transparent 70%);
+  --badge-pulse: badge-pulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  /* ОБЩИЙ ЭЛЕМЕНТ: линия-разделитель с затуханием вправо. Задана градиентом,
+     а не цветом обводки, — обводке градиент не задашь. Решение заказчицы
+     19 августа 2026: этот приём используется по всему сайту везде, где нужен
+     разделитель, а не только в колонке цифр */
+  --rule-fade: linear-gradient(90deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.06) 100%);
+  --rule-fade-v: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.06) 100%);
+  /* Заливка панели с цитатой. Отдельный токен, а не ссылка на --word-gradient:
+     раньше значения совпадали, сейчас разведены осознанно.
+     Два стопа вместо трёх (решение 22 августа 2026): третий стоп #0A0512
+     растворял низ панели в фоне, и у неё не было нижней границы. Теперь
+     заливка доходит до края. Цвет приглушён на 30% по светлоте от исходных
+     #7C106D / #4F1789 — тон и насыщенность прежние. Белый текст на этой
+     заливке даёт 13,5:1 сверху и 14,9:1 снизу, читаемость только выросла */
+  --panel-fill: linear-gradient(180deg, #570B4C 0%, #371060 100%);
+  /* Отступ между разделами и кегль их заголовков — одними токенами
+     на все новые блоки, чтобы ритм страницы задавался в одном месте */
+  --section-gap: 40px;
+  --section-title: clamp(24px, 3.2vw, 33px);
+  --stat-size: clamp(22px, 2.6vw, 26px);
+  --stat-line: var(--rule-fade);
   --font-heading: "Unbounded", sans-serif;
   --font-body: "Onest", sans-serif;
+  /* Семейство переименовано в каталоге Google Fonts: было «Big Shoulders
+     Display», стало «Big Shoulders» с осью оптического размера. Старое имя
+     пока отдаётся как алиас — держим его вторым на случай отката */
+  --font-display: "Big Shoulders", "Big Shoulders Display", sans-serif;
   --container-w: 1120px;
-  --radius: 16px;
+  /* 8px вместо 16px (решение 22 августа 2026). Остальные радиусы пересчитаны
+     от него в той же пропорции. Они заданы литералами, а не через токен,
+     поэтому при следующей правке трогать их надо все вместе:
+     .page-card 16, .contact-panel 12, .case-slides и лайтбокс 6, поля формы 6.
+     Кнопки остаются капсулами (100px) — это маркер действия, а не блок */
+  --radius: 8px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -24,6 +99,9 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  /* Не менять на overflow-x: clip: значение пробрасывается с body на область
+     просмотра и гасит вертикальную прокрутку всей страницы — проверено
+     19 августа 2026, страница переставала скроллиться вообще */
   overflow-x: hidden;
 }
 img { max-width: 100%; display: block; }
@@ -31,6 +109,19 @@ a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font: inherit; background: none; border: none; cursor: pointer; color: inherit; }
 h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.15; }
+
+/* Граница между двумя шрифтами (решение 21 августа 2026).
+   Unbounded держит крупное и цифры: имя в Hero, заголовки разделов, суммы,
+   номера кейсов и пар, кнопки. Onest берёт мелкие заголовки — колонок,
+   карточек услуг и кейсов. Причина: в кеглях 16–18px Unbounded читается
+   тяжело, строка занимает почти всю ширину карточки и спорит с текстом
+   под собой. Полную замену на Onest отклонили: имя в Hero теряет лицо */
+.strip-title,
+.service-card h3,
+.case-head h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+}
 
 .skip-link {
   position: absolute;
@@ -52,47 +143,6 @@ h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.
 
 @media (min-width: 640px) {
   .container { padding: 0 32px; }
-}
-
-/* ===== Header ===== */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(13, 13, 13, 0.75);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-}
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-}
-.logo {
-  font-family: var(--font-heading);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.main-nav {
-  display: flex;
-  gap: 28px;
-}
-.main-nav a {
-  font-size: 14px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  transition: color 0.2s var(--ease);
-}
-.main-nav a:hover,
-.main-nav a:focus-visible { color: var(--text); }
-
-@media (max-width: 560px) {
-  .main-nav { gap: 10px; }
-  .main-nav a { font-size: 11px; }
-  .logo { font-size: 11px; }
 }
 
 /* ===== Buttons ===== */
@@ -152,7 +202,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .page-card {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 28px;
+  border-radius: 16px;
   padding: 24px;
   overflow: hidden;
 }
@@ -160,178 +210,1007 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .page-card { padding: 32px; }
 }
 
-/* ===== Hero ===== */
-.hero {
-  position: relative;
-  padding: 0 0 64px;
+/* ===== Hero (редизайн под референс) ===== */
+.hero { padding: 0; }
+
+/* Верхняя строка: роль слева, статус доступности справа */
+.hero-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
-/* Внутреннее magenta-свечение карточки, как в референсе */
-.hero > .hero-inner { position: relative; z-index: 1; }
-.hero-inner {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 36px;
-  align-items: stretch;
+.hero-role {
+  color: var(--text);
+  font-weight: 600;
 }
-@media (min-width: 880px) {
-  .hero-inner {
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 56px;
-  }
-  .hero-text { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+/* Навигация переехала сюда из снятой верхней шапки — она дублировала
+   и роль, и меню. Строка статуса «Открыта для новых проектов» осталась
+   только в блоке контактов, там она с зелёной точкой-индикатором */
+.hero-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+}
+.hero-nav a {
+  color: var(--text-muted);
+  transition: color 0.2s var(--ease);
+}
+.hero-nav a:hover,
+.hero-nav a:focus-visible { color: var(--text); }
+
+/* Сцена: гигантское слово фоном, контент поверх него */
+.hero-stage { position: relative; }
+
+.hero-word {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.78;
+  white-space: nowrap;
+  color: transparent;
+  background: var(--word-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  user-select: none;
+  pointer-events: none;
+  /* Запасной кегль на случай, если JS не отработал: слово всё равно
+     занимает почти всю ширину. Точную подгонку делает fitWord в main.js */
+  font-size: min(calc((100vw - 92px) * 0.37), 400px);
 }
 
-.eyebrow {
-  color: var(--text-muted);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+.hero-layout {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  /* Отступ сверху задаётся высотой слова: фигура наезжает на его нижнюю часть.
+     --word-h выставляет fitWord, значение до его срабатывания — запасное */
+  padding-top: calc(var(--word-h, 24vw) * 0.5);
 }
+
+/* Порядок важен: маска висит на самой картинке, а тень — на обёртке.
+   Раньше было наоборот, и маска родителя обрезала мягкую тень потомка по
+   его прямоугольнику — за головой появлялся тёмный квадрат с прямыми краями.
+   Плюс mask-repeat: маска по умолчанию тайлится и размножает градиент */
+.hero-photo {
+  order: -1;
+  justify-self: center;
+  width: min(var(--photo-w-mobile), 66vw);
+  filter: var(--photo-shadow);
+}
+/* <picture> по умолчанию строчный элемент: без block под фото оставался
+   зазор в 4px от базовой линии, и нижний край переставал совпадать
+   с границей секции */
+.hero-photo picture { display: block; }
+.hero-photo img {
+  width: 100%;
+  height: auto;
+  -webkit-mask-image: var(--photo-mask);
+  mask-image: var(--photo-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
 .hero-name {
-  font-size: clamp(38px, 7vw, 64px);
+  font-size: var(--hero-name-size);
   color: var(--text);
-  letter-spacing: -0.01em;
-  margin-bottom: 18px;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  /* Имя лежит поверх нижней части надписи DESIGN, а она теперь уходит почти
+     в фон — контраста хватает с запасом. Тень оставлена лёгкой страховкой
+     для промежуточных ширин, где имя может попасть на середину градиента */
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 }
 .hero-sub {
   color: var(--text-muted);
-  font-size: 17px;
+  font-size: 16.5px;
   line-height: 1.6;
-  max-width: 440px;
-  margin-bottom: 28px;
+  max-width: 380px;
+  margin-bottom: 24px;
 }
 .tool-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 36px;
+  gap: 9px;
+  margin-bottom: 28px;
 }
+/* Обводка градиентная, тем же приёмом, что у кружков шагов: два фоновых слоя,
+   сплошной фон по padding-box и градиент по border-box. Плоская розовая обводка
+   вводила на сайт ещё один цвет, которого нет в палитре */
 .tool-tags li {
-  border: 1px solid rgba(217, 31, 191, 0.3);
+  border: 1px solid transparent;
   border-radius: 100px;
-  padding: 8px 18px;
-  font-size: 14px;
+  padding: 7px 16px;
+  font-size: 13.5px;
   color: var(--text);
+  background-image: linear-gradient(var(--pill-bg), var(--pill-bg)), var(--outline-grad);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  transition: background-image 0.25s var(--ease);
 }
-.hero-photo {
+/* Наведение подсвечивает обводку — тот же отклик, что у карточек услуг */
+.tool-tags li:hover {
+  background-image:
+    linear-gradient(var(--pill-bg), var(--pill-bg)),
+    linear-gradient(135deg, rgba(217, 31, 191, 0.85), rgba(147, 51, 234, 0.85));
+}
+
+/* Правая колонка: бейдж со смыслом + цифры */
+.hero-aside {
   display: flex;
-  justify-content: center;
-  align-items: stretch;
-  position: relative;
-  z-index: 1;
-  background: #000000;
-  border-radius: 24px;
-}
-.hero-photo-frame {
-  width: min(400px, 70vw);
-  aspect-ratio: 5 / 6;
-  border-radius: 24px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: none;
-  background: #000;
-}
-.hero-photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
+  flex-direction: column;
+  gap: 26px;
 }
 
-@media (min-width: 880px) {
-  .hero-photo { justify-content: flex-end; padding: 32px; margin: -32px; }
-}
-
-/* ===== About ===== */
-.about { padding: 40px 0 96px; border-top: 1px solid var(--border); }
-
-.positioning {
-  position: relative;
-  font-family: var(--font-body);
-  font-size: clamp(17px, 1.6vw, 19px);
-  font-weight: 400;
-  font-style: normal;
+.hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14.5px;
+  line-height: 1.35;
   color: var(--text);
-  line-height: 1.7;
-  max-width: 760px;
-  margin-bottom: 14px;
-  padding: 28px 64px 28px 32px;
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
 }
-.positioning::before {
+/* Ромб белый, а горит акцентным цветом: белое ядро на цветном ореоле
+   читается как искра, цветное на цветном — как пятно. Свечение собрано
+   слоями drop-shadow (ядро → ближний ореол → дальний) плюс подложка ::before.
+   Класс .spark общий — вешать на любой такой ромб в других блоках */
+.spark,
+.hero-badge-icon {
+  flex: none;
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: var(--badge-color, #ffffff);
+  filter: var(--badge-glow);
+}
+.spark::before,
+.hero-badge-icon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--badge-halo-size);
+  height: var(--badge-halo-size);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--badge-halo, transparent);
+  animation: var(--badge-pulse, none);
+  pointer-events: none;
+}
+.spark svg,
+.hero-badge-icon svg {
+  position: relative;
+  width: var(--badge-size);
+  height: var(--badge-size);
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.16); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spark::before,
+.hero-badge-icon::before { animation: none; }
+}
+
+.hero-stats { display: grid; }
+.hero-stat {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 0;
+}
+.hero-stat::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 20px;
-  bottom: 20px;
-  width: 3px;
-  border-radius: 3px;
-  background: var(--gradient);
+  right: 0;
+  top: 0;
+  height: 1px;
+  background-image: var(--stat-line);
 }
-.positioning::after {
-  content: "\201D";
-  position: absolute;
-  top: 8px;
-  right: 20px;
+.hero-stat:first-child { padding-top: 0; }
+.hero-stat:first-child::before { display: none; }
+/* Без нижнего отступа у последней строки её подпись становится нижним краем
+   колонки — тогда «стоимость слайда» и нижний край кнопки сходятся */
+.hero-stat:last-child { padding-bottom: 0; }
+.hero-stat-value {
   font-family: var(--font-heading);
-  font-size: 64px;
-  line-height: 1;
-  background: var(--gradient);
+  font-weight: 700;
+  font-size: var(--stat-size);
+  color: var(--text);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+/* Предлог «от» — обычным текстовым начертанием, крупным идёт только цифра */
+.hero-stat-from {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+.hero-stat-label {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.3;
+  text-align: right;
+}
+
+/* --- Мобильная раскладка ---
+   Обёртки .hero-intro и .hero-aside распускаются через display: contents,
+   их дети становятся прямыми ячейками сетки — это позволяет разложить их
+   в нужном порядке, не дублируя разметку. Бейдж остаётся наверху справа
+   от фигуры, а кнопка уходит в самый низ, после цифр */
+@media (max-width: 899px) {
+  .hero-intro,
+  .hero-aside { display: contents; }
+
+  .hero-layout {
+    grid-template-columns: 104px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 22px;
+  }
+  /* Бейдж слева, фигура справа: на фото голова повёрнута влево, то есть
+     взгляд направлен на ромб, а не от него */
+  .hero-badge {
+    grid-column: 1;
+    order: 1;
+    align-self: start;
+    /* Опускаем бейдж относительно верха колонки. Отступ считается от высоты
+       надписи, поэтому на узких экранах, где слово ниже, сдвиг тоже меньше */
+    margin-top: calc(var(--word-h, 90px) * 0.22);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+  }
+  /* width: 100% обязателен — иначе фигура шире своей колонки и наезжает
+     на бейдж. Ширину на мобильном задаёт колонка, а не --photo-w-mobile */
+  .hero-photo {
+    grid-column: 2;
+    order: 2;
+    width: 100%;
+    max-width: var(--photo-w-mobile);
+    justify-self: end;
+  }
+  .hero-name  { grid-column: 1 / -1; order: 3; }
+  .hero-sub   { grid-column: 1 / -1; order: 4; margin-bottom: 0; }
+  .hero-stats { grid-column: 1 / -1; order: 5; }
+  .hero-cta   { grid-column: 1 / -1; order: 6; justify-self: start; }
+}
+
+/* --- Планшет и широкий телефон: имя и подзаголовок встают слева от фигуры ---
+   До этого при 620–899px фигура шириной 270px прижималась к правому краю,
+   слева от неё оставался пустой прямоугольник ~270×405, а имя начиналось
+   на 22px ниже фигуры — первый экран открывался почти пустым.
+   Десктоп (от 900px) этой правкой не затрагивается.
+
+   Раскладка держится на явных строках, а не на order: строка 4 пустая
+   и растянута в 1fr. Фигура охватывает строки 1–4, и весь её лишний рост
+   уходит в эту пустую строку. Без неё избыток высоты распределился бы
+   поровну между строками 1–3 и растащил бейдж, имя и подзаголовок */
+@media (min-width: 560px) and (max-width: 899px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    /* Пустой строки-распорки здесь больше нет. Она забирала весь лишний
+       рост фигуры в один зазор: бейдж, имя и подзаголовок слипались по 14px,
+       а перед колонкой цифр зияла дыра в 143px (замерено на 820px).
+       Теперь фигура охватывает строки 1–3, и её избыток высоты грид делит
+       между ними поровну — три зазора вместо одной дыры, содержимое левой
+       колонки распределяется по высоте фигуры */
+    /* Первая строка резиновая, остальные по содержимому: весь избыток
+       высоты фигуры уходит в зазор под бейджем, а имя с подзаголовком
+       остаются вместе. Раньше строки были одинаковые, избыток делился
+       поровну, и между именем и подзаголовком вырастало 91px — связка
+       рвалась. То же правило действует и на десктопе: подзаголовок
+       поясняет имя и не должен от него отрываться */
+    grid-template-rows: 1fr auto auto auto auto;
+    column-gap: 26px;
+    row-gap: 14px;
+  }
+  .hero-badge { grid-column: 1; grid-row: 1; align-self: start; margin-top: calc(var(--word-h, 90px) * 0.22); }
+  .hero-name  { grid-column: 1; grid-row: 2; align-self: end; }
+  .hero-sub   { grid-column: 1; grid-row: 3; align-self: end; margin-bottom: 0; }
+  /* Фигура резиновая, а не фиксированные 270px: у левой колонки должно
+     остаться не меньше 195px — столько занимает «Юрченко» в кегле 34px,
+     и на 560px при жёстких 270px слово уже не помещалось */
+  .hero-photo {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: end;
+    width: min(var(--photo-w-mobile), 40vw);
+  }
+  /* Цифры и кнопка отделены от колонки заметнее общего шага: между ними
+     и текстом выше меняется смысловой блок, а при 16px они читались
+     как продолжение подзаголовка */
+  .hero-stats { grid-column: 1 / -1; grid-row: 4; margin-top: 26px; }
+  .hero-cta   { grid-column: 1 / -1; grid-row: 5; justify-self: start; margin-top: 8px; }
+}
+
+@media (min-width: 900px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 0.68fr);
+    align-items: start;
+    gap: 28px;
+    padding-top: 0;
+    min-height: 540px;
+  }
+  /* Фото упирается в нижнюю границу секции — обрез читается как намеренный */
+  .hero-photo {
+    order: 0;
+    width: var(--photo-w);
+    align-self: end;
+  }
+  .hero-intro,
+  .hero-aside { padding-top: calc(var(--word-h, 290px) * 0.95); }
+
+  /* Бейдж «Сначала смысл» встаёт не по верху имени, а по нижнему краю его
+     первой строки — то есть по букве «я» в «Виталия». Поэтому правая колонка
+     дополнительно опущена ровно на одну строку имени */
+  /* Бейдж встаёт по букве «я» в «Виталия», а не по «В»: правая колонка
+     опущена на строку имени и поднята обратно на 0.23em. Поправка нужна
+     потому, что строчная коробка имени (Unbounded 60px даёт 74px) намного
+     выше коробки бейджа (Onest 15px даёт 19px) — без неё бейдж садился
+     ниже. Коэффициент подобран по замеру самих букв, а не коробок строк:
+     по коробкам расхождение уже было нулевым, а по глифам оставалось 11px. Коэффициент в em, а не в пикселях:
+     кегль имени резиновый, clamp(34px, 4.4vw, 60px) */
+  .hero-aside {
+    padding-top: calc(var(--word-h, 290px) * 0.95 + var(--hero-name-size) * 1.04 - var(--hero-name-size) * 0.413);
+  }
+
+  /* Обе колонки тянутся на всю высоту ряда, а кнопка и цифры прижаты к его
+     низу — тогда нижний край кнопки и нижний край цифр совпадают при любых
+     кеглях и любой длине текста */
+  .hero-intro,
+  .hero-aside { align-self: stretch; }
+  .hero-intro {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Подзаголовок остаётся при имени: он его поясняет, и разрыв между ними
+     рвал связку. Свободное место уходит вниз, под подзаголовок */
+  .hero-cta {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+  .hero-aside { justify-content: space-between; }
+
+  .hero-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2px;
+  }
+  .hero-stat-label { text-align: left; }
+}
+
+/* ===== А если сделать нейросетью? =====
+   Тон блока спокойный, поэтому никакой «тревожной» графики: обычный список
+   с тонкими разделителями. Акцент только на финальной строке — она снимает
+   возражение «зачем платить», её и помечаем искрой */
+/* Декоративная графика в правом верхнем углу раздела: там пустует место
+   над колонкой с выводом. Картинка абсолютная и не влияет на поток — высота
+   раздела и раскладка пар остаются прежними.
+   alt пустой и aria-hidden: смысла в ней нет, скринридеру читать нечего */
+.ai { position: relative; padding: var(--section-gap) 0 8px; }
+.ai-art {
+  display: none;
+  position: absolute;
+  right: 0;
+  /* Приподнята на 21px — значение выбрано заказчицей в конструкторе
+     30 августа 2026. Низ картинки при этом на 177px от верха раздела,
+     колонка вывода начинается на 189px: запас 12px */
+  top: -21px;
+  /* Потолок 150px не случайный. Картинка вертикальная, 520×595, то есть
+     высота = ширина × 1.144. Колонка вывода начинается на 189px от верха
+     раздела, значит ширина не должна превышать ~165px. Прежняя картинка была
+     горизонтальной (× 0.917) и допускала 190px — при замене на вертикальную
+     тот же размер дал бы 217px высоты и наезд на вывод */
+  width: clamp(100px, 12vw, 173px);
+  height: auto;
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
+}
+/* Показываем только там, где справа действительно есть пустое место:
+   ниже 960px раздел идёт в одну колонку, и картинке негде встать */
+@media (min-width: 960px) {
+  .ai-art { display: block; }
+  /* Лид не должен подлезать под картинку. 210px — её потолок 190 плюс
+     зазор 20. При 1440px раздел шире, и вычитание ни на что не влияет:
+     max-width так и остаётся 760. На 980px лид сам ужимается до 642.
+     ⚠️ Селектор из двух классов обязателен: базовое правило .ai-lead
+     объявлено ниже по файлу и при равной специфичности перебивало это */
+  .ai .ai-lead { max-width: min(760px, calc(100% - 193px)); }
+}
+
+.ai-lead {
+  max-width: 760px;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+/* Четыре пары «ожидание → реальность» слева, выводы справа.
+   БАЗА (она же мобильная раскладка): пара складывается вертикально,
+   «ожидание» мелким приглушённым как лейбл, «реальность» основным.
+   Стрелка убрана — стрелка вниз читалась бы как «дальше по списку» */
+.ai-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 8px;
+}
+
+.ai-pairs { display: grid; }
+
+/* На узком экране блок оформлен так же, как на десктопе: крупный номер
+   и розовая стрелка остаются на месте, меняется только их расстановка.
+   Раньше и номер, и стрелка просто скрывались, и мобильная версия теряла
+   узнаваемость раздела. Четыре колонки в 375px не помещаются, поэтому
+   номер уходит в левую колонку, а стрелка встаёт под ним и разворачивается
+   вниз — тот же жест «ожидание → реальность», только по вертикали */
+.ai-pair {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 14px;
+  row-gap: 4px;
+  padding: 16px 0;
+}
+.ai-num {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 32px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.35;
+  background: var(--num-fill);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  opacity: 0.3;
-  pointer-events: none;
 }
-
-.thesis-list {
+.ai-arrow {
+  grid-column: 1;
+  grid-row: 2;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  margin-bottom: 40px;
+  place-items: center;
+  justify-self: start;
+  width: 32px;
+  color: var(--accent-pink);
 }
-@media (min-width: 720px) {
-  .thesis-list { grid-template-columns: repeat(2, 1fr); }
-}
-.thesis-list li {
-  position: relative;
-  padding: 20px 22px 20px 46px;
-  color: var(--text-muted);
-  font-size: 15.5px;
-  line-height: 1.6;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  transition: border-color 0.25s var(--ease);
-}
-.thesis-list li:hover { border-color: rgba(217, 31, 191, 0.4); }
-.thesis-list li::before {
+/* Стрелка в разметке горизонтальная — на мобильном разворачиваем её вниз */
+.ai-arrow svg { width: 17px; height: 17px; transform: rotate(90deg); }
+.ai-expect  { grid-column: 2; grid-row: 1; }
+.ai-reality { grid-column: 2; grid-row: 2; }
+.ai-pair::before {
   content: "";
   position: absolute;
-  left: 22px;
-  top: 27px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gradient);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background-image: var(--rule-fade);
+}
+.ai-pair:first-of-type::before { display: none; }
+.ai-pair:first-of-type { padding-top: 0; }
+
+.ai-expect {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.ai-reality {
+  color: var(--text);
+  font-size: 15.5px;
+  line-height: 1.5;
 }
 
-.services-block h2,
-.process-block h2,
-.works h2,
-.reviews h2 {
-  font-size: clamp(28px, 4vw, 38px);
-  margin-bottom: 24px;
+/* Панель с выводами. Единственный блок на сайте с градиентной заливкой:
+   ⚠️ это осознанное исключение из правила «градиентом не заливать блоки
+   целиком» — заказчица приняла его 19 августа 2026. Заливка вчетверо тусклее
+   кнопки (2,15:1 к фону против 4,90:1), поэтому кнопка остаётся самым ярким
+   элементом страницы. В референсе панель с цитатой залита так же */
+/* Колонка выводов: заливку носит только абзац «И главное…», сама колонка
+   прозрачная. space-between разводит их по краям — строка с искрой встаёт
+   вровень с нижним краем последней пары в списке слева */
+.ai-conclusion {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  /* Ровно нижний внутренний отступ последней пары слева: без него строка
+     с искрой вставала на 18px ниже текста «Для внутренней встречи…» */
+  padding-bottom: 18px;
 }
 
-.services-grid {
+/* Кегль тот же, что у «реальности» в левом столбце, — иначе панель набирает
+   лишние строки и перестаёт совпадать с ним по высоте */
+/* Без заливки: единственная залитая панель на сайте — цитата-позиционирование.
+   Две градиентные панели в 344px друг от друга гасили одна другую */
+.ai-closing {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* Искра всегда идёт без обводки и без подложки — так она стоит и в Hero,
+   и в карточке про сайты. Рамка вокруг неё превращает акцент в плашку */
+.ai-final {
+  display: flex;
+  align-items: center;
+  /* Запас считается от ореола, а не от ромба: ореол 50px против ромба 20px,
+     и при шаге 12px текст заходил в свечение */
+  gap: 22px;
+  color: var(--text);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.ai-final .spark { --badge-size: 20px; --badge-halo-size: 46px; }
+
+@media (min-width: 960px) {
+  /* Слева нумерованные пары, справа выводы. Пропорция подобрана так,
+     чтобы «реальность» помещалась в одну-две строки, а вывод справа
+     не превращался в узкий столбик */
+  /* align-items: stretch (по умолчанию) — панель тянется ровно на высоту
+     списка слева, поэтому блоки совпадают и по верху, и по низу.
+     Содержимое панели центрируется по вертикали */
+  .ai-body {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 48px;
+  }
+
+  .ai-pair {
+    grid-template-columns: auto minmax(0, 0.8fr) auto minmax(0, 1.2fr);
+    align-items: center;
+    gap: 18px;
+    padding: 18px 0;
+  }
+  /* Крупные номера — приём из референса, там так пронумерованы
+     и проекты, и шаги процесса */
+  .ai-num {
+    grid-column: auto;
+    grid-row: auto;
+    /* min-width, а не width: коробка должна быть не уже самой широкой цифры.
+       При width: 30px текст «04» шириной 39px вылезал за коробку, а градиент
+       заливается по её размеру — хвост цифры оставался без заливки
+       и выглядел обрезанным */
+    min-width: 40px;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .ai-expect { grid-column: auto; grid-row: auto; font-size: 14.5px; }
+  .ai-reality { grid-column: auto; grid-row: auto; }
+  .ai-arrow {
+    grid-column: auto;
+    grid-row: auto;
+    width: auto;
+    justify-self: auto;
+  }
+  /* Обратно в горизонталь: поворот нужен только мобильной раскладке */
+  .ai-arrow svg { width: 18px; height: 18px; transform: none; }
+}
+
+/* ===== Полоса: Инструменты · Как проходит работа · Цитата =====
+   Раскладка из референса: три колонки, разделённые тонкими вертикальными
+   линиями, правая — залитая панель с цитатой и крупной кавычкой.
+   Линии те же, что и везде, только вертикальные (--rule-fade-v) */
+.strip { padding: var(--section-gap) 0 8px; }
+
+.strip-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 32px;
+}
+
+/* Заголовки колонок набраны так же, как заголовки разделов, только мельче:
+   тот же заголовочный шрифт и белый цвет. Акцентный капслок выбивался
+   из общего строя — в референсе заголовки колонок тоже обычные, белые */
+.strip-title {
+  /* шрифт задаётся общим правилом границы шрифтов выше — здесь не переопределять */
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+/* --- Инструменты --- */
+.strip-col .tool-tags { margin-bottom: 0; }
+
+/* --- Как проходит работа --- */
+.process-steps { display: grid; gap: 0; }
+.process-steps li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+}
+/* Тонкая линия вместо зазора: шаги и так без карточек, но шесть строк подряд
+   без разделителя сливались в один блок. Линия только между шагами — сверху
+   её держит заголовок «Как проходит работа», снизу колонка кончается */
+.process-steps li + li { border-top: 1px solid var(--border); }
+/* Одинаковая ширина обязательна: «01» уже «02»–«06», потому что единица
+   узкая, и без неё кружки съезжали по строкам на 5px. min-width, а не width,
+   чтобы градиент под цифрой не обрезался (см. .ai-num) */
+.step-num {
+  flex: none;
+  min-width: 28px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  background: var(--num-fill);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* Кружок без заливки, с градиентной обводкой: два фоновых слоя — сплошной
+   фон по padding-box и градиент по border-box. Обычной border градиент
+   задать нельзя */
+.step-icon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--accent-pink);
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--bg), var(--bg)), var(--outline-grad);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  transition: color 0.25s var(--ease);
+}
+.step-icon svg { width: 18px; height: 18px; }
+.process-steps li:hover .step-icon { color: var(--text); }
+.step-name {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+/* --- Панель с цитатой --- */
+.quote-panel {
+  position: relative;
+  /* Верхнее поле меньше нижнего: при симметричных 30px текст в панели
+     садился заметно ниже заголовка соседней колонки «Инструменты» —
+     по буквам разница доходила до 35px. Полностью выровнять их нельзя,
+     это потребовало бы отрицательного поля, но 20px сокращают разрыв
+     почти вдвое и панель перестаёт выглядеть просевшей */
+  padding: 20px 32px 28px;
+  border-radius: var(--radius);
+  background: var(--panel-fill);
+  overflow: hidden;
+}
+/* Значка ” в панели с цитатой нет (решение 22 августа 2026). Цитата уже
+   набрана в ёлочках «…», и глиф сверху читался как вторые кавычки подряд.
+   Пробовали до этого: уменьшить до 40px и приглушить до 22% — помогало,
+   но не снимало сам повтор. Класс .quote-mark вместе с разметкой удалён */
+/* Цитата обычным текстовым начертанием, не заголовочным — правило проекта:
+   заголовочный шрифт здесь превращал её в подзаголовок */
+.quote-panel p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* Раскладка раздела «Обо мне» (решение 22 августа 2026, вариант «Е»).
+   Сверху цитата и инструменты в две колонки, под ними процесс полосой
+   во всю ширину. Прежний вариант — три равноправные колонки в ряд —
+   отменён: процесс в узкой колонке набирал шесть строк подряд и весил
+   столько же, сколько цитата, хотя это служебная информация */
+@media (min-width: 900px) {
+  .strip-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 40px;
+    row-gap: 28px;
+    align-items: stretch;
+  }
+  .quote-panel { grid-column: 1; grid-row: 1; }
+  /* по классу, а не по nth-of-type: цитата — blockquote, и нумерация
+     среди div начинается не с той колонки */
+  .strip-col:not(.strip-col-process) {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+  }
+  /* Вертикальный разделитель — как в референсе. На панель с цитатой линия
+     не ставится: её граница задана заливкой */
+  .strip-col + .strip-col {
+    position: relative;
+    padding-left: 40px;
+    margin-left: -40px;
+  }
+  .strip-col + .strip-col::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-image: var(--rule-fade-v);
+  }
+
+  /* Полоса процесса. Правило обязано стоять ПОСЛЕ .strip-col + .strip-col:
+     специфичность у них одинаковая, и при обратном порядке полоса
+     наследовала margin-left: -40px и вылезала за колонки влево */
+  .strip-col + .strip-col-process {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding-left: 0;
+    margin-left: 0;
+    padding-top: 26px;
+  }
+  /* Разделителя над полосой процесса нет (решение 22 августа 2026).
+     Он и вертикальные линии между шагами делали блок похожим на таблицу */
+  .strip-col + .strip-col-process::before { display: none; }
+
+  /* Шесть шагов одной строкой: кружок с розовой обводкой и белой цифрой,
+     под ним подпись, от кружка к кружку идёт линия. Иконки в этой раскладке
+     не участвуют — цифра внутри кружка занимает их место, а подпись получает
+     всю ширину колонки и почти перестаёт переноситься */
+  .process-steps {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: 18px;
+  }
+  .process-steps li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    /* ⚠️ Обязательно start, а не center. Шаги выровнены по общей высоте,
+       и лишнюю высоту грид отдаёт рядам: у шага с однострочной подписью
+       ряд растягивался, а центрированный текст проваливался вниз —
+       подписи стояли на разных уровнях. С align-content: start ряды
+       не растягиваются, и первая строка подписи у всех шести на одной
+       линии независимо от того, одна в ней строка или две */
+    align-items: start;
+    align-content: start;
+    row-gap: 12px;
+    padding: 0;
+    position: relative;
+  }
+  .step-icon { display: none; }
+  /* Цифра белая и сплошная: базовое правило заливает её градиентом через
+     background-clip: text, и внутри кружка она читалась бы бледной */
+  .step-num {
+    grid-row: 1;
+    width: 44px;
+    min-width: 0;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent-pink);
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: #ffffff;
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 1;
+  }
+  .step-name { grid-row: 2; }
+  /* Линия между кружками. Начинается за кружком (44px) и уходит за правый
+     край шага на промежуток колонки минус зазор — так она не упирается
+     в следующий кружок, а останавливается за 8px до него */
+  .process-steps li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 52px;
+    right: -10px;
+    top: 22px;
+    height: 1px;
+    background-image: var(--rule-fade);
+  }
+  /* Горизонтальная линия от вертикального списка здесь не нужна.
+     ⚠️ Селектор с двумя элементами обязателен: базовое правило записано
+     как .process-steps li + li, одноклассовый его не перебивает */
+  .process-steps li + li { border-top: 0; }
+
+}
+
+/* ===== Заголовок раздела с линией — общий элемент =====
+   Приём из референса: название слева, дальше линия во всю оставшуюся ширину.
+   Линия та же, что между цифрами в Hero (--rule-fade), — один язык на весь сайт */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.section-head h2 {
+  order: 1;
+  font-size: var(--section-title);
+  margin: 0;
+}
+/* Линия идёт между заголовком и правым управлением, как в референсе,
+   поэтому порядок задаётся явно: псевдоэлемент иначе встал бы последним */
+.section-head::after {
+  content: "";
+  order: 2;
+  flex: 1 1 auto;
+  min-width: 40px;
+  height: 1px;
+  background-image: var(--rule-fade);
+}
+
+/* ===== Чем могу помочь ===== */
+.services { padding: var(--section-gap) 0 8px; }
+
+/* ===== Карусель — общий компонент =====
+   Сколько карточек в странице, задаёт --cards у конкретной ленты.
+   Полоса прокрутки со scroll-snap — свайп на телефоне работает сам собой,
+   а стрелки просто листают на ширину видимой области, то есть ровно на «страницу» */
+.carousel-track {
+  --cards: 1;
+  --gap: 16px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--cards) - 1) * var(--gap)) / var(--cards));
+  gap: var(--gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Запас сверху и снизу обязателен. overflow-x: auto делает и вертикальную
+     ось прокручиваемой, а значит лента обрезает всё, что вышло за её границы:
+     карточка при наведении поднимается на 6px и вместе с тенью пряталась
+     под верхний край — выглядело так, будто она уходит под чёрный экран.
+     Снизу 24px, а не 16: при 16 раскрытое описание кейса не помещалось
+     в ленту и обрезалось на 8px (замерено 19 августа 2026) */
+  padding: 10px 0 24px;
+}
+.carousel-track::-webkit-scrollbar { display: none; }
+.carousel-track:focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 4px; }
+.carousel-track > * { scroll-snap-align: start; }
+
+@media (min-width: 640px) { .services .carousel-track { --cards: 2; } }
+@media (min-width: 960px) { .services .carousel-track { --cards: 3; } }
+/* Кейсы крупнее карточек услуг — по два на экран, иначе картинки мельчают */
+@media (min-width: 720px) {
+  .works .carousel-track {
+    --cards: var(--works-cards, 2);
+    /* start, а не stretch: иначе при раскрытии одного кейса соседний
+       растягивался под его высоту и показывал пустоту под заголовком */
+    align-items: start;
+  }
+}
+
+/* На телефоне карусели нет: вертикальная прокрутка там привычнее, а листать
+   шесть карточек по одной — шесть свайпов вместо одного движения пальцем */
+@media (max-width: 639px) {
+  .carousel-track {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    grid-auto-columns: auto;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    padding: 0;
+  }
+  /* заголовки снова по содержимому — колонка одна, выравнивать не с чем */
+  .service-card h3 { min-height: 0; }
+  .service-when { margin-top: 0; }
+}
+
+.carousel-nav {
+  order: 3;
+  display: flex;
+  gap: 10px;
+  flex: none;
+}
+/* 36px вместо 42px (решение 22 августа 2026). Область нажатия при этом
+   не уменьшилась: её держит прозрачный псевдоэлемент 44×44 — внешне
+   стрелка меньше, а палец попадает так же */
+.carousel-arrow {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: var(--gradient);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+.carousel-arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+.carousel-arrow svg { width: 17px; height: 17px; }
+/* Свечение по тому же рисунку, что у кнопки «Обсудить проект»
+   (0 12px 36px -6px при высоте 56px), пересчитанное под 36px:
+   размытие и смещение уменьшены в той же пропорции 36/56 */
+.carousel-arrow:hover:not(:disabled),
+.carousel-arrow:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 23px -6px rgba(217, 31, 191, 0.6);
+}
+/* Дошли до края — стрелка гаснет и теряет градиент: видно, что листать больше некуда */
+.carousel-arrow:disabled {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: default;
+  opacity: 0.55;
+}
+
+/* На узких экранах заголовок, линия и стрелки не помещались в строку —
+   стрелки вылезали за край карточки и обрезались. Ужимаем шаг и сами стрелки */
+@media (max-width: 560px) {
+  .section-head { gap: 14px; }
+  .section-head::after { min-width: 24px; }
+  .carousel-nav { gap: 8px; }
+  .carousel-arrow { width: 32px; height: 32px; }
+  .carousel-arrow svg { width: 16px; height: 16px; }
+}
+
+/* Точки под лентой кейсов убраны (решение 22 августа 2026): на экране
+   одновременно оказывалось три набора точек — по одному в каждой из двух
+   видимых карточек и ещё один под лентой. Нижний ничего не добавлял:
+   позицию в ленте показывают стрелки ‹ › у заголовка, они и так гаснут,
+   когда листать больше некуда. В услугах карусель отключена совсем,
+   поэтому правило касается только раздела «Мои работы» */
+.works .carousel-dots { display: none; }
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.carousel-dots:empty { display: none; }
+.carousel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.25s var(--ease), width 0.25s var(--ease);
+}
+/* Активная точка белая, а не градиентная: градиент на 22px пятне рядом
+   с цветными превью читался как ещё один акцент и спорил с ними.
+   Форму — вытянутую капсулу — оставляем, она и так однозначно показывает,
+   где мы находимся */
+.carousel-dot.is-active {
+  width: 22px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* Скрытие управления каруселью на телефоне стоит здесь, после объявления
+   .carousel-nav и .carousel-dots: правило той же специфичности, объявленное
+   выше по файлу, перебивалось бы их display */
+@media (max-width: 639px) {
+  .carousel-nav,
+  .carousel-dots { display: none; }
 }
 @media (min-width: 640px) {
   .services-grid { grid-template-columns: repeat(2, 1fr); }
@@ -359,152 +1238,85 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   transition: color 0.25s var(--ease);
 }
 .service-card:hover .service-icon { color: var(--accent-pink); }
-.service-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-.service-card p {
-  color: var(--text-muted);
-  font-size: 14.5px;
-}
-
-.process-timeline-wrap {
-  margin-bottom: 32px;
-}
-.process-timeline {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 560px) {
-  .process-timeline { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 900px) {
-  .process-timeline { grid-template-columns: repeat(3, 1fr); }
-}
-.process-timeline li {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
-}
-.process-timeline li:hover {
-  border-color: rgba(217, 31, 191, 0.4);
-  transform: translateY(-3px);
-}
-.step-num {
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--gradient);
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.step-body { display: flex; align-items: center; gap: 10px; }
-.step-icon { display: none; }
-.step-text { font-size: 15px; color: var(--text); line-height: 1.4; }
-
-.facts-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-@media (min-width: 560px) {
-  .facts-row { grid-template-columns: repeat(2, 1fr); }
-}
-.fact-card {
-  position: relative;
+.service-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 26px 28px 26px 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
 }
-.fact-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(217, 31, 191, 0.4);
+/* Заголовки бывают в одну и в две строки, из-за чего текст под ними
+   разъезжался по высоте. Резервируем две строки — тогда «что получаете»
+   у всех карточек начинается на одной линии. Шестая карточка длиннее,
+   но у неё нет текста под заголовком, так что ряд она не ломает */
+.service-card h3 {
+  font-size: 18px;
+  line-height: 1.25;
+  min-height: 2.5em;
+  margin-bottom: 10px;
 }
-/* Градиентная полоса у левого края — тот же приём, что у цитаты .positioning.
-   Вырастает снизу вверх, когда карточка попадает в вьюпорт: класс is-visible
-   вешает наблюдатель в main.js, отдельный скрипт не нужен. */
-.fact-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 18px;
-  bottom: 18px;
-  width: 3px;
-  border-radius: 3px;
-  background: var(--gradient);
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform 0.7s var(--ease);
-}
-.fact-card.is-visible::before { transform: scaleY(1); }
-@media (prefers-reduced-motion: reduce) {
-  .fact-card::before { transform: scaleY(1); transition: none; }
-}
-.fact-num {
-  font-family: var(--font-heading);
-  font-size: clamp(28px, 4vw, 38px);
-  font-weight: 700;
-  line-height: 1.15;
+/* «Что получаете» — основной вес карточки */
+.service-what {
   color: var(--text);
-}
-/* Предлог «от» — тем же начертанием и кеглем, что и подпись под числом */
-.fact-from {
-  font-family: var(--font-body);
   font-size: 15px;
-  font-weight: 400;
-  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
 }
-.fact-label { color: var(--text-muted); font-size: 15px; }
-.fact-mark { color: var(--accent-pink); }
-.facts-note { color: var(--text-muted); font-size: 13.5px; }
+/* «Когда это нужно» — мельче и приглушённее, без разделительной линии:
+   в прежней версии обе строки весили одинаково и карточка читалась
+   как два равных абзаца, из-за чего блок выглядел перегруженным */
+/* Прижата к низу карточки: строки «когда это нужно» выравниваются
+   между соседями по нижнему краю независимо от длины строки выше */
+.service-when {
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+/* Строка-доказательство: помечена «искрой», тем же элементом, что и бейдж
+   в Hero — она отмечает важное */
+.service-proof {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--text);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+.service-proof .spark { --badge-size: 15px; --badge-halo-size: 34px; }
+
 
 /* ===== Works ===== */
-.works { padding: 40px 0 96px; border-top: 1px solid var(--border); }
+.works { padding: var(--section-gap) 0 8px; }
 
-.gallery {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  margin-bottom: 64px;
-}
-@media (min-width: 720px) {
-  .gallery { grid-template-columns: repeat(2, 1fr); }
-}
+.gallery { --gap: 28px; }
 .case-card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--bg-elevated);
 }
+/* Слайд не прижат к краям карточки, а лежит с отступом и скруглён со всех
+   четырёх сторон. Раньше он наследовал скругление карточки только сверху,
+   а снизу оставался прямым — углы не совпадали */
+/* Пропорция 16:9 задана самому слайду, а не обёртке с отступом.
+   Раньше aspect-ratio стоял на обёртке и считался вместе с её padding,
+   из-за чего контейнер получался 1.840 вместо 1.778 — картинка 16:9
+   вписывалась с чёрными полями по 8px по бокам, и её прямые углы
+   не совпадали со скруглением коробки */
 .case-preview {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #000;
+  padding: var(--slide-inset);
+  background: transparent;
 }
 .case-slides {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
 }
 .case-slides img {
   position: absolute;
@@ -527,8 +1339,8 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .case-expand {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: calc(var(--slide-inset) + 10px);
+  right: calc(var(--slide-inset) + 10px);
   z-index: 2;
   width: 32px;
   height: 32px;
@@ -572,14 +1384,14 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   opacity: 1;
 }
 .case-arrow:hover { background: rgba(13, 13, 13, 0.8); }
-.case-arrow-prev { left: 10px; }
-.case-arrow-next { right: 10px; }
+.case-arrow-prev { left: calc(var(--slide-inset) + 10px); }
+.case-arrow-next { right: calc(var(--slide-inset) + 10px); }
 @media (max-width: 720px) {
   .case-arrow { opacity: 1; }
 }
 .case-dots {
   position: absolute;
-  bottom: 12px;
+  bottom: calc(var(--slide-inset) + 12px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -601,114 +1413,489 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   background: #fff;
   transform: scale(1.35);
 }
-.case-caption { padding: 22px 24px 26px; }
-.case-caption h3 {
-  font-size: 18px;
-  margin-bottom: 8px;
+
+/* Область нажатия у мелких элементов управления. Внешний вид не меняется
+   ни на пиксель: псевдоэлемент прозрачный и вынут из потока, растёт только
+   зона, которую ловит палец. Точка была 7×7 = 49px² при рекомендованных
+   44×44; стрелки 34px и кнопка «развернуть» 32px тоже не дотягивали.
+   ⚠️ Ширина у точки ровно 14px — это шаг между точками (7px точка + 7px
+   зазор). Шире делать нельзя: зоны соседних точек начнут перекрываться,
+   и по краю будет срабатывать не та точка, по которой целились */
+.case-dot { position: relative; }
+.case-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 44px;
+  transform: translate(-50%, -50%);
 }
-.case-caption p {
+.case-arrow::after,
+.case-expand::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+/* Строка под превью — как в референсе: крупный номер, название, стрелка.
+   Стрелка не декоративная: она раскрывает описание кейса */
+.case-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+}
+/* 20px вместо 26px (решение 22 августа 2026): номер кейса — навигация,
+   а не заголовок, и в прежнем кегле он спорил с названием работы рядом.
+   min-width уменьшен вместе с кеглем, пропорция сохранена */
+.case-num {
+  flex: none;
+  min-width: 32px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text);
+}
+.case-head h3 {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 1.25;
+  /* две строки зарезервированы, чтобы карточки с коротким и длинным
+     названием оставались одной высоты без растягивания сетки */
+  min-height: 2.5em;
+  display: flex;
+  align-items: center;
+}
+/* Кружок с тонкой обводкой и акцентной иконкой — тот же приём, что
+   у шагов процесса */
+/* Кнопка раскрытия молчит, пока на неё не навели (решение 22 августа 2026).
+   Раньше стрелка была розовой всегда, и в ряду с цветными превью слайдов
+   эти кружки перетягивали внимание на себя: самое яркое пятно в блоке
+   оказывалось у служебной кнопки, а не у работы. Цвет теперь появляется
+   только при наведении и по фокусу с клавиатуры */
+.case-toggle {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   color: var(--text-muted);
-  font-size: 14.5px;
+  border: 1px solid var(--border);
+  background: none;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
 }
+.case-toggle svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s var(--ease);
+}
+.case-toggle:hover,
+.case-toggle:focus-visible {
+  color: var(--accent-pink);
+  border-color: rgba(217, 31, 191, 0.55);
+}
+/* У раскрытой карточки стрелка остаётся акцентной — это индикатор состояния,
+   а не украшение: видно, какой именно кейс сейчас развёрнут */
+.case-card.is-open .case-toggle {
+  color: var(--accent-pink);
+  border-color: rgba(217, 31, 191, 0.45);
+}
+.case-card.is-open .case-toggle svg { transform: rotate(180deg); }
+
+/* «Результат» виден всегда, а не под раскрытием: превью слайда уже показывает,
+   что это за проект, и единственное, чего по картинке не видно, — чем дело
+   кончилось. Он же работает крючком к раскрытию. Подпись обязательна: без неё
+   строка читается как начатая с середины мысли.
+   Оформление намеренно повторяет dt/dd внутри .case-facts — раскрытое описание
+   должно продолжать эту строку, а не выглядеть вторым, отдельным списком */
+.case-result {
+  padding: 0 22px 20px;
+}
+/* Подпись «Результат» оформлена как все служебные подписи в карточке.
+   ⚠️ Что пробовали и отклонили 22 августа 2026: розовый текст — спорил
+   с цветными превью слайдов; градиентное подчёркивание по слову — заказчице
+   не понравилось. Обратно не возвращать без отдельного решения */
+.case-result-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.case-result p {
+  margin: 0;
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.5;
+  /* Две строки зарезервированы — тот же приём, что у .case-head h3. У кейса
+     про вебинар результат переносится на вторую строку, и без запаса соседние
+     карточки в ленте оказывались ниже на 21px (замерено 22 августа 2026) */
+  min-height: 3em;
+}
+
+/* Раскрытие описания. Анимируется grid-template-rows от 0fr к 1fr —
+   так высота едет плавно, но её не нужно знать заранее и задавать max-height */
+.case-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease);
+}
+.case-card.is-open .case-body { grid-template-rows: 1fr; }
+.case-body > div { overflow: hidden; }
+
+.case-facts {
+  display: grid;
+  gap: 10px 16px;
+  padding: 0 22px 22px;
+  margin: 0;
+}
+@media (min-width: 480px) {
+  .case-facts {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+.case-facts dt {
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.case-facts dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-body { transition: none; }
+  .case-toggle svg { transition: none; }
+}
+
+.reviews { padding: var(--section-gap) 0 8px; }
 
 .reviews-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 0;
 }
 @media (min-width: 720px) {
   .reviews-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Коробок у отзывов нет (решение 22 августа 2026, вариант «Б»). Заливка,
+   рамка и скругление сняты, колонки разделяет линия --rule-fade-v — тот же
+   разделитель, что и по всему сайту. Причина: на странице шестнадцать
+   скруглённых карточек подряд, и ещё три с отзывами делали блок
+   неотличимым от услуг и кейсов. Кегль цитаты поднят с 14,5 до 16,5:
+   без коробки отзыв держится только текстом.
+   Растяжка сетки по-прежнему выравнивает колонки по высоте сама —
+   тексты статичные, подпирать высоту скриптом не нужно.
+
+   База — телефон: колонка одна, линия горизонтальная. Трёхколоночный
+   вариант с вертикальной линией живёт в min-width. Порядок именно такой,
+   иначе .review-card:first-child перебивал бы мобильные поля по
+   специфичности и на узком экране оставались боковые отступы */
 .review-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 28px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  box-shadow: 0 20px 40px -28px rgba(0, 0, 0, 0.8);
+  position: relative;
+  padding: 0;
+  margin: 0;
 }
-.review-stars {
-  color: var(--accent-pink);
-  font-size: 17px;
-  letter-spacing: 3px;
+.review-card + .review-card {
+  margin-top: 22px;
+  padding-top: 22px;
+}
+.review-card + .review-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--rule-fade);
+}
+@media (min-width: 720px) {
+  .review-card { padding: 4px 28px 0; }
+  .review-card + .review-card { margin-top: 0; padding-top: 4px; }
+  .review-card:first-child { padding-left: 0; }
+  .review-card:last-child { padding-right: 0; }
+  .review-card + .review-card::before {
+    right: auto;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    height: auto;
+    background: var(--rule-fade-v);
+  }
+}
+/* Оценка — шкала, а не звёзды (решение 22 августа 2026). Пять звёзд читались
+   как значок маркетплейса и повторяли форму, которой на сайте больше нигде нет.
+   Градиент здесь допустим как исключение из правила «градиент = действие»:
+   полоса 120×3px даёт 360px² против 30 000px² у кнопки «Отправить заявку»,
+   спорить с ней по весу она не может */
+.reviews .rate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.reviews .rate-bar {
+  flex: 1 1 auto;
+  max-width: 120px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gradient);
+}
+.reviews .rate b {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
 }
 .review-text {
   color: var(--text);
-  font-size: 15px;
+  font-size: 16.5px;
   line-height: 1.65;
-  font-style: normal;
+  margin: 0;
 }
+/* Автор прижат к низу — строки авторов стоят на одной линии во всех карточках */
 .review-author {
   margin-top: auto;
-  padding-top: 6px;
+  padding-top: 18px;
   color: var(--text-muted);
   font-size: 12.5px;
-  text-transform: uppercase;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* ===== Contact ===== */
-.contact { padding: 40px 0 0; border-top: 1px solid var(--border); }
-.contact-inner {
+.contact { padding: var(--section-gap) 0 8px; }
+
+/* Одна панель на три колонки — по присланному референсу:
+   слева призыв, по центру контакты, справа форма */
+.contact-panel {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 56px;
-}
-@media (min-width: 880px) {
-  .contact-inner { grid-template-columns: 0.85fr 1.15fr; }
-}
-.contact-info h2 { font-size: clamp(28px, 4vw, 38px); margin-bottom: 24px; }
-.contact-lead { color: var(--text-muted); margin-bottom: 32px; max-width: 420px; }
-.contact-list { display: grid; gap: 20px; }
-.contact-list li { display: flex; align-items: flex-start; gap: 14px; }
-.contact-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  margin-top: 3px;
-  color: var(--accent-pink);
-}
-.contact-text { display: flex; flex-direction: column; gap: 6px; }
-.contact-label { color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
-.contact-list a { font-size: 17px; font-weight: 500; transition: color 0.2s var(--ease); margin-right: 16px; }
-.contact-list a:hover, .contact-list a:focus-visible { color: var(--accent-pink); }
-
-.lead-form {
-  background: var(--bg-elevated);
+  gap: 32px;
+  padding: 28px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px;
-  display: grid;
-  gap: 20px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
 }
-.form-row { display: grid; gap: 8px; }
-.form-row label { font-size: 14px; color: var(--text-muted); }
+@media (min-width: 900px) {
+  /* Колонки тянутся на общую высоту. Призыв прижат к верху, контакты
+     распределены по высоте, кнопка формы прижата к низу — тогда её нижний
+     край сходится с последней строкой контактов */
+  .contact-panel {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 48px;
+    padding: 0;
+    align-items: stretch;
+  }
+  /* Обе колонки тянутся на высоту ряда и распределяют содержимое по ней:
+     слева три контакта, справа два ряда формы — без space-between низ
+     колонок расходился на десятки пикселей */
+  .contact-list { align-content: space-between; }
+  .lead-form { align-content: space-between; }
+}
+
+/* --- Вариант без заливки: блок в общей стилистике страницы, колонки
+   разделены вертикальными линиями, как в полосе «Инструменты» --- */
+[data-contact-variant="plain"] .contact-panel {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+@media (min-width: 900px) {
+  [data-contact-variant="plain"] .contact-panel { gap: 44px; }
+  /* Поля на прозрачном фоне нуждаются в собственной подложке */
+  [data-contact-variant="plain"] .form-row input,
+  [data-contact-variant="plain"] .form-row select,
+  [data-contact-variant="plain"] .form-row textarea {
+    background: var(--bg-elevated);
+  }
+}
+
+.contact-cta-head {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(20px, 2.4vw, 24px);
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+/* Искра в конце линии заголовка — финальная точка раздела.
+   order: 3 ставит её после псевдоэлемента с линией (order: 2) */
+.spark-end {
+  --badge-size: 18px;
+  --badge-halo-size: 40px;
+  order: 3;
+  flex: none;
+  margin-left: 4px;
+}
+
+.contact-lead {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 28px;
+}
+
+/* --- Контакты: круглая иконка, лейбл сверху, значение снизу --- */
+/* Строки разделены тонкой линией — как в основном референсе.
+   Линия та же, что между цифрами в Hero и в парах блока про нейросеть */
+.contact-list { display: grid; }
+.contact-list li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+}
+.contact-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background-image: var(--rule-fade);
+}
+.contact-list li:first-child::before { display: none; }
+.contact-list li:first-child { padding-top: 0; }
+/* Без нижнего отступа у последней строки её текст становится нижним краем
+   колонки — тогда низ кнопки формы сходится с концом «WhatsApp Telegram»,
+   а не с краем невидимой коробки строки */
+.contact-list li:last-child { padding-bottom: 0; }
+.contact-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--accent-pink);
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--bg-elevated), var(--bg-elevated)), var(--outline-grad);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.contact-icon svg { width: 18px; height: 18px; }
+.contact-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.contact-label {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.contact-list a {
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: color 0.2s var(--ease);
+}
+.contact-list a:hover,
+.contact-list a:focus-visible { color: var(--accent-pink); }
+.contact-links { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+
+
+/* --- Форма: имя и контакт в строку, остальное во всю ширину --- */
+.lead-form { display: grid; gap: 14px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 560px) {
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-row-wide { grid-column: 1 / -1; }
+}
+.form-row { display: grid; gap: 7px; }
+.form-row label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
 .form-row input,
 .form-row select,
 .form-row textarea {
-  background: #0d0d0d;
+  width: 100%;
+  padding: 12px 14px;
+  /* 12px, а не 8px как у карточек: рядом с капсульной кнопкой поля на 6px
+     читались как элементы из другого набора. 12px сокращает разрыв форм,
+     не превращая поле в капсулу (решение 22 августа 2026) */
+  border-radius: 12px;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 13px 16px;
+  background: rgba(0, 0, 0, 0.35);
   color: var(--text);
-  font-family: var(--font-body);
-  font-size: 15px;
+  font: inherit;
+  font-size: 14.5px;
   transition: border-color 0.2s var(--ease);
 }
+.form-row input::placeholder,
+.form-row textarea::placeholder { color: rgba(185, 173, 196, 0.55); }
 .form-row input:focus,
 .form-row select:focus,
 .form-row textarea:focus {
   outline: none;
   border-color: var(--accent-purple);
 }
-.form-row textarea { resize: vertical; min-height: 96px; }
-.lead-form .btn { margin-top: 4px; width: 100%; }
+.form-row textarea { resize: vertical; min-height: 84px; }
+.form-submit {
+  width: 100%;
+  gap: 10px;
+  margin-top: 2px;
+}
 
+/* Кнопка встаёт в один ряд с «Типом проекта»: форма становится короче
+   на строку и перестаёт быть длиннее колонки контактов слева.
+   .form-grid распускается через display: contents — кнопка лежит рядом
+   с ней в разметке, а не внутри, и иначе в одну сетку они не попадают */
+@media (min-width: 640px) {
+  .form-grid { display: contents; }
+  .lead-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 14px;
+    align-items: end;
+  }
+  .form-row-wide { grid-column: 1; }
+  .form-submit {
+    grid-column: 2;
+    width: 100%;
+    margin-top: 0;
+    /* высота ровно как у селекта слева — они стоят в одной строке */
+    height: 47px;
+    /* Текст не переносится: в колонке ~264px «Отправить заявку» кеглем 15
+       не помещалось и ломалось на две строки. Кегль и поля ужаты ровно
+       настолько, чтобы строка влезала целиком */
+    white-space: nowrap;
+    font-size: 14px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .form-status { grid-column: 1 / -1; }
+}
+
+/* Пока сообщения нет, строка статуса не занимает места — иначе она вместе
+   с зазором формы поднимала кнопку на 24px над нижним краем колонки */
+.form-status:empty { display: none; }
 .form-status {
-  font-size: 14.5px;
-  min-height: 20px;
+  font-size: 14px;
+  min-height: 0;
   opacity: 0;
   transition: opacity 0.3s var(--ease);
 }
@@ -754,7 +1941,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .lightbox-content img {
   max-width: 100%;
   max-height: 86vh;
-  border-radius: 12px;
+  border-radius: 6px;
   object-fit: contain;
 }
 .lightbox-close {
@@ -787,4 +1974,183 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .lightbox-prev { left: 8px; }
   .lightbox-next { right: 8px; }
   .lightbox-close { top: 8px; right: 8px; }
+}
+
+/* Раскладка блока про нейросеть: пары слева, вывод справа, привязанный
+   ко всем четырём сразу — вертикальная линия работает как скобка,
+   круглая стрелка на её середине читается как «следовательно» */
+@media (min-width: 960px) {
+  [data-ai-layout="bracket"] .ai-body {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 0;
+    align-items: center;
+  }
+  /* align-self: stretch обязателен. У .ai-body стоит align-items: center,
+     и колонка вывода была ростом со свой текст, а полоса слева задана
+     от её краёв (top: 0; bottom: 0) — поэтому линия выходила заметно
+     короче списка пар слева. Со stretch колонка тянется на высоту ряда,
+     и полоса совпадает со списком по длине */
+  [data-ai-layout="bracket"] .ai-conclusion {
+    position: relative;
+    align-self: stretch;
+    justify-content: center;
+    padding: 8px 0 8px 44px;
+    margin-left: 44px;
+  }
+  [data-ai-layout="bracket"] .ai-conclusion::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12%;
+    bottom: 12%;
+    width: 1px;
+    background-image: var(--rule-fade-v);
+  }
+  [data-ai-layout="bracket"] .ai-conclusion::after {
+    content: "→";
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--accent-pink);
+    font-size: 17px;
+    line-height: 1;
+  }
+}
+
+/* Вывод помечен акцентной полосой слева — приём из design-system.md,
+   которым на сайте отмечались цитата и блоки с ценой. Заливка здесь
+   запрещена: единственная залитая панель на сайте — цитата-позиционирование */
+@media (min-width: 960px) {
+  [data-ai-concl="bar"] .ai-conclusion::before {
+    width: 3px;
+    border-radius: 3px;
+    background-image: var(--gradient);
+    top: 0;
+    bottom: 0;
+  }
+  [data-ai-concl="bar"] .ai-conclusion::after { display: none; }
+  [data-ai-concl="bar"] .ai-conclusion { padding-left: 28px; margin-left: 52px; }
+}
+
+/* ===== Услуги: список плашками =====
+   Карусель здесь отключена — все шесть услуг видны сразу. Строка вместо
+   карточки: иконка слева, заголовок и обе строки текста справа */
+[data-services-variant="cards"] .carousel-track {
+  grid-auto-flow: row;
+  grid-auto-columns: auto;
+  overflow: visible;
+  scroll-snap-type: none;
+  padding: 0;
+}
+[data-services-variant="cards"] .carousel-nav,
+[data-services-variant="cards"] .carousel-dots { display: none; }
+
+@media (min-width: 960px) {
+  [data-services-variant="cards"] .carousel-track {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  [data-services-variant="cards"] .service-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 16px;
+    padding: 18px 20px;
+    /* start обязателен: у сетки строки по умолчанию растягиваются, и лишняя
+       высота ряда распределялась между заголовком и строками текста —
+       в карточках с коротким текстом зазоры разъезжались */
+    align-content: start;
+  }
+  /* Иконка выравнивается по верху заглавной буквы заголовка: заголовок
+     16px с интерлиньяжем 1.25 даёт полуинтерлиньяж 2px, плюс расстояние
+     от верха строки до верха капители */
+  [data-services-variant="cards"] .service-icon {
+    grid-row: 1 / span 3;
+    width: 26px;
+    height: 26px;
+    margin: var(--icon-cap-offset, 1px) 0 0;
+    color: var(--text);
+  }
+  [data-services-variant="cards"] .service-card h3 { font-size: 16px; min-height: 0; margin-bottom: 4px; }
+  /* Две строки зарезервированы: у «Понятных цифр» строка «что получаете»
+     переносится, и без запаса строка «когда это нужно» в соседней карточке
+     того же ряда вставала на 21px выше. Приём тот же, что у .case-result p
+     и у .case-head h3 */
+  [data-services-variant="cards"] .service-what {
+    font-size: 14px;
+    margin-bottom: 3px;
+    min-height: 3em;
+  }
+  [data-services-variant="cards"] .service-when { font-size: 12.5px; padding-top: 0; margin-top: 0; }
+  [data-services-variant="cards"] .service-proof { padding-top: 8px; }
+}
+
+/* --- Вариант «все кейсы сеткой», без карусели --- */
+[data-works-variant="grid"] .carousel-track {
+  grid-auto-flow: row;
+  grid-auto-columns: auto;
+  overflow: visible;
+  scroll-snap-type: none;
+  padding: 0;
+}
+[data-works-variant="grid"] .carousel-nav,
+[data-works-variant="grid"] .carousel-dots { display: none; }
+@media (min-width: 720px) {
+  [data-works-variant="grid"] .carousel-track {
+    grid-template-columns: repeat(2, 1fr);
+    /* при сетке карточки снова растягиваются по ряду, но раскрытие описания
+       по-прежнему не должно тянуть соседа — поэтому start */
+    align-items: start;
+  }
+}
+
+/* ===== Печать / экспорт в PDF =====
+   Без этих правил PDF выходит нечитаемым: браузер по умолчанию не печатает
+   фоны (тёмная страница станет белой с белым текстом), блоки со скролл-
+   анимацией останутся прозрачными, а карусели покажут только первую страницу */
+@media print {
+  html, body {
+    background: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page-glow { display: none; }
+
+  /* Скролл-анимации в печати не срабатывают — показываем всё сразу */
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Карусели разворачиваются в сетку, чтобы в PDF попали все карточки */
+  .carousel-track {
+    grid-auto-flow: row !important;
+    grid-auto-columns: auto !important;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    padding: 0 !important;
+  }
+  .services .carousel-track { grid-template-columns: repeat(3, 1fr) !important; }
+  .works .carousel-track { grid-template-columns: repeat(2, 1fr) !important; }
+  .carousel-nav,
+  .carousel-dots { display: none !important; }
+
+  /* Управление слайдером и кнопки раскрытия в печати не нужны */
+  .case-arrow,
+  .case-expand,
+  .case-dots { display: none !important; }
+
+  /* Описания кейсов раскрыты — иначе в PDF попадут одни заголовки */
+  .case-body { grid-template-rows: 1fr !important; }
+
+  .case-card,
+  .service-card,
+  .review-card { break-inside: avoid; }
 }
