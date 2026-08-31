@@ -398,6 +398,19 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   height: var(--badge-size);
 }
 
+/* Свечение ромба в Hero ужато по просьбе заказчицы 30 августа 2026: при
+   ореоле 50px пятно доставало до строки текста рядом и читалось как засветка
+   фона, а не как искра. Размер самого ромба не тронут — уменьшены только
+   радиусы ореола и дальних теней */
+.hero-badge-icon {
+  --badge-size: 18px;
+  --badge-halo-size: 27px;
+  --badge-glow:
+    drop-shadow(0 0 calc(var(--badge-size) * 0.1) rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 calc(var(--badge-size) * 0.24) rgba(217, 31, 191, 0.9))
+    drop-shadow(0 0 calc(var(--badge-size) * 0.5) rgba(217, 31, 191, 0.45));
+}
+
 @keyframes badge-pulse {
   0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
   50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.16); }
@@ -471,14 +484,24 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .hero-badge {
     grid-column: 1;
     order: 1;
-    align-self: start;
-    /* Опускаем бейдж относительно верха колонки. Отступ считается от высоты
-       надписи, поэтому на узких экранах, где слово ниже, сдвиг тоже меньше */
-    margin-top: calc(var(--word-h, 90px) * 0.22);
+    /* Бейдж прижат к низу своей ячейки, то есть стоит вплотную над именем.
+       Раньше он висел у верха и до имени оставалось 93px пустоты, потому что
+       высоту строки задаёт фигура справа, а не текст. Сверху пустоты не видно:
+       там надпись DESIGN */
+    align-self: end;
+    margin-top: 0;
+    margin-bottom: 16px;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
     font-size: 13px;
+  }
+  /* Ромб уменьшен вместе с подписью: на узких экранах кегель падает
+     с 14.5px до 13px, а ромб оставался прежним и перевешивал две
+     короткие строки рядом. Ореол ужат пропорционально */
+  .hero-badge-icon {
+    --badge-size: 17px;
+    --badge-halo-size: 25px;
   }
   /* width: 100% обязателен — иначе фигура шире своей колонки и наезжает
      на бейдж. Ширину на мобильном задаёт колонка, а не --photo-w-mobile */
@@ -524,7 +547,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     column-gap: 26px;
     row-gap: 14px;
   }
-  .hero-badge { grid-column: 1; grid-row: 1; align-self: start; margin-top: calc(var(--word-h, 90px) * 0.22); }
+  .hero-badge { grid-column: 1; grid-row: 1; align-self: end; margin-top: 0; margin-bottom: 16px; }
   .hero-name  { grid-column: 1; grid-row: 2; align-self: end; }
   .hero-sub   { grid-column: 1; grid-row: 3; align-self: end; margin-bottom: 0; }
   /* Фигура резиновая, а не фиксированные 270px: у левой колонки должно
@@ -617,12 +640,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      30 августа 2026. Низ картинки при этом на 177px от верха раздела,
      колонка вывода начинается на 189px: запас 12px */
   top: -21px;
-  /* Потолок 150px не случайный. Картинка вертикальная, 520×595, то есть
-     высота = ширина × 1.144. Колонка вывода начинается на 189px от верха
-     раздела, значит ширина не должна превышать ~165px. Прежняя картинка была
-     горизонтальной (× 0.917) и допускала 190px — при замене на вертикальную
-     тот же размер дал бы 217px высоты и наезд на вывод */
-  width: clamp(100px, 12vw, 173px);
+  /* Потолок не случайный. Картинка вертикальная, 520×617, то есть
+     высота = ширина × 1.186. Колонка вывода начинается на 189px от верха
+     раздела, значит при подъёме на 21px высота картинки не должна превышать
+     ~200px, отсюда 168px по ширине. Прежняя картинка была чуть менее
+     вытянутой (× 1.144) и допускала 173px */
+  width: clamp(100px, 12vw, 168px);
   height: auto;
   opacity: 0.9;
   pointer-events: none;
@@ -1283,7 +1306,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-size: 13.5px;
   line-height: 1.4;
 }
-.service-proof .spark { --badge-size: 15px; --badge-halo-size: 34px; }
+/* Ореол ужат с 34 до 24px: после перестановки строк под искрой оказалась
+   строка «когда», и свечение заходило на неё фиолетовым пятном */
+.service-proof .spark { --badge-size: 15px; --badge-halo-size: 24px; }
 
 
 /* ===== Works ===== */
@@ -1389,48 +1414,14 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 @media (max-width: 720px) {
   .case-arrow { opacity: 1; }
 }
-.case-dots {
-  position: absolute;
-  bottom: calc(var(--slide-inset) + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 7px;
-  padding: 6px 9px;
-  border-radius: 100px;
-  background: rgba(13, 13, 13, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 2;
-}
-.case-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
-}
-.case-dot.is-active {
-  background: #fff;
-  transform: scale(1.35);
-}
+/* Дот-навигация в превью удалена 31 августа 2026 по просьбе заказчицы:
+   точки лежали поверх слайда и мешали смотреть саму работу. Слайды
+   переключают стрелки ‹ ›, весь набор открывается в лайтбоксе */
 
 /* Область нажатия у мелких элементов управления. Внешний вид не меняется
    ни на пиксель: псевдоэлемент прозрачный и вынут из потока, растёт только
-   зона, которую ловит палец. Точка была 7×7 = 49px² при рекомендованных
-   44×44; стрелки 34px и кнопка «развернуть» 32px тоже не дотягивали.
-   ⚠️ Ширина у точки ровно 14px — это шаг между точками (7px точка + 7px
-   зазор). Шире делать нельзя: зоны соседних точек начнут перекрываться,
-   и по краю будет срабатывать не та точка, по которой целились */
-.case-dot { position: relative; }
-.case-dot::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 14px;
-  height: 44px;
-  transform: translate(-50%, -50%);
-}
+   зона, которую ловит палец. Стрелки 34px и кнопка «развернуть» 32px
+   не дотягивают до рекомендованных 44×44 */
 .case-arrow::after,
 .case-expand::after {
   content: "";
@@ -1658,6 +1649,20 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border-radius: 2px;
   background: var(--gradient);
 }
+/* Полоса вычерчивается слева направо, когда карточка отзыва появляется
+   при скролле. Рисуем через scaleX от левого края, а не через width:
+   ширина полосы задана флексом, и анимировать её пришлось бы вместе
+   с раскладкой строки. Задержка 120мс — чтобы полоса пошла уже после того,
+   как карточка проявилась, иначе движение сливается с fade-up */
+.reviews .rate-bar {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.7s var(--ease) 0.12s;
+}
+.review-card.is-visible .rate-bar { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .reviews .rate-bar { transform: none; transition: none; }
+}
 .reviews .rate b {
   font-family: var(--font-heading);
   font-weight: 700;
@@ -1850,7 +1855,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .form-row select:focus,
 .form-row textarea:focus {
   outline: none;
-  border-color: var(--accent-purple);
+  /* Фокус-обводка magenta, а не фиолетовая: решение заказчицы 31 августа 2026.
+     Фиолетовый читался как посторонний цвет — на сайте он встречается только
+     в градиенте, отдельным цветом нигде не выступает */
+  border-color: var(--accent-pink);
 }
 .form-row textarea { resize: vertical; min-height: 84px; }
 .form-submit {
@@ -2024,6 +2032,75 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
 }
 
+/* Услуги ниже 960px: карточки идут одна под другой, выравнивать по ряду
+   нечего — а базовые правила рассчитаны на ряд и резервируют вторую строку
+   заголовка (`min-height: 2.5em`) плюс держат «когда» прижатой к низу.
+   На узком экране это превращалось в 34px пустоты под однострочным
+   заголовком и такой же провал перед «когда» */
+@media (max-width: 959px) {
+  [data-services-variant="cards"] .service-card h3 {
+    min-height: 0;
+    margin-bottom: 6px;
+  }
+  [data-services-variant="cards"] .service-what { margin-bottom: 6px; }
+  [data-services-variant="cards"] .service-when { margin-top: 0; padding-top: 8px; }
+  /* margin-bottom как у «что получаете»: в шестой карточке доказательство
+     стоит на его месте, и без него строка «когда» шла к нему вплотную,
+     тогда как у соседей между ними 14px */
+  [data-services-variant="cards"] .service-proof { margin-top: 0; padding-top: 0; margin-bottom: 6px; }
+  [data-services-variant="cards"] .service-icon { margin-bottom: 12px; }
+}
+
+/* Планшет: пара «ожидание → реальность» ставится в строку, как на десктопе.
+   Полностью десктопную раскладку раздела на этих ширинах собрать нельзя —
+   пары слева и вывод справа требуют 960px, — но сама пара в строку
+   укладывается уже с 640px, и блок перестаёт отличаться от десктопного
+   всем, кроме числа колонок */
+@media (min-width: 600px) and (max-width: 959px) {
+  .ai-pair {
+    grid-template-columns: auto minmax(0, 0.85fr) auto minmax(0, 1.25fr);
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .ai-num {
+    grid-column: auto;
+    grid-row: auto;
+    min-width: 34px;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .ai-expect { grid-column: auto; grid-row: auto; font-size: 13.5px; }
+  .ai-reality { grid-column: auto; grid-row: auto; }
+  .ai-arrow {
+    grid-column: auto;
+    grid-row: auto;
+    width: auto;
+    justify-self: auto;
+  }
+  .ai-arrow svg { width: 17px; height: 17px; transform: none; }
+}
+
+/* Та же акцентная полоса у вывода, что и на десктопе, только колонка идёт
+   во всю ширину. Без неё на узком экране вывод читался как обычный абзац
+   и терял связь с четырьмя парами выше */
+@media (max-width: 959px) {
+  [data-ai-concl="bar"] .ai-conclusion {
+    position: relative;
+    padding-left: 22px;
+  }
+  [data-ai-concl="bar"] .ai-conclusion::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 18px;
+    width: 3px;
+    border-radius: 3px;
+    background-image: var(--gradient);
+  }
+}
+
 /* Вывод помечен акцентной полосой слева — приём из design-system.md,
    которым на сайте отмечались цитата и блоки с ценой. Заливка здесь
    запрещена: единственная залитая панель на сайте — цитата-позиционирование */
@@ -2089,6 +2166,28 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
   [data-services-variant="cards"] .service-when { font-size: 12.5px; padding-top: 0; margin-top: 0; }
   [data-services-variant="cards"] .service-proof { padding-top: 8px; }
+  /* Карточка «Сайты-визитки»: строки «что получаете» у неё нет, её место
+     занимает строка-доказательство с искрой. Чтобы обе карточки нижнего
+     ряда читались по одной сетке, доказательство получает метрики
+     «что получаете» один в один: тот же кегль, интерлиньяж, нижний отступ
+     и зарезервированные 3em — тогда строки «когда» в обеих карточках
+     встают на один уровень. Выравнивание по верху обязательно: с центром
+     (базовое правило .service-proof) текст внутри зарезервированных 3em
+     уезжал на середину и опускался ниже строки соседа.
+     ⚠️ Порядок строк здесь обратный остальным карточкам: сначала
+     доказательство с искрой, под ним «когда». Решение заказчицы
+     31 августа 2026 */
+  [data-services-variant="cards"] .service-card h3 + .service-proof {
+    align-items: flex-start;
+    padding-top: 0;
+    margin-bottom: 3px;
+    min-height: 3em;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  /* Искра centered на первой строке: (21px строки − 15px ромба) / 2 */
+  [data-services-variant="cards"] .service-card h3 + .service-proof .spark { margin-top: 3px; }
+  [data-services-variant="cards"] .service-proof + .service-when { padding-top: 0; margin-top: 0; }
 }
 
 /* --- Вариант «все кейсы сеткой», без карусели --- */
@@ -2144,8 +2243,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
   /* Управление слайдером и кнопки раскрытия в печати не нужны */
   .case-arrow,
-  .case-expand,
-  .case-dots { display: none !important; }
+  .case-expand { display: none !important; }
 
   /* Описания кейсов раскрыты — иначе в PDF попадут одни заголовки */
   .case-body { grid-template-rows: 1fr !important; }

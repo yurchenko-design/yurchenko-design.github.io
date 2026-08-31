@@ -277,28 +277,16 @@
     showSlide();
   };
 
-  /* Per-card mini-carousel: dots switch the active slide, image/expand opens the full lightbox */
+  /* Per-card mini-carousel: стрелки переключают слайд, клик по превью открывает лайтбокс */
   document.querySelectorAll('.case-card').forEach((card) => {
     const caseKey = card.getAttribute('data-case');
     const slides = card.querySelectorAll('.case-slides img');
-    const dots = card.querySelectorAll('.case-dot');
     let activeIndex = 0;
 
     const setActive = (index) => {
       activeIndex = index;
       slides.forEach((img, i) => img.classList.toggle('is-active', i === index));
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('is-active', i === index);
-        dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
-      });
     };
-
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setActive(i);
-      });
-    });
 
     const arrowPrev = card.querySelector('[data-slide-prev]');
     const arrowNext = card.querySelector('[data-slide-next]');
@@ -316,8 +304,7 @@
     }
 
     const preview = card.querySelector('.case-preview');
-    preview.addEventListener('click', (e) => {
-      if (e.target.closest('.case-dot')) return;
+    preview.addEventListener('click', () => {
       openLightbox(caseKey, activeIndex);
     });
   });
