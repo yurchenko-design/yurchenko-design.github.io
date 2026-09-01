@@ -154,7 +154,10 @@ h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
+  /* 12px по вертикали вместо 16: кнопка казалась заказчице слишком объёмной.
+     Горизонтальный отступ и кегль не тронуты — сужать капсулу не нужно,
+     она стала ниже на 7px (49 → 42), выбрано на превью 1 сентября 2026 */
+  padding: 12px 32px;
   border-radius: 100px;
   font-family: var(--font-heading);
   font-size: 14px;
@@ -1694,7 +1697,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   gap: 32px;
   padding: 28px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--bg-elevated);
 }
 @media (min-width: 900px) {
@@ -1839,10 +1842,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .form-row textarea {
   width: 100%;
   padding: 12px 14px;
-  /* 12px, а не 8px как у карточек: рядом с капсульной кнопкой поля на 6px
-     читались как элементы из другого набора. 12px сокращает разрыв форм,
-     не превращая поле в капсулу (решение 22 августа 2026) */
-  border-radius: 12px;
+  /* Радиус общий для всех блоков сайта (--radius). 22 августа 2026 полям
+     ставили 12px, чтобы сократить разрыв с капсульной кнопкой, — 1 сентября
+     заказчица решила иначе: поле не должно отличаться от карточек и панелей,
+     капсульными на сайте остаются только кнопки и теги */
+  border-radius: var(--radius);
   border: 1px solid transparent;
   background-image: linear-gradient(var(--field-bg), var(--field-bg)), var(--outline-grad);
   background-origin: border-box;
