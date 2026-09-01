@@ -153,7 +153,7 @@ h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.
   padding: 16px 32px;
   border-radius: 100px;
   font-family: var(--font-heading);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), opacity 0.25s var(--ease);
 }
@@ -317,7 +317,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .hero-sub {
   color: var(--text-muted);
-  font-size: 16.5px;
+  font-size: 16px;
   line-height: 1.6;
   max-width: 380px;
   margin-bottom: 24px;
@@ -335,7 +335,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border: 1px solid transparent;
   border-radius: 100px;
   padding: 7px 16px;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--text);
   background-image: linear-gradient(var(--pill-bg), var(--pill-bg)), var(--outline-grad);
   background-origin: border-box;
@@ -360,7 +360,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.35;
   color: var(--text);
 }
@@ -455,12 +455,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .hero-stat-from {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 .hero-stat-label {
   color: var(--text-muted);
-  font-size: 13.5px;
+  font-size: 12px;
   line-height: 1.3;
   text-align: right;
 }
@@ -494,7 +494,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    font-size: 13px;
+    font-size: 12px;
   }
   /* Ромб уменьшен вместе с подписью: на узких экранах кегель падает
      с 14.5px до 13px, а ромб оставался прежним и перевешивал две
@@ -665,7 +665,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 .ai-lead {
   max-width: 760px;
-  font-size: clamp(16px, 1.5vw, 18px);
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text);
   margin-bottom: 28px;
@@ -704,7 +704,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   min-width: 32px;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 19px;
+  font-size: 20px;
   line-height: 1.35;
   background: var(--num-fill);
   -webkit-background-clip: text;
@@ -738,12 +738,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 .ai-expect {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.45;
 }
 .ai-reality {
   color: var(--text);
-  font-size: 15.5px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -770,7 +770,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 /* Без заливки: единственная залитая панель на сайте — цитата-позиционирование.
    Две градиентные панели в 344px друг от друга гасили одна другую */
 .ai-closing {
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--text);
 }
@@ -784,7 +784,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      и при шаге 12px текст заходил в свечение */
   gap: 22px;
   color: var(--text);
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.5;
 }
 .ai-final .spark { --badge-size: 20px; --badge-halo-size: 46px; }
@@ -817,10 +817,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
        заливается по её размеру — хвост цифры оставался без заливки
        и выглядел обрезанным */
     min-width: 40px;
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1;
   }
-  .ai-expect { grid-column: auto; grid-row: auto; font-size: 14.5px; }
+  .ai-expect { grid-column: auto; grid-row: auto; }
   .ai-reality { grid-column: auto; grid-row: auto; }
   .ai-arrow {
     grid-column: auto;
@@ -879,7 +879,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   min-width: 28px;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
   background: var(--num-fill);
   -webkit-background-clip: text;
@@ -907,7 +907,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .process-steps li:hover .step-icon { color: var(--text); }
 .step-name {
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.35;
 }
 
@@ -934,7 +934,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-family: var(--font-body);
   font-weight: 400;
   font-style: normal;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text);
 }
@@ -1032,7 +1032,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     background-clip: border-box;
     -webkit-text-fill-color: #ffffff;
     color: #ffffff;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1;
   }
   .step-name { grid-row: 2; }
@@ -1270,7 +1270,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    у всех карточек начинается на одной линии. Шестая карточка длиннее,
    но у неё нет текста под заголовком, так что ряд она не ломает */
 .service-card h3 {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.25;
   min-height: 2.5em;
   margin-bottom: 10px;
@@ -1278,7 +1278,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 /* «Что получаете» — основной вес карточки */
 .service-what {
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   margin-bottom: 8px;
 }
@@ -1291,7 +1291,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   margin-top: auto;
   padding-top: 10px;
   color: var(--text-muted);
-  font-size: 13.5px;
+  font-size: 12px;
   line-height: 1.45;
 }
 /* Строка-доказательство: помечена «искрой», тем же элементом, что и бейдж
@@ -1303,7 +1303,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   margin-top: auto;
   padding-top: 14px;
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 1.4;
 }
 /* Ореол ужат с 34 до 24px: после перестановки строк под искрой оказалась
@@ -1455,7 +1455,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-head h3 {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.25;
   /* две строки зарезервированы, чтобы карточки с коротким и длинным
      названием оставались одной высоты без растягивания сетки */
@@ -1524,7 +1524,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-result p {
   margin: 0;
   color: var(--text);
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.5;
   /* Две строки зарезервированы — тот же приём, что у .case-head h3. У кейса
      про вебинар результат переносится на вторую строку, и без запаса соседние
@@ -1564,7 +1564,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-facts dd {
   margin: 0;
   color: var(--text);
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -1666,12 +1666,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .reviews .rate b {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
 }
 .review-text {
   color: var(--text);
-  font-size: 16.5px;
+  font-size: 16px;
   line-height: 1.65;
   margin: 0;
 }
@@ -1680,7 +1680,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   margin-top: auto;
   padding-top: 18px;
   color: var(--text-muted);
-  font-size: 12.5px;
+  font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1753,7 +1753,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 .contact-lead {
   color: var(--text-muted);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   max-width: 560px;
   margin-bottom: 28px;
@@ -1802,12 +1802,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .contact-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .contact-label {
   color: var(--text-muted);
-  font-size: 11.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 .contact-list a {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
   transition: color 0.2s var(--ease);
 }
@@ -1846,7 +1846,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   background: rgba(0, 0, 0, 0.35);
   color: var(--text);
   font: inherit;
-  font-size: 14.5px;
+  font-size: 14px;
   transition: border-color 0.2s var(--ease);
 }
 .form-row input::placeholder,
@@ -1916,7 +1916,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border-top: 1px solid var(--border);
   padding: 28px 0;
   color: var(--text-muted);
-  font-size: 13.5px;
+  font-size: 12px;
 }
 
 /* ===== Lightbox ===== */
@@ -2070,7 +2070,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     font-size: 20px;
     line-height: 1;
   }
-  .ai-expect { grid-column: auto; grid-row: auto; font-size: 13.5px; }
+  .ai-expect { grid-column: auto; grid-row: auto; }
   .ai-reality { grid-column: auto; grid-row: auto; }
   .ai-arrow {
     grid-column: auto;
@@ -2154,17 +2154,16 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     margin: var(--icon-cap-offset, 1px) 0 0;
     color: var(--text);
   }
-  [data-services-variant="cards"] .service-card h3 { font-size: 16px; min-height: 0; margin-bottom: 4px; }
+  [data-services-variant="cards"] .service-card h3 { min-height: 0; margin-bottom: 4px; }
   /* Две строки зарезервированы: у «Понятных цифр» строка «что получаете»
      переносится, и без запаса строка «когда это нужно» в соседней карточке
      того же ряда вставала на 21px выше. Приём тот же, что у .case-result p
      и у .case-head h3 */
   [data-services-variant="cards"] .service-what {
-    font-size: 14px;
     margin-bottom: 3px;
     min-height: 3em;
   }
-  [data-services-variant="cards"] .service-when { font-size: 12.5px; padding-top: 0; margin-top: 0; }
+  [data-services-variant="cards"] .service-when { padding-top: 0; margin-top: 0; }
   [data-services-variant="cards"] .service-proof { padding-top: 8px; }
   /* Карточка «Сайты-визитки»: строки «что получаете» у неё нет, её место
      занимает строка-доказательство с искрой. Чтобы обе карточки нижнего
@@ -2182,8 +2181,6 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     padding-top: 0;
     margin-bottom: 3px;
     min-height: 3em;
-    font-size: 14px;
-    line-height: 1.5;
   }
   /* Искра centered на первой строке: (21px строки − 15px ромба) / 2 */
   [data-services-variant="cards"] .service-card h3 + .service-proof .spark { margin-top: 3px; }
