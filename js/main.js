@@ -230,7 +230,7 @@
       // Порядок 1-2-3, а не 3-2-1 как у других кейсов: новые слайды пришли
       // уже пронумерованными в нужной последовательности. Здесь он обязан
       // совпадать с разметкой — иначе лайтбокс листает не то, что в карточке
-      images: ['images/gallery/marketing-strategy-1.jpg', 'images/gallery/marketing-strategy-2.jpg', 'images/gallery/marketing-strategy-3.jpg'],
+      images: ['images/gallery/marketing-strategy-1.jpg?v=2', 'images/gallery/marketing-strategy-2.jpg?v=2', 'images/gallery/marketing-strategy-3.jpg?v=2'],
     },
     'dashboards': {
       title: 'Примеры графиков и дашбордов',
