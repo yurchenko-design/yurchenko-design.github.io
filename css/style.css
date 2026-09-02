@@ -474,27 +474,35 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    их дети становятся прямыми ячейками сетки — это позволяет разложить их
    в нужном порядке, не дублируя разметку. Бейдж остаётся наверху справа
    от фигуры, а кнопка уходит в самый низ, после цифр */
+/* Шаг между разделами на телефоне на 8px меньше десктопного: там разделы
+   идут одной колонкой, и 40px читались как провал. Заодно вся страница
+   короче на 56px — семь стыков */
+@media (max-width: 639px) {
+  :root { --section-gap: 32px; }
+}
+
 @media (max-width: 899px) {
   .hero-intro,
   .hero-aside { display: contents; }
 
   .hero-layout {
-    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
     column-gap: 12px;
-    row-gap: 22px;
+    row-gap: 14px;
   }
-  /* Бейдж слева, фигура справа: на фото голова повёрнута влево, то есть
-     взгляд направлен на ромб, а не от него */
+  /* Левая колонка занята делом: сверху бейдж, под ним имя, справа фигура —
+     раньше 77% этой колонки пустовало, а имя стояло отдельной строкой под фото.
+     Решение заказчицы 2 сентября 2026, порядок чтения её же: обещание → имя.
+     Отступ бейджа считается от высоты надписи DESIGN. 0.45 подобрано замером:
+     ромб краем заходит на буквы на 12–13px — заказчица просила именно лёгкое
+     касание, — и до имени остаётся 26–32px на телефонах. При 0.62 касания уже
+     не было и ромб прижимался к имени, при 0.36 отрывался от букв слишком высоко */
   .hero-badge {
     grid-column: 1;
-    order: 1;
-    /* Бейдж прижат к низу своей ячейки, то есть стоит вплотную над именем.
-       Раньше он висел у верха и до имени оставалось 93px пустоты, потому что
-       высоту строки задаёт фигура справа, а не текст. Сверху пустоты не видно:
-       там надпись DESIGN */
-    align-self: end;
-    margin-top: 0;
-    margin-bottom: 16px;
+    grid-row: 1;
+    order: 0;
+    align-self: start;
+    margin: calc(var(--word-h, 90px) * 0.45) 0 0;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
@@ -508,15 +516,30 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      на бейдж. Ширину на мобильном задаёт колонка, а не --photo-w-mobile */
   .hero-photo {
     grid-column: 2;
-    order: 2;
+    grid-row: 1 / span 2;
+    order: 0;
     width: 100%;
-    max-width: var(--photo-w-mobile);
+    max-width: none;
+    align-self: end;
     justify-self: end;
   }
-  .hero-name  { grid-column: 1 / -1; order: 3; }
-  .hero-sub   { grid-column: 1 / -1; order: 4; margin-bottom: 0; }
-  .hero-stats { grid-column: 1 / -1; order: 5; }
-  .hero-cta   { grid-column: 1 / -1; order: 6; justify-self: start; }
+  /* Имя рядом с фигурой, а не под ней: кегль ужат, иначе «Юрченко» заезжает
+     под фото. Экран стал короче на 202px — 580 против 782 */
+  .hero-name  {
+    grid-column: 1;
+    grid-row: 2;
+    order: 0;
+    align-self: end;
+    font-size: clamp(26px, 7.2vw, 34px);
+    margin: 0;
+  }
+  .hero-sub   { grid-column: 1 / -1; grid-row: 3; order: 0; margin-bottom: 0; }
+  .hero-stats { grid-column: 1 / -1; grid-row: 4; order: 0; }
+  /* Кнопка отделена от колонки цифр заметнее общего шага: при одном лишь
+     row-gap (14px) сверху и 40px до следующего раздела снизу она читалась
+     прилепленной к строке «от 1 500 ₽». Теперь 28px сверху и 32 снизу —
+     ритм ровный (нижний отступ задан --section-gap раздела ниже) */
+  .hero-cta   { grid-column: 1 / -1; grid-row: 5; order: 0; justify-self: start; margin-top: 14px; }
 }
 
 /* --- Планшет и широкий телефон: имя и подзаголовок встают слева от фигуры ---
@@ -548,7 +571,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     column-gap: 26px;
     row-gap: 14px;
   }
-  .hero-badge { grid-column: 1; grid-row: 1; align-self: end; margin-top: 0; margin-bottom: 16px; }
+  /* Тот же расчёт, что и на телефоне: ромб начинается под надписью DESIGN,
+     а не поверх неё. При align-self: end он прижимался к низу резиновой
+     первой строки и наезжал на буквы на 18px (замер на 560px) */
+  .hero-badge { grid-column: 1; grid-row: 1; align-self: start; margin: calc(var(--word-h, 90px) * 0.45) 0 0; }
   .hero-name  { grid-column: 1; grid-row: 2; align-self: end; }
   .hero-sub   { grid-column: 1; grid-row: 3; align-self: end; margin-bottom: 0; }
   /* Фигура резиновая, а не фиксированные 270px: у левой колонки должно
@@ -2255,6 +2281,147 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
        по-прежнему не должно тянуть соседа — поэтому start */
     align-items: start;
   }
+}
+
+
+/* ===== Телефон: экран короче =====
+   Решение заказчицы 2 сентября 2026 по итогам превью `preview-mobile-korotko.html`.
+   Страница на 375px была 7979px — почти десять экранов подряд. Выбраны четыре
+   приёма: липкая кнопка, аккордеон в услугах, свайп в кейсах и в отзывах.
+   Всё живёт ниже 640px — десктоп и планшет не трогаем */
+
+/* --- Липкая кнопка --- */
+.sticky-cta { display: none; }
+@media (max-width: 639px) {
+  .sticky-cta {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(11, 7, 16, 0.92);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    /* Спрятана за нижним краем и выезжает по классу — так она не мигает
+       при первой отрисовке и не требует отдельного состояния в разметке */
+    transform: translateY(110%);
+    transition: transform 0.28s var(--ease);
+  }
+  .sticky-cta.is-on { transform: translateY(0); }
+  /* Кнопка своей ширины и по центру: растянутая во всю полосу читалась
+     как панель приложения, а не как кнопка сайта (правка 2 сентября 2026) */
+  .sticky-cta { display: flex; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta { transition: none; }
+}
+
+/* --- Услуги аккордеоном --- */
+@media (max-width: 639px) {
+  /* Карточка становится строкой: иконка, название, шеврон. Описание
+     раскрывается по тапу — все шесть услуг видны сразу одним экраном */
+  .services .service-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 12px;
+    align-items: center;
+    padding: 16px 18px;
+    cursor: pointer;
+  }
+  .services .service-icon { grid-column: 1; grid-row: 1; width: 22px; height: 22px; margin: 0; }
+  .services .service-card h3 { grid-column: 2; grid-row: 1; margin: 0; font-size: 15px; }
+  /* Шеврон нарисован уголком из двух границ: свой SVG здесь не нужен,
+     а поворот на 180° при раскрытии читается как «свернуть» */
+  .services .service-card::after {
+    content: "";
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    width: 9px;
+    height: 9px;
+    margin-right: 2px;
+    border-right: 1.6px solid var(--text-muted);
+    border-bottom: 1.6px solid var(--text-muted);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.2s var(--ease);
+  }
+  .services .service-card.is-open::after { transform: rotate(-135deg) translateY(-2px); }
+  .services .service-what,
+  .services .service-when,
+  .services .service-proof {
+    grid-column: 2 / -1;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.28s var(--ease), opacity 0.2s var(--ease), margin 0.28s var(--ease);
+  }
+  .services .service-card.is-open .service-what,
+  .services .service-card.is-open .service-when,
+  .services .service-card.is-open .service-proof {
+    max-height: 220px;
+    opacity: 1;
+    margin-top: 8px;
+  }
+  .services .carousel-track { gap: 8px; }
+  /* Подъём при наведении на телефоне ни к чему: палец «наводить» не умеет,
+     а на тап карточка и так отвечает раскрытием */
+  .services .service-card:hover { transform: none; box-shadow: none; }
+}
+@media (max-width: 639px) and (prefers-reduced-motion: reduce) {
+  .services .service-card::after,
+  .services .service-what,
+  .services .service-when,
+  .services .service-proof { transition: none; }
+}
+
+/* --- Кейсы и отзывы свайпом --- */
+@media (max-width: 639px) {
+  /* Лента выходит за поля страницы и сама держит отступы: иначе карточка
+     ужимается до 252px и превью слайда становится 252×142 — работу не видно.
+     24px — паддинг .page-card, 20px — паддинг .container, вместе 44px с каждой
+     стороны. Хвост в 32px оставляет край следующей карточки видимым */
+  .works .carousel-track {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    /* Ширина считается от экрана, а не от ленты: 44px — поле контента слева,
+       32px — хвост, на котором видно край следующей карточки */
+    grid-auto-columns: calc(100vw - 76px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin-inline: -44px;
+    padding-inline: 44px;
+    /* Без scroll-padding снэп прилипает к карточке, а поле слева уезжает
+       за кадр: лента открывается с scrollLeft = 44 и первая работа
+       оказывается прижатой к краю экрана */
+    scroll-padding-inline: 44px;
+    scrollbar-width: none;
+  }
+  .works .carousel-track::-webkit-scrollbar { display: none; }
+  .works .case-card { scroll-snap-align: start; }
+
+  .reviews-grid {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: calc(100vw - 76px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+    margin-inline: -44px;
+    padding-inline: 44px;
+    scroll-padding-inline: 44px;
+    /* Скроллбар прячем так же, как у остальных лент сайта */
+    scrollbar-width: none;
+  }
+  .reviews-grid::-webkit-scrollbar { display: none; }
+  .review-card { scroll-snap-align: start; padding: 0; margin: 0; }
+  /* Разделительная линия между отзывами не нужна: в ленте карточки
+     разделяет промежуток, а линия превращалась бы в обрубок */
+  .review-card + .review-card::before { display: none; }
 }
 
 /* ===== Печать / экспорт в PDF =====

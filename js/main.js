@@ -309,6 +309,73 @@
     });
   });
 
+
+  /* ===== Телефон: липкая кнопка =====
+     Показываем, когда Hero уже уехал вверх, и убираем у формы — там своя
+     кнопка отправки, две подряд читались бы как ошибка. Порог по ширине
+     совпадает с CSS: ниже 640px */
+  const stickyCta = document.querySelector('[data-sticky-cta]');
+  if (stickyCta) {
+    const hero = document.querySelector('.hero');
+    const contact = document.getElementById('contact');
+    const isPhone = () => window.matchMedia('(max-width: 639px)').matches;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      if (!isPhone() || !hero || !contact) { stickyCta.classList.remove('is-on'); return; }
+      const heroGone = hero.getBoundingClientRect().bottom < 0;
+      const formNear = contact.getBoundingClientRect().top < window.innerHeight * 0.6;
+      stickyCta.classList.toggle('is-on', heroGone && !formNear);
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+
+  /* ===== Телефон: услуги аккордеоном =====
+     Ниже 640px карточка услуги превращается в строку, описание раскрывается
+     по тапу. Первая открыта по умолчанию — иначе приём неочевиден.
+     На широких экранах обработчики просто ничего не делают */
+  const serviceCards = document.querySelectorAll('.services .service-card');
+  if (serviceCards.length) {
+    const phoneQuery = window.matchMedia('(max-width: 639px)');
+    const syncAccordion = () => {
+      serviceCards.forEach((card, i) => {
+        if (phoneQuery.matches) {
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
+          card.classList.toggle('is-open', i === 0);
+        } else {
+          card.removeAttribute('role');
+          card.removeAttribute('tabindex');
+          card.removeAttribute('aria-expanded');
+          card.classList.remove('is-open');
+        }
+      });
+    };
+    const toggleCard = (card) => {
+      if (!phoneQuery.matches) return;
+      const open = card.classList.toggle('is-open');
+      card.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    serviceCards.forEach((card) => {
+      card.addEventListener('click', () => toggleCard(card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        toggleCard(card);
+      });
+    });
+    syncAccordion();
+    phoneQuery.addEventListener('change', syncAccordion);
+  }
+
   /* ===== Раскрытие описания кейса ===== */
   document.querySelectorAll('[data-case-toggle]').forEach((btn) => {
     const card = btn.closest('.case-card');
