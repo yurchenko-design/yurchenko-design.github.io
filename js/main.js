@@ -359,10 +359,19 @@
         }
       });
     };
+    /* Открыта всегда одна карточка: иначе шесть раскрытых описаний снова
+       превращают раздел в стену текста, ради которой аккордеон и делался */
     const toggleCard = (card) => {
       if (!phoneQuery.matches) return;
-      const open = card.classList.toggle('is-open');
-      card.setAttribute('aria-expanded', open ? 'true' : 'false');
+      const willOpen = !card.classList.contains('is-open');
+      serviceCards.forEach((other) => {
+        other.classList.remove('is-open');
+        other.setAttribute('aria-expanded', 'false');
+      });
+      if (willOpen) {
+        card.classList.add('is-open');
+        card.setAttribute('aria-expanded', 'true');
+      }
     };
     serviceCards.forEach((card) => {
       card.addEventListener('click', () => toggleCard(card));

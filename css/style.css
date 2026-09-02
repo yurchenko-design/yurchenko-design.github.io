@@ -1267,8 +1267,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    .carousel-nav и .carousel-dots: правило той же специфичности, объявленное
    выше по файлу, перебивалось бы их display */
 @media (max-width: 639px) {
-  .carousel-nav,
-  .carousel-dots { display: none; }
+  .carousel-nav { display: none; }
+  /* Точки на телефоне остаются: без них не видно, что лента листается —
+     край следующей карточки на тёмном фоне читается плохо (правка 2 сентября
+     2026 по замечанию заказчицы). Стрелки при этом не нужны: листают пальцем */
+  .works .carousel-dots,
+  .reviews .carousel-dots { display: flex; margin-top: 14px; }
+  .services .carousel-dots { display: none; }
 }
 @media (min-width: 640px) {
   .services-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2348,6 +2353,16 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     transition: transform 0.2s var(--ease);
   }
   .services .service-card.is-open::after { transform: rotate(-135deg) translateY(-2px); }
+  /* Открытая карточка подсвечивается тем же розовым, что и активная карточка
+     на десктопе при наведении: иначе непонятно, какая из шести сейчас открыта */
+  .services .service-card.is-open {
+    border-color: rgba(217, 31, 191, 0.45);
+  }
+  .services .service-card.is-open .service-icon { color: var(--accent-pink); }
+  .services .service-card.is-open::after {
+    border-right-color: var(--accent-pink);
+    border-bottom-color: var(--accent-pink);
+  }
   .services .service-what,
   .services .service-when,
   .services .service-proof {
@@ -2388,8 +2403,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     grid-auto-flow: column;
     grid-template-columns: none;
     /* Ширина считается от экрана, а не от ленты: 44px — поле контента слева,
-       32px — хвост, на котором видно край следующей карточки */
-    grid-auto-columns: calc(100vw - 76px);
+       52px — хвост, на котором видно край следующей карточки. 32px было мало:
+       тёмная карточка на тёмном фоне не читалась как продолжение */
+    grid-auto-columns: calc(100vw - 96px);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 12px;
@@ -2407,7 +2423,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .reviews-grid {
     grid-auto-flow: column;
     grid-template-columns: none;
-    grid-auto-columns: calc(100vw - 76px);
+    grid-auto-columns: calc(100vw - 96px);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 14px;
