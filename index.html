@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Onest:wght@400;500;600;700&family=Big+Shoulders:opsz,wght@72,900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=r75">
+<link rel="stylesheet" href="css/style.css?v=r76">
 </head>
 <body>
 
@@ -531,6 +531,10 @@
       </ul>
 
       <form id="lead-form" class="lead-form" data-animate="fade-up" data-animate-delay="160" novalidate>
+        <div class="form-honeypot" aria-hidden="true">
+          <label for="website">Сайт</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
         <div class="form-grid">
           <div class="form-row">
             <label for="name">Имя</label>
@@ -592,6 +596,6 @@
   <a class="btn btn-primary" href="#contact">Обсудить проект</a>
 </div>
 
-<script src="js/main.js?v=r75"></script>
+<script src="js/main.js?v=r76"></script>
 </body>
 </html>

@@ -1897,6 +1897,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 /* --- Форма: имя и контакт в строку, остальное во всю ширину --- */
 .lead-form { display: grid; gap: 14px; }
+.form-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
