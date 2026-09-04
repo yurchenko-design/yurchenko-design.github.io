@@ -591,6 +591,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      прилепленной к строке «от 1 500 ₽». Теперь 28px сверху и 32 снизу —
      ритм ровный (нижний отступ задан --section-gap раздела ниже) */
   .hero-cta   { grid-column: 1 / -1; grid-row: 5; order: 0; justify-self: start; margin-top: 14px; }
+  /* Кнопка на телефоне легче: 182×46 на 375px читались как самый тяжёлый
+     элемент экрана и спорили с надписью DESIGN */
+  .hero-cta.btn { padding: 10px 24px; }
 }
 
 /* --- Планшет и широкий телефон: имя и подзаголовок встают слева от фигуры ---
@@ -759,6 +762,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   column-gap: 14px;
   row-gap: 4px;
   padding: 16px 0;
+  /* Верхние края номера и «ожидания» должны совпадать: по умолчанию строки
+     растягивались и текст 12px вставал ниже цифры 20px */
+  align-items: start;
 }
 .ai-pair::before {
   content: "";
@@ -778,7 +784,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 20px;
-  line-height: 1.35;
+  /* 0.87 подобран замером: при нём верх цифры совпадает с верхом строки
+     «ожидания» рядом (12px × 1.45) */
+  line-height: 0.87;
   background: var(--num-fill);
   -webkit-background-clip: text;
   background-clip: text;
@@ -1321,14 +1329,6 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
-.service-icon {
-  width: 30px;
-  height: 30px;
-  margin-bottom: 16px;
-  color: var(--text);
-  transition: color 0.25s var(--ease);
-}
-.service-card:hover .service-icon { color: var(--accent-pink); }
 .service-card {
   display: flex;
   flex-direction: column;
@@ -1924,6 +1924,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .form-row input,
 .form-row select,
 .form-row textarea {
+  /* ⚠️ appearance: none обязателен всем трём, не только select. Без него
+     iOS Safari рисует поверх нашей прозрачной рамки собственную светлую —
+     в Chrome этого не видно, а на айфоне поля обведены белым (заказчица
+     показывала это трижды, 4 сентября 2026) */
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   padding: 12px 14px;
   /* Радиус общий для всех блоков сайта (--radius). 22 августа 2026 полям
@@ -2115,7 +2121,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      стоит на его месте, и без него строка «когда» шла к нему вплотную,
      тогда как у соседей между ними 14px */
   [data-services-variant="cards"] .service-proof { margin-top: 0; padding-top: 0; margin-bottom: 6px; }
-  [data-services-variant="cards"] .service-icon { margin-bottom: 12px; }
+  [data-services-variant="cards"] .svc-num { margin-bottom: 10px; }
 }
 
 /* Планшет: пара «ожидание → реальность» ставится в строку, как на десктопе.
@@ -2148,9 +2154,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .ai-arrow svg { width: 17px; height: 17px; transform: none; }
 }
 
-/* ===== Услуги: список плашками =====
-   Карусель здесь отключена — все шесть услуг видны сразу. Строка вместо
-   карточки: иконка слева, заголовок и обе строки текста справа */
+/* ===== Услуги: три колонки с крупными номерами =====
+   Раскладка 4 сентября 2026 по референсу заказчицы. Иконок в услугах
+   больше нет — их место занял номер 01–06, набранный градиентом.
+   Плашек с заливкой тоже нет: колонки разделены линиями, как в блоке
+   «Как проходит работа» */
 [data-services-variant="cards"] .carousel-track {
   grid-auto-flow: row;
   grid-auto-columns: auto;
@@ -2161,62 +2169,137 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 [data-services-variant="cards"] .carousel-nav,
 [data-services-variant="cards"] .carousel-dots { display: none; }
 
+/* Номер услуги. Градиент вертикальный, а не под 135°, как везде:
+   на боксе из двух знаков диагональ проходит почти по одному тону,
+   и переход не читался — заказчица сказала, что градиента не видно.
+   Цвета те же, что в --gradient, меняется только направление */
+.svc-num {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 33px;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  background-image: linear-gradient(#D91FBF, #9333EA);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Планшет: колонок нет, но вид тот же плоский, что на десктопе —
+   иначе на промежуточной ширине блок возвращался к плашкам с заливкой
+   и не совпадал ни с десктопом, ни с телефоном */
+@media (min-width: 640px) and (max-width: 959px) {
+  [data-services-variant="cards"] .carousel-track { gap: 0; }
+  [data-services-variant="cards"] .service-card {
+    padding: 22px 0;
+    background: none;
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  [data-services-variant="cards"] .service-card + .service-card { border-top: 1px solid var(--border); }
+  [data-services-variant="cards"] .service-card:hover {
+    transform: none;
+    box-shadow: none;
+    background-image: none;
+  }
+}
+
 @media (min-width: 960px) {
   [data-services-variant="cards"] .carousel-track {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
   }
+  /* ⚠️ subgrid, а не min-height: карточка занимает четыре ряда внешней
+     сетки — номер, заголовок, «что получаете», «когда это нужно», —
+     и соседи по ряду делят те же ряды. Строки встают на один уровень
+     при любой длине текста; резервирование строк через min-height
+     этого не давало: стоило тексту стать длиннее запаса, и соседи
+     разъезжались (замечание заказчицы 4 сентября 2026) */
   [data-services-variant="cards"] .service-card {
+    grid-row: span 4;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: 16px;
-    padding: 18px 20px;
-    /* start обязателен: у сетки строки по умолчанию растягиваются, и лишняя
-       высота ряда распределялась между заголовком и строками текста —
-       в карточках с коротким текстом зазоры разъезжались */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: subgrid;
     align-content: start;
+    position: relative;
+    padding: 26px 28px 30px;
+    background: none;
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
   }
-  /* Иконка выравнивается по верху заглавной буквы заголовка: заголовок
-     16px с интерлиньяжем 1.25 даёт полуинтерлиньяж 2px, плюс расстояние
-     от верха строки до верха капители */
-  [data-services-variant="cards"] .service-icon {
-    grid-row: 1 / span 3;
-    width: 26px;
-    height: 26px;
-    margin: var(--icon-cap-offset, 1px) 0 0;
-    color: var(--text);
+  /* Крайние колонки без боковых полей: иначе первая цифра стоит
+     на 28px правее заголовка раздела, и левый край блока «плывёт» */
+  [data-services-variant="cards"] .service-card:nth-child(3n+1) { padding-left: 0; }
+  [data-services-variant="cards"] .service-card:nth-child(3n) { padding-right: 0; }
+  /* Вертикальная линия между колонками — та же затухающая, что
+     между колонками в разделе «Обо мне». Абсолютная: обычный
+     псевдоэлемент занял бы ряд в subgrid */
+  [data-services-variant="cards"] .service-card:not(:nth-child(3n))::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    background-image: var(--rule-fade-v);
   }
-  [data-services-variant="cards"] .service-card h3 { min-height: 0; margin-bottom: 4px; }
-  /* Две строки зарезервированы: у «Понятных цифр» строка «что получаете»
-     переносится, и без запаса строка «когда это нужно» в соседней карточке
-     того же ряда вставала на 21px выше. Приём тот же, что у .case-result p
-     и у .case-head h3 */
+  [data-services-variant="cards"] .service-card:nth-child(n+4) {
+    border-top: 1px solid var(--border);
+    padding-top: 30px;
+  }
+  [data-services-variant="cards"] .service-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+  }
+  .svc-num { margin-bottom: 14px; }
+  [data-services-variant="cards"] .service-card h3 {
+    min-height: 0;
+    margin-bottom: 8px;
+    align-self: start;
+  }
   [data-services-variant="cards"] .service-what {
-    margin-bottom: 3px;
-    min-height: 3em;
+    margin-bottom: 12px;
+    min-height: 0;
+    align-self: start;
   }
-  [data-services-variant="cards"] .service-when { padding-top: 0; margin-top: 0; }
-  [data-services-variant="cards"] .service-proof { padding-top: 8px; }
-  /* Карточка «Сайты-визитки»: строки «что получаете» у неё нет, её место
-     занимает строка-доказательство с искрой. Чтобы обе карточки нижнего
-     ряда читались по одной сетке, доказательство получает метрики
-     «что получаете» один в один: тот же кегль, интерлиньяж, нижний отступ
-     и зарезервированные 3em — тогда строки «когда» в обеих карточках
-     встают на один уровень. Выравнивание по верху обязательно: с центром
-     (базовое правило .service-proof) текст внутри зарезервированных 3em
-     уезжал на середину и опускался ниже строки соседа.
-     ⚠️ Порядок строк здесь обратный остальным карточкам: сначала
-     доказательство с искрой, под ним «когда». Решение заказчицы
-     31 августа 2026 */
+  [data-services-variant="cards"] .service-when {
+    margin-top: 0;
+    padding-top: 0;
+    align-self: start;
+  }
+  /* Шестая карточка: вместо «что получаете» строка-доказательство
+     с искрой, порядок строк обратный (решение 31 августа 2026).
+     Метрики те же, чтобы ряд не разъехался */
   [data-services-variant="cards"] .service-card h3 + .service-proof {
     align-items: flex-start;
+    margin-top: 0;
     padding-top: 0;
-    margin-bottom: 3px;
-    min-height: 3em;
+    margin-bottom: 12px;
+    min-height: 0;
+    align-self: start;
   }
-  /* Искра centered на первой строке: (21px строки − 15px ромба) / 2 */
+  /* Искра по центру первой строки: (21px строки − 15px ромба) / 2 */
   [data-services-variant="cards"] .service-card h3 + .service-proof .spark { margin-top: 3px; }
   [data-services-variant="cards"] .service-proof + .service-when { padding-top: 0; margin-top: 0; }
+
+  /* Запасной вариант для браузеров без subgrid: резервируем две строки
+     заголовка и две строки «что получаете» — выравнивание не идеальное,
+     но соседи по ряду не разъезжаются */
+  @supports not (grid-template-rows: subgrid) {
+    [data-services-variant="cards"] .service-card { grid-row: auto; display: flex; flex-direction: column; }
+    [data-services-variant="cards"] .service-card h3 { min-height: 2.5em; }
+    [data-services-variant="cards"] .service-what,
+    [data-services-variant="cards"] .service-card h3 + .service-proof { min-height: 3em; }
+    [data-services-variant="cards"] .service-when { margin-top: auto; }
+  }
 }
 
 /* --- Вариант «все кейсы сеткой», без карусели --- */
@@ -2285,7 +2368,22 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     padding: 16px 18px;
     cursor: pointer;
   }
-  .services .service-icon { grid-column: 1; grid-row: 1; width: 22px; height: 22px; margin: 0; }
+  /* Номер занял место иконки: 20px — существующая ступень Unbounded,
+     крупнее в строке аккордеона он не нужен */
+  .services .svc-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 20px;
+    /* Бокс цифры должен быть ровно той же высоты, что строка заголовка
+       (16 × 1.25 = 20px): при разной высоте выравнивание по центру даёт
+       разные центры, и цифра стояла на 5px выше */
+    line-height: 20px;
+    /* ⚠️ Нижний отступ обязателен нулевой: он остаётся от раскладки
+       «цифра над названием» и добавляет 10px к боксу цифры — строка
+       грида вырастает, и цифра встаёт на 5px выше центра заголовка */
+    margin-bottom: 0;
+    align-self: center;
+  }
   /* 16px, как у заголовка карточки везде: 15 было единственной ступенью
      на весь сайт и выбивалось из шкалы */
   .services .service-card h3 { grid-column: 2; grid-row: 1; margin: 0; font-size: 16px; }
@@ -2308,14 +2406,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   /* Открытая карточка подсвечена градиентной обводкой — тем же приёмом, что
      у тегов и полей формы. ⚠️ Чистый magenta здесь запрещён: он закреплён
      за иконками и стрелками (правило системы, замечание заказчицы
-     4 сентября 2026). Иконка внутри при этом розовая — она иконка */
+     4 сентября 2026) */
   .services .service-card.is-open {
     border-color: transparent;
     background-image: linear-gradient(var(--bg-elevated), var(--bg-elevated)), var(--gradient);
     background-origin: border-box;
     background-clip: padding-box, border-box;
   }
-  .services .service-card.is-open .service-icon { color: var(--accent-pink); }
   .services .service-card.is-open::after {
     border-right-color: var(--accent-pink);
     border-bottom-color: var(--accent-pink);
