@@ -852,13 +852,14 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 @media (min-width: 900px) {
   .ai-panel { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr); gap: 44px; padding: 36px 36px 40px; }
 }
-/* 28px — на ступень ниже заголовка раздела: кульминация блока не должна
-   перевешивать его заголовок */
+/* 26px — ступень «цифры Hero» из шкалы, а не собственные 28: 28 и 26 стояли
+   рядом и давали пятую ступень Unbounded, почти неотличимую от соседней.
+   Заявление и так выделено градиентом и позицией, размер ему не нужен */
 .ai-claim {
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.18;
-  font-size: clamp(22px, 2.1vw, 28px);
+  font-size: clamp(22px, 2vw, 26px);
 }
 .ai-claim span {
   display: block;
