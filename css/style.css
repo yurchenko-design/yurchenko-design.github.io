@@ -163,10 +163,10 @@ h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 12px по вертикали вместо 16: кнопка казалась заказчице слишком объёмной.
-     Горизонтальный отступ и кегль не тронуты — сужать капсулу не нужно,
-     она стала ниже на 7px (49 → 42), выбрано на превью 1 сентября 2026 */
-  padding: 12px 32px;
+  /* Правое поле меньше левого: справа стоит круг со стрелкой и держит
+     отступ сам. До появления круга было симметричные 12px 32px */
+  padding: 6px 6px 6px 30px;
+  gap: 16px;
   border-radius: 100px;
   font-family: var(--font-body);
   font-size: 14px;
@@ -177,6 +177,27 @@ h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.
   background: var(--gradient);
   color: #ffffff;
 }
+/* Круг со стрелкой справа — приём из референса заказчицы (4 сентября 2026).
+   ⚠️ Заливка капсулы сохранена, а круг затемнён: контурный вариант референса
+   мы отклонили — кнопка единственный элемент сайта с градиентной заливкой,
+   и без неё сигнал «сюда нажимать» на первом экране слабел */
+.btn-arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+}
+.btn-arrow svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.25s var(--ease);
+}
+.btn:hover .btn-arrow svg,
+.btn:focus-visible .btn-arrow svg { transform: translateX(2px); }
 .btn-primary:hover,
 .btn-primary:focus-visible {
   transform: translateY(-2px);
@@ -598,7 +619,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .hero-cta   { grid-column: 1 / -1; grid-row: 5; order: 0; justify-self: start; margin-top: 14px; }
   /* Кнопка на телефоне легче: 182×46 на 375px читались как самый тяжёлый
      элемент экрана и спорили с надписью DESIGN */
-  .hero-cta.btn { padding: 10px 24px; }
+  /* Кнопка на телефоне мельче: круг 32px и подрезанное левое поле дают
+     те же 42px высоты, что были до появления стрелки */
+  .btn { padding: 5px 5px 5px 22px; gap: 12px; }
+  .btn-arrow { width: 32px; height: 32px; }
+  .btn-arrow svg { width: 15px; height: 15px; }
 }
 
 /* --- Планшет и широкий телефон: имя и подзаголовок встают слева от фигуры ---
@@ -851,16 +876,41 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 
 /* --- Панель с заявлением --- */
+/* Матовое стекло — тот же эффект, что у тегов «Инструменты» (решение
+   заказчицы 4 сентября 2026). Он складывается из трёх вещей: сплошной
+   заливки нет, есть тонкая светлая обводка, а позади лежит мягкое пятно
+   в наших двух цветах — оно и просвечивает сквозь панель.
+   ⚠️ backdrop-filter здесь не для красоты: на чёрном ему нечего размывать,
+   но он оставлен намеренно — если под панель попадёт картинка или свечение
+   страницы, стекло станет настоящим. Он же создаёт контекст наложения,
+   поэтому пятно с z-index: -1 остаётся внутри панели, а не уходит на фон */
 .ai-panel {
+  position: relative;
   margin-top: 34px;
   padding: 28px 24px 30px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg-elevated);
+  background: rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
   align-items: center;
+}
+.ai-panel::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 620px;
+  height: 420px;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side circle, rgba(217, 31, 191, 0.16), transparent 72%),
+    radial-gradient(closest-side circle at 62% 62%, rgba(147, 51, 234, 0.12), transparent 70%);
 }
 @media (min-width: 900px) {
   .ai-panel { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr); gap: 44px; padding: 36px 36px 40px; }
@@ -1965,7 +2015,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .form-row textarea { resize: vertical; min-height: 84px; }
 .form-submit {
   width: 100%;
-  gap: 10px;
+  /* Кнопка растянута на всю ширину, поэтому текст уходит влево,
+     а круг прижимается к правому краю — как в референсе */
+  justify-content: space-between;
+  padding-left: 24px;
   margin-top: 2px;
 }
 
