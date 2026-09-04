@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Onest:wght@400;500;600;700&family=Big+Shoulders:opsz,wght@72,900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=r76">
+<link rel="stylesheet" href="css/style.css?v=r84">
 </head>
 <body>
 
@@ -157,52 +157,74 @@
   </section>
 
   <!-- 3. А ЕСЛИ СДЕЛАТЬ НЕЙРОСЕТЬЮ? -->
-  <section id="ai" class="ai" data-ai-layout="bracket" data-ai-concl="bar">
-    <!-- Картинка блока временно снята 1 сентября 2026 по просьбе заказчицы —
-         будет заменена другой. Стили .ai-art в css/style.css оставлены:
-         чтобы вернуть, достаточно положить сюда <img class="ai-art" …> -->
-
+  <section id="ai" class="ai">
     <div class="section-head" data-animate="fade-up">
       <h2>А&nbsp;если сделать нейросетью?</h2>
     </div>
 
-    <p class="ai-lead" data-animate="fade-up">Нейросеть соберёт слайды за&nbsp;минуту&nbsp;— и&nbsp;это правда удобно, когда нужен черновик. Дальше начинается то, ради чего приходят ко&nbsp;мне:</p>
-
-    <div class="ai-body">
-      <ul class="ai-pairs">
-      <li class="ai-pair" data-animate="fade-up" data-animate-delay="0">
-        <span class="ai-num" aria-hidden="true">01</span>
-        <span class="ai-expect">«Нейросеть сделает всё»</span>
-        <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-        <span class="ai-reality">Заготовка, которую доводят руками</span>
-      </li>
-      <li class="ai-pair" data-animate="fade-up" data-animate-delay="70">
-        <span class="ai-num" aria-hidden="true">02</span>
-        <span class="ai-expect">Готовый файл клиенту</span>
-        <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-        <span class="ai-reality">Выгрузка в&nbsp;PowerPoint ломается&nbsp;— проще собрать заново</span>
-      </li>
-      <li class="ai-pair" data-animate="fade-up" data-animate-delay="140">
-        <span class="ai-num" aria-hidden="true">03</span>
-        <span class="ai-expect">Всё по&nbsp;брендбуку</span>
-        <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-        <span class="ai-reality">Шрифты, сетка, мастер-слайды поедут&nbsp;— не&nbsp;согласуют</span>
-      </li>
-      <li class="ai-pair" data-animate="fade-up" data-animate-delay="210">
-        <span class="ai-num" aria-hidden="true">04</span>
-        <span class="ai-expect">Дизайн, с&nbsp;которым не&nbsp;стыдно</span>
-        <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-        <span class="ai-reality">Для&nbsp;внутренней встречи сойдёт, для&nbsp;инвестора&nbsp;— нет</span>
-      </li>
-      </ul>
-
-      <div class="ai-conclusion">
-        <p class="ai-closing" data-animate="fade-up">Нейросеть не&nbsp;решит, что&nbsp;именно ваша презентация должна доказать, не&nbsp;проверит ваши цифры и&nbsp;не&nbsp;подскажет, на&nbsp;каком слайде инвестор потеряет интерес.</p>
-
-        <p class="ai-final" data-animate="fade-up">
-          <span>Я&nbsp;тоже работаю с&nbsp;AI&nbsp;— просто знаю, о&nbsp;чём его просить и&nbsp;что&nbsp;за&nbsp;ним чинить</span>
-        </p>
+    <div class="ai-top">
+      <div class="ai-left" data-animate="fade-up">
+        <!-- Надпись собрана в SVG: обводке текста градиент средствами CSS
+             не задаётся, а чистый magenta закреплён в системе за иконками -->
+        <div class="ai-mark-wrap" aria-hidden="true">
+          <svg class="ai-mark" viewBox="0 0 300 118">
+            <defs>
+              <linearGradient id="ai-stroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#D91FBF"/>
+                <stop offset="100%" stop-color="#9333EA"/>
+              </linearGradient>
+            </defs>
+            <text x="2" y="96" font-family="Unbounded, sans-serif" font-weight="700" font-size="112"
+                  fill="none" stroke="url(#ai-stroke)" stroke-width="1.6">AI?</text>
+          </svg>
+        </div>
+        <p class="ai-lead">Нейросеть соберёт слайды за&nbsp;минуту&nbsp;— и&nbsp;это правда удобно, когда нужен черновик. Дальше начинается то, ради чего приходят ко&nbsp;мне:</p>
       </div>
+
+      <ul class="ai-pairs">
+        <li class="ai-pair" data-animate="fade-up" data-animate-delay="0">
+          <span class="ai-num" aria-hidden="true">01</span>
+          <span class="ai-expect">«Нейросеть сделает всё»</span>
+          <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
+          <span class="ai-reality">Заготовка, которую доводят руками</span>
+        </li>
+        <li class="ai-pair" data-animate="fade-up" data-animate-delay="70">
+          <span class="ai-num" aria-hidden="true">02</span>
+          <span class="ai-expect">Готовый файл клиенту</span>
+          <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
+          <span class="ai-reality">Выгрузка в&nbsp;PowerPoint ломается&nbsp;— проще собрать заново</span>
+        </li>
+        <li class="ai-pair" data-animate="fade-up" data-animate-delay="140">
+          <span class="ai-num" aria-hidden="true">03</span>
+          <span class="ai-expect">Всё по брендбуку</span>
+          <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
+          <span class="ai-reality">Шрифты, сетка, мастер-слайды поедут&nbsp;— не согласуют</span>
+        </li>
+        <li class="ai-pair" data-animate="fade-up" data-animate-delay="210">
+          <span class="ai-num" aria-hidden="true">04</span>
+          <span class="ai-expect">Дизайн, с&nbsp;которым не стыдно</span>
+          <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
+          <span class="ai-reality">Для внутренней встречи сойдёт, для&nbsp;инвестора&nbsp;— нет</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="ai-rule" aria-hidden="true"></div>
+
+    <div class="ai-pillars" data-animate="fade-up">
+      <div class="ai-pillar"><span class="ai-pillar-num" aria-hidden="true">01</span><span class="ai-pillar-word">Смысл</span></div>
+      <div class="ai-pillar"><span class="ai-pillar-num" aria-hidden="true">02</span><span class="ai-pillar-word">Цифры</span></div>
+      <div class="ai-pillar"><span class="ai-pillar-num" aria-hidden="true">03</span><span class="ai-pillar-word">Внимание</span></div>
+    </div>
+
+    <div class="ai-panel" data-animate="fade-up">
+      <p class="ai-claim">Ни за&nbsp;одно из&nbsp;трёх<span>нейросеть не отвечает</span></p>
+      <p class="ai-final">
+        <span class="spark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5c.95 5.4 4.1 8.55 9.5 9.5 0 0 .55.1.55 1s-.55 1-.55 1c-5.4.95-8.55 4.1-9.5 9.5 0 0-.1.55-1 .55s-1-.55-1-.55c-.95-5.4-4.1-8.55-9.5-9.5 0 0-.55-.1-.55-1s.55-1 .55-1c5.4-.95 8.55-4.1 9.5-9.5 0 0 .1-.55 1-.55s1 .55 1 .55Z"/></svg>
+        </span>
+        <span>Я&nbsp;тоже работаю с&nbsp;AI&nbsp;— просто знаю, о&nbsp;чём его просить и&nbsp;что за&nbsp;ним чинить</span>
+      </p>
     </div>
   </section>
 
@@ -531,10 +553,6 @@
       </ul>
 
       <form id="lead-form" class="lead-form" data-animate="fade-up" data-animate-delay="160" novalidate>
-        <div class="form-honeypot" aria-hidden="true">
-          <label for="website">Сайт</label>
-          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-        </div>
         <div class="form-grid">
           <div class="form-row">
             <label for="name">Имя</label>
@@ -596,6 +614,6 @@
   <a class="btn btn-primary" href="#contact">Обсудить проект</a>
 </div>
 
-<script src="js/main.js?v=r76"></script>
+<script src="js/main.js?v=r84"></script>
 </body>
 </html>

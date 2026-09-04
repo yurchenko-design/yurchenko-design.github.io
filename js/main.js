@@ -410,7 +410,8 @@
 
   /* ===== Lead form ===== */
   const WEB3FORMS_ACCESS_KEY = 'e5d4e756-f6d4-47b0-9ca5-daa078340c32';
-  const TELEGRAM_PROXY_URL = 'https://tg-lead-form.levcenkovitalia.workers.dev';
+  const TELEGRAM_BOT_TOKEN = '8987685732:AAGIyRRcJyP0zJ2_vDZu7dAwPZ10HvXJx2Y';
+  const TELEGRAM_CHAT_ID = '1762557557';
 
   const form = document.getElementById('lead-form');
   const statusEl = document.getElementById('form-status');
@@ -428,20 +429,12 @@
       const name = form.name.value.trim();
       const contact = form.contact.value.trim();
       const projectType = form.project_type.value;
-      const website = form.website ? form.website.value.trim() : '';
       // поле комментария убрано из формы 19 августа 2026 — читаем его
       // только если оно есть, иначе скрипт падал бы на form.message
       const message = form.message ? form.message.value.trim() : '';
 
       if (!name || !contact || !projectType) {
         setStatus('Заполните, пожалуйста, обязательные поля.', 'error');
-        return;
-      }
-
-      // Скрытое поле заполняют автоматические спам-боты, но не люди
-      if (website) {
-        form.reset();
-        setStatus('Спасибо! Заявка отправлена — свяжусь с вами в ближайшее время. ✓', 'success');
         return;
       }
 
@@ -470,25 +463,27 @@
         );
       }
 
-      if (TELEGRAM_PROXY_URL) {
+      if (!TELEGRAM_BOT_TOKEN.startsWith('YOUR_') && !TELEGRAM_CHAT_ID.startsWith('YOUR_')) {
+        const text = [
+          '📩 Новая заявка с сайта',
+          `Имя: ${name}`,
+          `Контакт: ${contact}`,
+          `Тип проекта: ${projectType}`,
+          message ? `Комментарий: ${message}` : null,
+        ].filter(Boolean).join('\n');
+
         tasks.push(
-          fetch(TELEGRAM_PROXY_URL, {
+          fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name,
-              contact,
-              project_type: projectType,
-              message,
-              website,
-            }),
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text }),
           })
         );
       }
 
       if (tasks.length === 0) {
         submitBtn.disabled = false;
-        setStatus('Форма пока не настроена: добавьте ключ Web3Forms и/или адрес Telegram-прокси.', 'error');
+        setStatus('Форма пока не настроена: добавьте ключ Web3Forms и/или данные Telegram-бота в js/main.js.', 'error');
         return;
       }
 
