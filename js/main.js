@@ -345,17 +345,20 @@
       syncRestPositions();
     });
 
-    /* Позиция видимой строки в ряду: по ней CSS решает, у какой колонки
-       рисовать разделитель. Селектором «последний видимый» это не выразить */
+    /* Порядок и позиции строк.
+       ⚠️ Порядок круговой, а не исходный: после активного кейса идут
+       следующие по кругу. Открыт 02 — внизу 03, 04, 01; открыт 03 —
+       внизу 04, 01, 02. С исходным порядком под открытым 02 первым
+       оказывался 01, и список читался как «назад», а не «дальше».
+       data-pos нужен CSS: по нему он решает, у какой колонки рисовать
+       разделитель — «последний видимый» селектором не выражается */
     function syncRestPositions() {
-      let pos = 0;
-      rows.forEach((row) => {
-        if (row.classList.contains('is-current')) {
-          row.removeAttribute('data-pos');
-        } else {
-          row.setAttribute('data-pos', String(pos));
-          pos += 1;
-        }
+      const active = rows.findIndex((row) => row.classList.contains('is-current'));
+      rows.forEach((row, i) => {
+        const shift = (i - active + rows.length) % rows.length;
+        row.style.order = String(shift);
+        if (shift === 0) row.removeAttribute('data-pos');
+        else row.setAttribute('data-pos', String(shift - 1));
       });
     }
     syncRestPositions();

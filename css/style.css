@@ -816,12 +816,18 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   /* 0.87 подобран замером: при нём верх цифры совпадает с верхом строки
      «ожидания» рядом (12px × 1.45) */
   line-height: 0.87;
+  /* ⚠️ Выравнивание оптическое, а не по боксам: верхние края боксов
+     совпадают, но глиф цифры 20px начинается на 3px выше строчного текста
+     12px, и цифра читается задранной. Замерено через actualBoundingBoxAscent */
+  margin-top: 3px;
   background: var(--num-fill);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-/* На узком экране стрелка разворачивается вниз — тот же жест по вертикали */
+/* На узком экране стрелка разворачивается вниз — тот же жест по вертикали.
+   Высота равна строке «реальности» (14 × 1.5), поэтому стрелка встаёт
+   по центру её первой строки, а не между строками */
 .ai-arrow {
   grid-column: 1;
   grid-row: 2;
@@ -829,6 +835,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   place-items: center;
   justify-self: start;
   width: 40px;
+  height: 21px;
   color: var(--accent-pink);
 }
 .ai-arrow svg { width: 17px; height: 17px; transform: rotate(90deg); }
@@ -844,10 +851,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     gap: 18px;
     padding: 22px 0;
   }
-  .ai-num { grid-column: auto; grid-row: auto; line-height: 1; }
+  .ai-num { grid-column: auto; grid-row: auto; line-height: 1; margin-top: 0; }
   .ai-expect { grid-column: auto; grid-row: auto; font-size: 14px; }
   .ai-reality { grid-column: auto; grid-row: auto; font-size: 16px; }
-  .ai-arrow { grid-column: auto; grid-row: auto; width: auto; justify-self: auto; }
+  .ai-arrow { grid-column: auto; grid-row: auto; width: auto; height: auto; margin-top: 0; justify-self: auto; }
   .ai-arrow svg { width: 20px; height: 20px; transform: none; }
 }
 
@@ -1021,15 +1028,17 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 /* Одинаковая ширина обязательна: «01» уже «02»–«06», потому что единица
    узкая, и без неё кружки съезжали по строкам на 5px. min-width, а не width,
    чтобы градиент под цифрой не обрезался (см. .ai-num) */
-/* Номер шага — тот же элемент, что номер услуги: Unbounded 33px
-   с вертикальным градиентом. ⚠️ Градиент именно вертикальный: под 135°
-   на боксе из двух знаков переход идёт почти по одному тону */
+/* Номер шага — тот же элемент, что номер услуги: Unbounded с вертикальным
+   градиентом. ⚠️ Градиент именно вертикальный: под 135° на боксе из двух
+   знаков переход идёт почти по одному тону.
+   ⚠️ 20px до 900px, 33 только в полосе на десктопе: в мобильном списке
+   цифра 33px весила больше названия шага и перетягивала на себя строку */
 .step-num {
   flex: none;
-  min-width: 46px;
+  min-width: 30px;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 33px;
+  font-size: 20px;
   line-height: 0.9;
   letter-spacing: -0.01em;
   background-image: linear-gradient(#D91FBF, #9333EA);
@@ -1156,7 +1165,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     padding: 0;
     position: relative;
   }
-  .step-num { grid-row: 1; }
+  .step-num { grid-row: 1; font-size: 33px; min-width: 46px; }
   .step-name { grid-row: 2; font-size: 14px; }
   /* Линия ровно посередине промежутка: половина column-gap */
   .process-steps li:not(:last-child)::after {
@@ -2178,6 +2187,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     min-width: 34px;
     font-size: 20px;
     line-height: 1;
+    margin-top: 0;
   }
   .ai-expect { grid-column: auto; grid-row: auto; }
   .ai-reality { grid-column: auto; grid-row: auto; }
@@ -2185,6 +2195,8 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     grid-column: auto;
     grid-row: auto;
     width: auto;
+    height: auto;
+    margin-top: 0;
     justify-self: auto;
   }
   .ai-arrow svg { width: 17px; height: 17px; transform: none; }
@@ -2212,7 +2224,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .svc-num {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 33px;
+  font-size: 20px;
   line-height: 0.9;
   letter-spacing: -0.01em;
   background-image: linear-gradient(#D91FBF, #9333EA);
@@ -2541,4 +2553,67 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .case-card,
   .service-card,
   .review-card { break-inside: avoid; }
+}
+
+/* ===== Телефон: правки 4 сентября 2026 ===== */
+@media (max-width: 639px) {
+  /* 20px — нижняя ступень Unbounded. Разрядка поджата, а предлог «от»
+     уменьшен до 12: иначе три значения в строку не помещаются */
+  .hero-stat-value { font-size: 20px; letter-spacing: -0.02em; }
+  .hero-stat-from { font-size: 12px; }
+
+  /* Услуги: плашек нет и на телефоне — тот же плоский вид, что на десктопе.
+     Аккордеон остаётся, услуги разделены линией с затуханием */
+  .services .carousel-track { gap: 0; }
+  .services .service-card {
+    background: none;
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+    padding: 16px 0;
+  }
+  .services .service-card + .service-card { border-top: 1px solid var(--border); }
+  /* Раскрытая карточка помечается не обводкой, а розовым шевроном:
+     обводки у плашек больше нет */
+  .services .service-card.is-open {
+    background-image: none;
+    border: 0;
+  }
+}
+
+/* Цифры Hero в строку, а не столбиком: три коротких значения занимают одну
+   строку экрана вместо трёх, и первый экран становится короче.
+   ⚠️ Нижний порог 340px обязателен: на 320 три значения в строку не влезают
+   и наезжают друг на друга — там остаётся прежний столбик.
+   ⚠️ grid-auto-columns: max-content, а не auto: auto-треки растягиваются
+   при избытке места и ужимаются ниже содержимого при нехватке — из-за
+   этого «от 1 500 ₽» наползало на соседа */
+@media (min-width: 340px) and (max-width: 639px) {
+  .hero-stats {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    justify-content: space-between;
+    column-gap: 16px;
+  }
+  .hero-stat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    align-content: start;
+    gap: 5px;
+    padding: 0;
+  }
+  /* Разделитель тоже поворачивается: между колонками вертикальная линия
+     в середине промежутка вместо горизонтальной сверху */
+  .hero-stat::before {
+    left: -8px;
+    right: auto;
+    top: 2px;
+    bottom: 2px;
+    width: 1px;
+    height: auto;
+    background-image: var(--rule-fade-v);
+  }
+  .hero-stat:first-child::before { display: none; }
+  .hero-stat-label { text-align: left; }
 }
