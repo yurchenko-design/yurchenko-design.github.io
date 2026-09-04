@@ -370,13 +370,18 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .tool-tags li { position: relative; z-index: 1; }
 
+/* Плашка контурная: форма тега осталась, заливка ушла. С заливкой это
+   были единственные плашки на сайте кроме кнопки, и блок из-за них
+   выбивался из языка остальных разделов (решение 4 сентября 2026).
+   ⚠️ Первый слой всё равно нужен — прозрачный: два фоновых слоя держат
+   градиентную обводку по border-box, без первого она не рисуется */
 .tool-tags li {
   border: 1px solid transparent;
   border-radius: 100px;
   padding: 7px 16px;
   font-size: 14px;
   color: var(--text);
-  background-image: linear-gradient(var(--pill-bg), var(--pill-bg)), var(--outline-grad);
+  background-image: linear-gradient(transparent, transparent), var(--outline-grad);
   background-origin: border-box;
   background-clip: padding-box, border-box;
   transition: background-image 0.25s var(--ease);
@@ -384,7 +389,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 /* Наведение подсвечивает обводку — тот же отклик, что у карточек услуг */
 .tool-tags li:hover {
   background-image:
-    linear-gradient(var(--pill-bg), var(--pill-bg)),
+    linear-gradient(transparent, transparent),
     linear-gradient(135deg, rgba(217, 31, 191, 0.85), rgba(147, 51, 234, 0.85));
 }
 
@@ -898,7 +903,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .strip-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  /* 44px, а не 32: ниже 900px колонки складываются друг под друга, и теги
+     в 32px под цитатой читались как её хвост, а не как отдельный блок.
+     Заголовка у них больше нет, поэтому отделяет только воздух */
+  gap: 44px;
 }
 
 /* Заголовки колонок набраны так же, как заголовки разделов, только мельче:
@@ -935,37 +943,22 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 /* Одинаковая ширина обязательна: «01» уже «02»–«06», потому что единица
    узкая, и без неё кружки съезжали по строкам на 5px. min-width, а не width,
    чтобы градиент под цифрой не обрезался (см. .ai-num) */
+/* Номер шага — тот же элемент, что номер услуги: Unbounded 33px
+   с вертикальным градиентом. ⚠️ Градиент именно вертикальный: под 135°
+   на боксе из двух знаков переход идёт почти по одному тону */
 .step-num {
   flex: none;
-  min-width: 28px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1;
-  background: var(--num-fill);
+  min-width: 46px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 33px;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  background-image: linear-gradient(#D91FBF, #9333EA);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-/* Кружок без заливки, с градиентной обводкой: два фоновых слоя — сплошной
-   фон по padding-box и градиент по border-box. Обычной border градиент
-   задать нельзя */
-.step-icon {
-  flex: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--accent-pink);
-  border: 1px solid transparent;
-  background-image: linear-gradient(var(--bg), var(--bg)), var(--outline-grad);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  transition: color 0.25s var(--ease);
-}
-.step-icon svg { width: 18px; height: 18px; }
-.process-steps li:hover .step-icon { color: var(--text); }
 .step-name {
   color: var(--text);
   font-size: 14px;
@@ -973,17 +966,23 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 
 /* --- Панель с цитатой --- */
+/* Цитата без заливки: слева градиентная полоса — тот же приём, что
+   у блоков с ценой. Заливка градиентом целого блока правилами системы
+   запрещена, и это была единственная такая плашка на сайте.
+   Полей сверху и снизу почти нет: цитата должна начинаться на одной
+   линии с тегами в соседней колонке */
 .quote-panel {
   position: relative;
-  /* Верхнее поле меньше нижнего: при симметричных 30px текст в панели
-     садился заметно ниже заголовка соседней колонки «Инструменты» —
-     по буквам разница доходила до 35px. Полностью выровнять их нельзя,
-     это потребовало бы отрицательного поля, но 20px сокращают разрыв
-     почти вдвое и панель перестаёт выглядеть просевшей */
-  padding: 20px 32px 28px;
-  border-radius: var(--radius);
-  background: var(--panel-fill);
-  overflow: hidden;
+  padding: 2px 0 2px 26px;
+}
+.quote-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-image: var(--gradient);
 }
 /* Значка ” в панели с цитатой нет (решение 22 августа 2026). Цитата уже
    набрана в ёлочках «…», и глиф сверху читался как вторые кавычки подряд.
@@ -1052,13 +1051,16 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      Он и вертикальные линии между шагами делали блок похожим на таблицу */
   .strip-col + .strip-col-process::before { display: none; }
 
-  /* Шесть шагов одной строкой: кружок с розовой обводкой и белой цифрой,
-     под ним подпись, от кружка к кружку идёт линия. Иконки в этой раскладке
-     не участвуют — цифра внутри кружка занимает их место, а подпись получает
-     всю ширину колонки и почти перестаёт переноситься */
+  /* Шесть шагов одной строкой: крупный номер градиентом, под ним название,
+     между колонками вертикальная линия — язык услуг и блока про нейросеть.
+     ⚠️ Ширина всех шести колонок обязана быть одинаковой. Поэтому боковых
+     полей у шагов нет вообще, а промежуток задан column-gap: линия рисуется
+     ровно в его середине через отрицательный right. Прежний приём — общий
+     padding с обнулением у крайних — давал колонкам разную ширину контента,
+     и заказчица это увидела сразу (замечание 4 сентября 2026) */
   .process-steps {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    column-gap: 18px;
+    column-gap: 40px;
   }
   .process-steps li {
     display: grid;
@@ -1072,42 +1074,21 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
        линии независимо от того, одна в ней строка или две */
     align-items: start;
     align-content: start;
-    row-gap: 12px;
+    row-gap: 10px;
     padding: 0;
     position: relative;
   }
-  .step-icon { display: none; }
-  /* Цифра белая и сплошная: базовое правило заливает её градиентом через
-     background-clip: text, и внутри кружка она читалась бы бледной */
-  .step-num {
-    grid-row: 1;
-    width: 44px;
-    min-width: 0;
-    height: 44px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent-pink);
-    background: none;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
-    -webkit-text-fill-color: #ffffff;
-    color: #ffffff;
-    font-size: 14px;
-    line-height: 1;
-  }
-  .step-name { grid-row: 2; }
-  /* Линия между кружками. Начинается за кружком (44px) и уходит за правый
-     край шага на промежуток колонки минус зазор — так она не упирается
-     в следующий кружок, а останавливается за 8px до него */
-  .process-steps li:not(:last-child)::before {
+  .step-num { grid-row: 1; }
+  .step-name { grid-row: 2; font-size: 14px; }
+  /* Линия ровно посередине промежутка: половина column-gap */
+  .process-steps li:not(:last-child)::after {
     content: "";
     position: absolute;
-    left: 52px;
-    right: -10px;
-    top: 22px;
-    height: 1px;
-    background-image: var(--rule-fade);
+    right: -20px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background-image: var(--rule-fade-v);
   }
   /* Горизонтальная линия от вертикального списка здесь не нужна.
      ⚠️ Селектор с двумя элементами обязателен: базовое правило записано
