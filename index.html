@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Onest:wght@400;500;600;700&family=Big+Shoulders:opsz,wght@72,900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=r91">
+<link rel="stylesheet" href="css/style.css?v=r93">
 </head>
 <body>
 
@@ -209,7 +209,6 @@
       </ul>
     </div>
 
-    <div class="ai-rule" aria-hidden="true"></div>
 
     <div class="ai-pillars" data-animate="fade-up">
       <div class="ai-pillar"><span class="ai-pillar-num" aria-hidden="true">01</span><span class="ai-pillar-word">Смысл</span></div>
@@ -285,49 +284,42 @@
   </section>
 
   <!-- 5. МОИ РАБОТЫ -->
-  <section id="works" class="works" data-works-variant="carousel">
+  <!-- Мои работы: один кейс крупно, остальные строкой снизу. Раскладка
+       по референсу заказчицы (4 сентября 2026). Все четыре кейса лежат
+       в разметке, активный помечен .is-active — так они остаются в поиске
+       и доступны без скриптов -->
+  <section id="works" class="works">
     <div class="section-head" data-animate="fade-up">
       <h2>Мои работы</h2>
-      <div class="carousel-nav">
-        <button type="button" class="carousel-arrow" data-carousel-prev aria-controls="works-track" aria-label="Предыдущие работы">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
-        </button>
-        <button type="button" class="carousel-arrow" data-carousel-next aria-controls="works-track" aria-label="Следующие работы">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-        </button>
-      </div>
     </div>
 
-    <div class="gallery carousel-track" id="works-track" data-carousel tabindex="0" role="group" aria-label="Работы, прокручиваемый список">
-
-        <article class="case-card" data-animate="fade-up" data-case="marketing-strategy">
+    <div class="case-stage">
+        <article class="case-card is-active" data-case="marketing-strategy" data-animate="fade-up">
           <div class="case-preview">
             <div class="case-slides">
               <img src="images/gallery/marketing-strategy-1.jpg?v=2" alt="Слайд 1 презентации «Маркетинговая стратегия»" loading="lazy" class="is-active">
               <img src="images/gallery/marketing-strategy-2.jpg?v=2" alt="Слайд 2 презентации «Маркетинговая стратегия»" loading="lazy">
               <img src="images/gallery/marketing-strategy-3.jpg?v=2" alt="Слайд 3 презентации «Маркетинговая стратегия»" loading="lazy">
             </div>
-            <button class="case-expand" data-case-open aria-label="Открыть кейс «Маркетинговая стратегия» на весь экран">⤢</button>
-            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд">&larr;</button>
-            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд">&rarr;</button>
+            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <div class="case-dots">
+              <button type="button" data-slide-dot="0" class="is-active" aria-label="Слайд 1"></button>
+              <button type="button" data-slide-dot="1" class="" aria-label="Слайд 2"></button>
+              <button type="button" data-slide-dot="2" class="" aria-label="Слайд 3"></button>
+            </div>
           </div>
 
-          <div class="case-head">
-            <h3>Маркетинговая<br> стратегия</h3>
-            <button type="button" class="case-toggle" data-case-toggle
-                    aria-expanded="false" aria-controls="case-body-1"
-                    aria-label="Показать описание кейса «Маркетинговая стратегия»">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-
-          <div class="case-result">
+          <div class="case-info">
+            <span class="case-num" aria-hidden="true">01</span>
+            <h3>Маркетинговая стратегия</h3>
             <span class="case-result-label">Результат</span>
-            <p>Клиент успешно защитил стратегию перед работодателем и&nbsp;получил работу</p>
-          </div>
-
-          <div class="case-body" id="case-body-1">
-            <div>
+            <p class="case-result-text">Клиент успешно защитил стратегию перед работодателем и&nbsp;получил работу</p>
+            <button type="button" class="case-open" data-case-toggle
+                    aria-expanded="false" aria-controls="case-body-1">
+              Открыть кейс<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10m0 0V9m0 8H9"/></svg>
+            </button>
+            <div class="case-body" id="case-body-1">
               <dl class="case-facts">
               <dt>Задача</dt>
               <dd>Презентация-задание для&nbsp;трудоустройства на&nbsp;английском, с&nbsp;большим объёмом текста, который нельзя было сокращать</dd>
@@ -338,34 +330,32 @@
           </div>
         </article>
 
-        <article class="case-card" data-animate="fade-up" data-animate-delay="80" data-case="webinar">
+        <article class="case-card" data-case="webinar" data-animate="fade-up">
           <div class="case-preview">
             <div class="case-slides">
               <img src="images/gallery/webinar-1.jpg" alt="Слайд 1 презентации «Презентация для вебинара»" loading="lazy" class="is-active">
               <img src="images/gallery/webinar-2.jpg" alt="Слайд 2 презентации «Презентация для вебинара»" loading="lazy">
               <img src="images/gallery/webinar-3.jpg" alt="Слайд 3 презентации «Презентация для вебинара»" loading="lazy">
             </div>
-            <button class="case-expand" data-case-open aria-label="Открыть кейс «Презентация для вебинара» на весь экран">⤢</button>
-            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд">&larr;</button>
-            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд">&rarr;</button>
+            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <div class="case-dots">
+              <button type="button" data-slide-dot="0" class="is-active" aria-label="Слайд 1"></button>
+              <button type="button" data-slide-dot="1" class="" aria-label="Слайд 2"></button>
+              <button type="button" data-slide-dot="2" class="" aria-label="Слайд 3"></button>
+            </div>
           </div>
 
-          <div class="case-head">
+          <div class="case-info">
+            <span class="case-num" aria-hidden="true">02</span>
             <h3>Презентация для&nbsp;вебинара</h3>
-            <button type="button" class="case-toggle" data-case-toggle
-                    aria-expanded="false" aria-controls="case-body-2"
-                    aria-label="Показать описание кейса «Презентация для вебинара»">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-
-          <div class="case-result">
             <span class="case-result-label">Результат</span>
-            <p>Спикеру не&nbsp;пришлось расшифровывать слайды&nbsp;— они всё&nbsp;объясняли сами</p>
-          </div>
-
-          <div class="case-body" id="case-body-2">
-            <div>
+            <p class="case-result-text">Спикеру не&nbsp;пришлось расшифровывать слайды&nbsp;— они всё&nbsp;объясняли сами</p>
+            <button type="button" class="case-open" data-case-toggle
+                    aria-expanded="false" aria-controls="case-body-2">
+              Открыть кейс<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10m0 0V9m0 8H9"/></svg>
+            </button>
+            <div class="case-body" id="case-body-2">
               <dl class="case-facts">
               <dt>Задача</dt>
               <dd>Презентация для&nbsp;вебинара&nbsp;— материал был&nbsp;написан для&nbsp;чтения, а&nbsp;не&nbsp;для&nbsp;выступления</dd>
@@ -376,34 +366,32 @@
           </div>
         </article>
 
-        <article class="case-card" data-animate="fade-up" data-animate-delay="80" data-case="dashboards">
+        <article class="case-card" data-case="dashboards" data-animate="fade-up">
           <div class="case-preview">
             <div class="case-slides">
               <img src="images/gallery/dashboards-1.jpg" alt="Слайд 1 презентации «Примеры графиков и дашбордов»" loading="lazy" class="is-active">
               <img src="images/gallery/dashboards-2.jpg" alt="Слайд 2 презентации «Примеры графиков и дашбордов»" loading="lazy">
               <img src="images/gallery/dashboards-3.jpg" alt="Слайд 3 презентации «Примеры графиков и дашбордов»" loading="lazy">
             </div>
-            <button class="case-expand" data-case-open aria-label="Открыть кейс «Примеры графиков и дашбордов» на весь экран">⤢</button>
-            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд">&larr;</button>
-            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд">&rarr;</button>
+            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <div class="case-dots">
+              <button type="button" data-slide-dot="0" class="is-active" aria-label="Слайд 1"></button>
+              <button type="button" data-slide-dot="1" class="" aria-label="Слайд 2"></button>
+              <button type="button" data-slide-dot="2" class="" aria-label="Слайд 3"></button>
+            </div>
           </div>
 
-          <div class="case-head">
+          <div class="case-info">
+            <span class="case-num" aria-hidden="true">03</span>
             <h3>Примеры графиков и&nbsp;дашбордов</h3>
-            <button type="button" class="case-toggle" data-case-toggle
-                    aria-expanded="false" aria-controls="case-body-3"
-                    aria-label="Показать описание кейса «Примеры графиков и дашбордов»">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-
-          <div class="case-result">
             <span class="case-result-label">Результат</span>
-            <p>Дашборды ушли в&nbsp;регулярную отчётность, время на&nbsp;подготовку сократилось в&nbsp;несколько раз</p>
-          </div>
-
-          <div class="case-body" id="case-body-3">
-            <div>
+            <p class="case-result-text">Дашборды ушли в&nbsp;регулярную отчётность, время на&nbsp;подготовку сократилось в&nbsp;несколько раз</p>
+            <button type="button" class="case-open" data-case-toggle
+                    aria-expanded="false" aria-controls="case-body-3">
+              Открыть кейс<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10m0 0V9m0 8H9"/></svg>
+            </button>
+            <div class="case-body" id="case-body-3">
               <dl class="case-facts">
               <dt>Задача</dt>
               <dd>Сделать так, чтобы цифры читались и&nbsp;теми, кто&nbsp;в&nbsp;цифрах живёт, и&nbsp;теми, кто&nbsp;смотрит раз&nbsp;в&nbsp;месяц</dd>
@@ -414,34 +402,32 @@
           </div>
         </article>
 
-        <article class="case-card" data-animate="fade-up" data-case="inner-health">
+        <article class="case-card" data-case="inner-health" data-animate="fade-up">
           <div class="case-preview">
             <div class="case-slides">
               <img src="images/gallery/inner-health-3.jpg" alt="Слайд 1 презентации «Редизайн презентации»" loading="lazy" class="is-active">
               <img src="images/gallery/inner-health-2.jpg" alt="Слайд 2 презентации «Редизайн презентации»" loading="lazy">
               <img src="images/gallery/inner-health-1.jpg" alt="Слайд 3 презентации «Редизайн презентации»" loading="lazy">
             </div>
-            <button class="case-expand" data-case-open aria-label="Открыть кейс «Редизайн презентации» на весь экран">⤢</button>
-            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд">&larr;</button>
-            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд">&rarr;</button>
+            <button class="case-arrow case-arrow-prev" data-slide-prev aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+            <button class="case-arrow case-arrow-next" data-slide-next aria-label="Следующий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <div class="case-dots">
+              <button type="button" data-slide-dot="0" class="is-active" aria-label="Слайд 1"></button>
+              <button type="button" data-slide-dot="1" class="" aria-label="Слайд 2"></button>
+              <button type="button" data-slide-dot="2" class="" aria-label="Слайд 3"></button>
+            </div>
           </div>
 
-          <div class="case-head">
-            <h3>Редизайн<br> презентации</h3>
-            <button type="button" class="case-toggle" data-case-toggle
-                    aria-expanded="false" aria-controls="case-body-4"
-                    aria-label="Показать описание кейса «Редизайн презентации»">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-
-          <div class="case-result">
+          <div class="case-info">
+            <span class="case-num" aria-hidden="true">04</span>
+            <h3>Редизайн презентации</h3>
             <span class="case-result-label">Результат</span>
-            <p>После редизайна вырос поток заказов&nbsp;— каталог стал понятным клиентам</p>
-          </div>
-
-          <div class="case-body" id="case-body-4">
-            <div>
+            <p class="case-result-text">После редизайна вырос поток заказов&nbsp;— каталог стал понятным клиентам</p>
+            <button type="button" class="case-open" data-case-toggle
+                    aria-expanded="false" aria-controls="case-body-4">
+              Открыть кейс<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10m0 0V9m0 8H9"/></svg>
+            </button>
+            <div class="case-body" id="case-body-4">
               <dl class="case-facts">
               <dt>Задача</dt>
               <dd>Обновить каталог, написанный научным языком: понять его должны и&nbsp;медики, и&nbsp;обычные покупатели</dd>
@@ -451,14 +437,40 @@
             </div>
           </div>
         </article>
-
     </div>
 
-    <div class="carousel-dots" data-carousel-dots aria-hidden="true"></div>
+    <ul class="case-rest" data-case-rest>
+        <li class="is-current">
+          <button type="button" data-go="0">
+            <span class="case-rest-num" aria-hidden="true">01</span>
+            <b>Маркетинговая стратегия</b>
+            <span class="case-rest-result">Клиент успешно защитил стратегию перед работодателем и&nbsp;получил работу</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" data-go="1">
+            <span class="case-rest-num" aria-hidden="true">02</span>
+            <b>Презентация для&nbsp;вебинара</b>
+            <span class="case-rest-result">Спикеру не&nbsp;пришлось расшифровывать слайды&nbsp;— они всё&nbsp;объясняли сами</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" data-go="2">
+            <span class="case-rest-num" aria-hidden="true">03</span>
+            <b>Примеры графиков и&nbsp;дашбордов</b>
+            <span class="case-rest-result">Дашборды ушли в&nbsp;регулярную отчётность, время на&nbsp;подготовку сократилось в&nbsp;несколько раз</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" data-go="3">
+            <span class="case-rest-num" aria-hidden="true">04</span>
+            <b>Редизайн презентации</b>
+            <span class="case-rest-result">После редизайна вырос поток заказов&nbsp;— каталог стал понятным клиентам</span>
+          </button>
+        </li>
+    </ul>
   </section>
 
-
-  <!-- 6. ОТЗЫВЫ -->
   <section id="reviews" class="reviews">
     <div class="section-head" data-animate="fade-up">
       <h2>Отзывы клиентов</h2>
@@ -595,6 +607,6 @@
   <a class="btn btn-primary" href="#contact">Обсудить проект<span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></svg></span></a>
 </div>
 
-<script src="js/main.js?v=r91"></script>
+<script src="js/main.js?v=r93"></script>
 </body>
 </html>

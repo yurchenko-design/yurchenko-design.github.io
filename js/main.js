@@ -277,15 +277,18 @@
     showSlide();
   };
 
-  /* Per-card mini-carousel: стрелки переключают слайд, клик по превью открывает лайтбокс */
+  /* Per-card mini-carousel: стрелки и полоски переключают слайд,
+     клик по превью открывает лайтбокс */
   document.querySelectorAll('.case-card').forEach((card) => {
     const caseKey = card.getAttribute('data-case');
     const slides = card.querySelectorAll('.case-slides img');
+    const dots = card.querySelectorAll('[data-slide-dot]');
     let activeIndex = 0;
 
     const setActive = (index) => {
       activeIndex = index;
       slides.forEach((img, i) => img.classList.toggle('is-active', i === index));
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
     };
 
     const arrowPrev = card.querySelector('[data-slide-prev]');
@@ -302,12 +305,61 @@
         setActive((activeIndex + 1) % slides.length);
       });
     }
+    dots.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setActive(Number(dot.getAttribute('data-slide-dot')));
+      });
+    });
 
     const preview = card.querySelector('.case-preview');
     preview.addEventListener('click', () => {
       openLightbox(caseKey, activeIndex);
     });
   });
+
+  /* ===== Переключение кейса =====
+     Наверху показан один кейс, остальные идут строкой снизу. Клик по строке
+     поднимает её кейс наверх, а сама строка из списка уходит — она уже
+     показана. Раскрытое описание при этом схлопывается: оно относилось
+     к прошлому кейсу */
+  const caseRest = document.querySelector('[data-case-rest]');
+  if (caseRest) {
+    const cards = [...document.querySelectorAll('.case-card')];
+    const rows = [...caseRest.children];
+
+    caseRest.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-go]');
+      if (!btn) return;
+      const index = Number(btn.getAttribute('data-go'));
+
+      cards.forEach((card, i) => {
+        card.classList.toggle('is-active', i === index);
+        if (i !== index) {
+          card.classList.remove('is-open');
+          const toggle = card.querySelector('[data-case-toggle]');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+      rows.forEach((row, i) => row.classList.toggle('is-current', i === index));
+      syncRestPositions();
+    });
+
+    /* Позиция видимой строки в ряду: по ней CSS решает, у какой колонки
+       рисовать разделитель. Селектором «последний видимый» это не выразить */
+    function syncRestPositions() {
+      let pos = 0;
+      rows.forEach((row) => {
+        if (row.classList.contains('is-current')) {
+          row.removeAttribute('data-pos');
+        } else {
+          row.setAttribute('data-pos', String(pos));
+          pos += 1;
+        }
+      });
+    }
+    syncRestPositions();
+  }
 
 
   /* ===== Телефон: липкая кнопка =====
