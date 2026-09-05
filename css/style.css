@@ -379,21 +379,8 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    ⚠️ Что отклонили по дороге (4 сентября 2026): крупная цифра «13» на фоне,
    свечение на всю колонку (расползалось на фон), карточка вокруг колонки
    и контурные плашки. Плашки остаются с заливкой, как были */
-.tool-tags { position: relative; }
-.tool-tags::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 680px;
-  height: 459px;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(closest-side circle, rgba(217, 31, 191, 0.16), transparent 72%),
-    radial-gradient(closest-side circle at 62% 62%, rgba(147, 51, 234, 0.12), transparent 70%);
-}
+/* Своего пятна у тегов больше нет: до них дотягивается общее свечение
+   блока про нейросеть (#ai::after) — оно и просвечивает сквозь плашки */
 .tool-tags li { position: relative; z-index: 1; }
 
 /* Плашка контурная: форма тега осталась, заливка ушла. С заливкой это
@@ -876,39 +863,33 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .ai-pillars { display: grid; grid-template-columns: 1fr; margin-top: 40px; }
 .ai-pillar { display: flex; align-items: baseline; gap: 14px; padding: 10px 0; }
 
-/* От 720px столпы стоят в ряд и связаны сквозной линией: она идёт через
-   весь ряд, а слова лежат на ней и разрывают её собой — так три столпа
-   читаются как связанные, а не разделённые (решение заказчицы).
-   ⚠️ Ширина столпа только по тексту (flex: none): при равных колонках
-   фон слова закрывал линию целиком и её не было видно.
-   ⚠️ Фон слова обязан совпадать с фоном страницы (--bg): он и есть то,
-   чем слово «разрывает» линию */
+/* От 720px столпы стоят в ряд и связаны линией: она идёт отрезками между
+   словами и растягивается на всё свободное место.
+   ⚠️ Сквозную линию (одна через весь ряд, слова разрывают её своим фоном)
+   пробовали и отменили 5 сентября 2026: на общем свечении фон слов стал
+   виден чёрными плашками.
+   ⚠️ Оба отрезка получают ОДИН И ТОТ ЖЕ градиент magenta → purple, а не
+   продолжение общего: заказчица попросила, чтобы связь «цифры → внимание»
+   читалась так же, как «смысл → цифры», а не гасла к концу строки */
 @media (min-width: 720px) {
   .ai-pillars {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    position: relative;
-  }
-  .ai-pillars::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background-image: linear-gradient(90deg, rgba(217, 31, 191, 0.9), rgba(147, 51, 234, 0.55) 55%, rgba(147, 51, 234, 0) 100%);
   }
   .ai-pillar {
     flex: none;
-    position: relative;
-    padding: 4px 20px;
-    background: var(--bg);
+    padding: 4px 0;
   }
-  .ai-pillar:first-child { padding-left: 0; }
-  .ai-pillar:last-child { padding-right: 0; }
+  .ai-pillar:not(:last-child) { flex: 1; }
+  .ai-pillar:not(:last-child)::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    margin: 0 22px;
+    align-self: center;
+    background-image: linear-gradient(90deg, rgba(217, 31, 191, 0.9), rgba(147, 51, 234, 0.85));
+  }
 }
-.ai-pillar-num { font-size: 12px; color: var(--text-muted); letter-spacing: 0.05em; }
 /* 26px — ступень «цифры Hero». Крупнее нельзя: столп перевесит заголовок
    раздела (33) и иерархия перевернётся */
 .ai-pillar-word {
@@ -943,20 +924,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   gap: 24px;
   align-items: center;
 }
-.ai-panel::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 620px;
-  height: 420px;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(closest-side circle, rgba(217, 31, 191, 0.16), transparent 72%),
-    radial-gradient(closest-side circle at 62% 62%, rgba(147, 51, 234, 0.12), transparent 70%);
-}
+/* Свечение у панели своё больше не рисуется: с 5 сентября 2026 на весь
+   блок про нейросеть и колонку «Инструменты» под ним работает одно общее
+   пятно (см. #ai::after ниже) */
 @media (min-width: 900px) {
   .ai-panel { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr); gap: 44px; padding: 36px 36px 40px; }
 }
@@ -988,6 +958,33 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    со строкой обычного текста, и 18px рядом с 16px строкой читались пятном
    (решение заказчицы 4 сентября 2026) */
 .ai-final .spark { --badge-size: 13px; }
+
+/* ===== Общее свечение блока про нейросеть (5 сентября 2026) =====
+   Одно пятно вместо двух: оно лежит за панелью с заявлением и дотягивается
+   до тегов «Инструменты» под ней — свет становится общим фоном этой части
+   страницы, а не двумя отдельными подсветками.
+   ⚠️ z-index: 0, а не -1: при отрицательном слой уходит ПОД фон .page-card
+   и свечения не видно вовсе. Содержимое секции поднято на z-index: 1,
+   поэтому свет лежит над фоном карточки, но под текстом.
+   Положение и сила выбраны заказчицей на превью с ползунками. */
+#ai { position: relative; z-index: 0; }
+#ai > * { position: relative; z-index: 1; }
+#ai::after {
+  content: "";
+  position: absolute;
+  left: 62%;
+  top: 87%;
+  /* На узком экране пятно считается от ширины окна: 1480px там накрыли бы
+     всё подряд */
+  width: min(1480px, 150vw);
+  height: min(1184px, 120vw);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side circle, rgba(217, 31, 191, 0.12), transparent 70%),
+    radial-gradient(closest-side circle at 58% 60%, rgba(147, 51, 234, 0.10), transparent 68%);
+}
 
 /* ===== Полоса: Инструменты · Как проходит работа · Цитата =====
    Раскладка из референса: три колонки, разделённые тонкими вертикальными
