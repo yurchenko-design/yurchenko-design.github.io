@@ -859,7 +859,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
   .ai-num { grid-column: auto; grid-row: auto; line-height: 1; margin-top: 0; }
   .ai-expect { grid-column: auto; grid-row: auto; font-size: 14px; }
-  .ai-reality { grid-column: auto; grid-row: auto; font-size: 16px; }
+  /* ⚠️ Тот же кегль, что у «ожидания» (14), а не 16: правая колонка и так
+     выделена — она белая против приглушённой левой, и к ней ведёт розовая
+     стрелка. Крупнее её делать не нужно, блок становится ровнее
+     (решение заказчицы 5 сентября 2026) */
+  .ai-reality { grid-column: auto; grid-row: auto; font-size: 14px; }
   .ai-arrow { grid-column: auto; grid-row: auto; width: auto; height: auto; margin-top: 0; justify-self: auto; }
   .ai-arrow svg { width: 20px; height: 20px; transform: none; }
 }
@@ -2215,8 +2219,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     line-height: 1;
     margin-top: 0;
   }
-  .ai-expect { grid-column: auto; grid-row: auto; }
-  .ai-reality { grid-column: auto; grid-row: auto; }
+  /* Оба столбца одним кеглем, как на десктопе: пара тут тоже идёт
+     в строку, и разный размер читался бы как разная важность */
+  .ai-expect { grid-column: auto; grid-row: auto; font-size: 14px; }
+  .ai-reality { grid-column: auto; grid-row: auto; font-size: 14px; }
   .ai-arrow {
     grid-column: auto;
     grid-row: auto;
