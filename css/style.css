@@ -1993,6 +1993,15 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      капсульными на сайте остаются только кнопки и теги */
   border-radius: var(--radius);
   border: 1px solid transparent;
+  /* ⚠️⚠️ ВОТ ПРИЧИНА «белой обводки», которую искали четыре захода:
+     у input собственный background-color по умолчанию БЕЛЫЙ, а мы задавали
+     только background-image. Первый слой (--field-bg) кроется по padding-box
+     и зону рамки не закрывает — сквозь прозрачный border светился именно
+     этот белый фон. Пока обводка была залита белым на 0.07–0.12, она его
+     маскировала; стоило сделать её прозрачной — рамка стала явной.
+     Замерено по пикселю: rgb(242,242,242). background-color: transparent
+     обязателен, без него любая правка обводки не помогает */
+  background-color: transparent;
   background-image: linear-gradient(var(--field-bg), var(--field-bg)), var(--field-outline);
   background-origin: border-box;
   background-clip: padding-box, border-box;
