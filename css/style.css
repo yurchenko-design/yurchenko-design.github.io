@@ -1437,27 +1437,16 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .service-proof .spark { --badge-size: 13px; }
 
 
-/* ===== Works — один кейс крупно, остальные строкой снизу =====
-   Раскладка по референсу заказчицы (4 сентября 2026). Все четыре кейса
-   лежат в разметке, показывается только .is-active; клик по строке внизу
-   поднимает другой кейс наверх */
+/* ===== Works — кейс: три слайда на подложке, описание справа =====
+   Раскладка 5 сентября 2026 по референсу заказчицы. Все четыре кейса лежат
+   в разметке, показывается только .is-active; клик по строке внизу поднимает
+   другой кейс наверх */
 .works { padding: var(--section-gap) 0 8px; }
 
 .case-card { display: none; }
-/* minmax(0, 1fr) обязателен: без него слайд не сжимается под ширину
-   экрана и вылезает за правый край на телефоне */
 .case-card.is-active { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
-@media (min-width: 900px) {
-  .case-card.is-active {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 56px;
-    align-items: start;
-  }
-}
 
 /* --- слайд --- */
-/* Пропорция 16:9 совпадает со слайдами, а object-fit: contain не режет им
-   края: кейс показывается целиком, как в презентации */
 .case-preview {
   position: relative;
   border: 1px solid var(--border);
@@ -1480,7 +1469,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-slides img.is-active { opacity: 1; }
 
 /* ⚠️ Стрелки и точки белые, не magenta: слайды кейсов сами цветные,
-   и розовый поверх них спорит с работой (замечание заказчицы) */
+   и розовый поверх них спорит с работой */
 .case-arrow {
   position: absolute;
   top: 50%;
@@ -1496,9 +1485,6 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   backdrop-filter: blur(6px);
   color: #ffffff;
   cursor: pointer;
-  /* ⚠️ Стрелки видны всегда, а не по наведению: заказчица не находила их
-     на слайде (замечание 5 сентября 2026). Полупрозрачны в покое,
-     под курсором наливаются */
   opacity: 0.75;
   transition: opacity 0.25s var(--ease), background 0.25s var(--ease);
 }
@@ -1530,15 +1516,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 /* --- текст кейса --- */
 .case-info { padding-top: 2px; }
-/* Номер держит весь блок — 60px, ступень имени в Hero. Градиент
-   вертикальный, как у номеров услуг */
 .case-num {
   display: block;
   font-family: var(--font-heading);
   font-weight: 700;
   /* ⚠️ 33 — потолок: это кегль заголовка раздела. Крупнее номер спорит
-     с «Моими работами» и ломает иерархию (замечание заказчицы
-     5 сентября 2026, до этого было 60). На телефоне 26 */
+     с «Моими работами» и ломает иерархию. На телефоне 26 */
   font-size: clamp(26px, 5vw, 33px);
   line-height: 0.85;
   letter-spacing: -0.02em;
@@ -1552,66 +1535,16 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-family: var(--font-heading);
   font-weight: 700;
   /* ⚠️ 26 на десктопе, а не 33: название кейса — подзаголовок внутри
-     раздела и обязано быть мельче «Моих работ» (33). На телефоне 24 —
-     при 33 «Маркетинговая» не помещалось в 285px и обрезалось */
+     раздела и обязано быть мельче «Моих работ» (33). На телефоне 24 */
   font-size: clamp(24px, 2.6vw, 26px);
   line-height: 1.12;
   margin-bottom: 26px;
 }
-.case-result-label {
-  display: block;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-.case-result-text {
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
 
-/* Ссылка набрана тихо: обычным начертанием и приглушённым цветом.
-   Белый полужирный перетягивал внимание с результата работы.
-   Яркой остаётся только стрелка — magenta здесь разрешён, это стрелка */
-.case-open {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.2s var(--ease);
-}
-.case-open:hover,
-.case-open:focus-visible { color: var(--text); }
-.case-open svg {
-  width: 18px;
-  height: 18px;
-  color: var(--accent-pink);
-  transition: transform 0.25s var(--ease);
-}
-.case-open:hover svg { transform: translate(3px, 3px); }
-.case-card.is-open .case-open svg { transform: rotate(-90deg); }
-
-/* Описание раскрывается по «Открыть кейс»: сетка со схлопнутой строкой,
-   без анимации высоты по auto. ⚠️ Схлопывать нужно обёртку, а не сам dl:
-   у dl четыре прямых ребёнка (dt/dd/dt/dd), и 0fr раскладывается по ним,
-   а не по одной строке — описание оставалось раскрытым */
-.case-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  margin: 0;
-  transition: grid-template-rows 0.3s var(--ease), margin 0.3s var(--ease);
-}
-.case-card.is-open .case-body { grid-template-rows: 1fr; margin-top: 22px; }
-.case-body > .case-facts { overflow: hidden; margin: 0; }
+/* Описание раскрыто всегда: кнопки «Открыть кейс» больше нет,
+   «Задача → Что сделала → Результат» читаются одним блоком */
+.case-body { display: grid; margin: 0; }
+.case-facts { display: grid; margin: 0; }
 .case-facts dt {
   color: var(--text-muted);
   font-size: 12px;
@@ -1631,7 +1564,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  margin-top: 34px;
+  margin-top: 30px;
   border-top: 1px solid var(--border);
 }
 /* Активный кейс из списка убран — он уже показан наверху */
@@ -1650,17 +1583,17 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   row-gap: 6px;
   padding: 18px 0;
 }
+/* Номер набран как заголовок строки: Onest 600 / 16, а не Unbounded 20.
+   Крупная заголовочная цифра забирала внимание на себя, а сигнал «нажми»
+   и так даёт розовая стрелка (решение заказчицы 5 сентября 2026) */
 .case-rest-num {
   grid-row: 1;
   grid-column: 1;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
   line-height: 1.25;
-  background-image: linear-gradient(#D91FBF, #9333EA);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
 }
 .case-rest b {
   grid-row: 1;
@@ -1670,6 +1603,17 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-size: 16px;
   line-height: 1.25;
 }
+/* Стрелка после названия — сигнал, что по строке можно нажать.
+   Чистый magenta здесь разрешён: это стрелка */
+.case-rest-arrow {
+  width: 15px;
+  height: 15px;
+  color: var(--accent-pink);
+  vertical-align: -2px;
+  margin-left: 8px;
+  transition: transform 0.25s var(--ease);
+}
+.case-rest button:hover .case-rest-arrow { transform: translateX(3px); }
 .case-rest-result {
   grid-row: 2;
   grid-column: 2;
@@ -1679,14 +1623,94 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .case-rest li + li button { border-top: 1px solid var(--border); }
 
+/* ===== Десктоп: три слайда на подложке ===== */
 @media (min-width: 900px) {
+  .case-card.is-active {
+    grid-template-columns: minmax(0, 0.48fr) minmax(0, 1fr);
+    /* ⚠️ start, а не stretch: при stretch колонка тянется до высоты соседа,
+       и подложка со слайдами оказывается длиннее описания */
+    align-items: start;
+    gap: 48px;
+    position: relative;
+    z-index: 0;
+  }
+  .case-card.is-active > * { position: relative; z-index: 1; }
+  /* Лёгкое свечение за подложкой — приём панели «Ни за одно из трёх».
+     ⚠️ Висит на карточке, а не на подложке: внутри подложки лёг бы поверх
+     её стекла. И z-index: 0, а не -1 — при отрицательном уходит под фон
+     .page-card и не виден вовсе. Положение и сила выбраны на превью */
+  .case-card.is-active::before {
+    content: "";
+    position: absolute;
+    left: 6%;
+    top: 28%;
+    width: 780px;
+    height: 663px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(closest-side circle, rgba(217, 31, 191, 0.11), transparent 70%),
+      radial-gradient(closest-side circle at 58% 60%, rgba(147, 51, 234, 0.09), transparent 68%);
+  }
+  /* Подложка: матовое стекло, как у панели «Ни за одно из трёх».
+     Ширина 73% — ею высота блока подогнана под высоту описания */
+  .case-preview {
+    width: 73%;
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 9px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius);
+    overflow: visible;
+  }
+  /* Все три слайда видны сразу, столбиком: по одному стилистика
+     презентации не читается */
+  .case-slides { position: static; display: contents; }
+  .case-slides img {
+    position: static;
+    opacity: 1;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .case-arrow,
+  .case-dots { display: none; }
+
+  .case-body { margin-top: 32px; }
+  .case-facts {
+    grid-template-columns: 150px minmax(0, 1fr);
+    column-gap: 24px;
+    row-gap: 0;
+  }
+  .case-facts dt {
+    grid-column: 1;
+    /* ⚠️ +1px сверху: выравнивание оптическое, по глифам, а не по боксам.
+       Метка 12px и текст 14px имеют разную высоту строки, и при равных
+       полях верх «ЗАДАЧА» вставал на 1px выше первой строки текста
+       (замерено через actualBoundingBoxAscent) */
+    padding: 24px 0 22px;
+    align-self: start;
+  }
+  .case-facts dd {
+    grid-column: 2;
+    margin: 0;
+    padding: 23px 0;
+  }
+  .case-facts dd + dt { margin-top: 0; }
+  .case-facts dt:not(:first-of-type),
+  .case-facts dd:not(:first-of-type) { border-top: 1px solid var(--border); }
+
   /* Колонки строго равные, боковых полей нет — промежуток задаёт column-gap,
-     а линия рисуется ровно в его середине. Тот же приём, что у шагов
-     процесса: с боковыми полями первая колонка не вставала под заголовок */
+     а линия рисуется ровно в его середине */
   .case-rest {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 40px;
-    margin-top: 46px;
+    margin-top: 30px;
   }
   .case-rest li { position: relative; }
   .case-rest li + li button { border-top: 0; }
@@ -1706,10 +1730,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .case-facts,
   .case-slides img,
-  .case-open svg { transition: none; }
+  .case-rest-arrow { transition: none; }
 }
+
 
 
 .reviews { padding: var(--section-gap) 0 8px; }
@@ -2112,7 +2136,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-size: 12px;
 }
 
-/* ===== Lightbox ===== */
+/* ===== Просмотр кейса — все три слайда сразу =====
+   Открывается кликом по подложке. ⚠️ Слайды вписываются в экран целиком,
+   без прокрутки: высота делится на три, каждый слайд contain. Листать
+   по одному не нужно — по трём сразу видна стилистика презентации
+   (решение заказчицы 5 сентября 2026) */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -2126,11 +2154,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.88);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 .lightbox-content {
   position: relative;
-  max-width: min(90vw, 1100px);
-  max-height: 86vh;
+  width: min(92vw, 1000px);
+  height: 88vh;
   opacity: 0;
   transform: scale(0.96);
   transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
@@ -2139,11 +2169,23 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   opacity: 1;
   transform: scale(1);
 }
-.lightbox-content img {
-  max-width: 100%;
-  max-height: 86vh;
-  border-radius: 6px;
+/* Та же подложка, что в блоке: матовое стекло и радиус блоков сайта */
+.lightbox-slides {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+}
+.lightbox-slides img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  border-radius: var(--radius);
+  display: block;
 }
 .lightbox-close {
   position: absolute;
@@ -2153,29 +2195,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   color: #fff;
   line-height: 1;
 }
-.lightbox-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s var(--ease);
-}
-.lightbox-nav:hover { background: rgba(255, 255, 255, 0.22); }
-.lightbox-prev { left: -60px; }
-.lightbox-next { right: -60px; }
 @media (max-width: 720px) {
-  .lightbox-prev { left: 8px; }
-  .lightbox-next { right: 8px; }
-  .lightbox-close { top: 8px; right: 8px; }
+  .lightbox-content { width: 94vw; height: 84vh; }
+  .lightbox-close { top: -38px; }
 }
+
 
 /* Услуги ниже 960px: карточки идут одна под другой, выравнивать по ряду
    нечего — а базовые правила рассчитаны на ряд и резервируют вторую строку

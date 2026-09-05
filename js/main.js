@@ -239,29 +239,29 @@
   };
 
   const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const btnPrev = document.getElementById('lightbox-prev');
-  const btnNext = document.getElementById('lightbox-next');
-  let currentCase = null;
-  let currentIndex = 0;
+  const lightboxSlides = document.getElementById('lightbox-slides');
+  const lightboxClose = lightbox && lightbox.querySelector('.lightbox-close');
   let lastFocused = null;
 
-  const showSlide = () => {
-    const c = cases[currentCase];
-    lightboxImg.src = c.images[currentIndex];
-    lightboxImg.alt = `${c.title} — слайд ${currentIndex + 1}`;
-  };
-
-  const openLightbox = (caseKey, startIndex) => {
-    if (!cases[caseKey]) return;
+  /* Просмотр кейса: сразу все три слайда, вписанные в экран.
+     ⚠️ Листания по одному больше нет — по трём слайдам сразу видна
+     стилистика презентации, а по одному она теряется (решение
+     заказчицы 5 сентября 2026) */
+  const openLightbox = (caseKey) => {
+    const c = cases[caseKey];
+    if (!c) return;
     lastFocused = document.activeElement;
-    currentCase = caseKey;
-    currentIndex = startIndex || 0;
-    showSlide();
+    lightboxSlides.innerHTML = '';
+    c.images.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `${c.title} — слайд ${i + 1}`;
+      lightboxSlides.appendChild(img);
+    });
     lightbox.hidden = false;
     requestAnimationFrame(() => lightbox.classList.add('is-open'));
     document.body.style.overflow = 'hidden';
-    btnPrev.focus();
+    if (lightboxClose) lightboxClose.focus();
   };
 
   const closeLightbox = () => {
@@ -269,12 +269,6 @@
     document.body.style.overflow = '';
     setTimeout(() => { lightbox.hidden = true; }, 250);
     if (lastFocused) lastFocused.focus();
-  };
-
-  const step = (dir) => {
-    const c = cases[currentCase];
-    currentIndex = (currentIndex + dir + c.images.length) % c.images.length;
-    showSlide();
   };
 
   /* Per-card mini-carousel: стрелки и полоски переключают слайд,
@@ -314,7 +308,7 @@
 
     const preview = card.querySelector('.case-preview');
     preview.addEventListener('click', () => {
-      openLightbox(caseKey, activeIndex);
+      openLightbox(caseKey);
     });
   });
 
@@ -333,14 +327,7 @@
       if (!btn) return;
       const index = Number(btn.getAttribute('data-go'));
 
-      cards.forEach((card, i) => {
-        card.classList.toggle('is-active', i === index);
-        if (i !== index) {
-          card.classList.remove('is-open');
-          const toggle = card.querySelector('[data-case-toggle]');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-      });
+      cards.forEach((card, i) => card.classList.toggle('is-active', i === index));
       rows.forEach((row, i) => row.classList.toggle('is-current', i === index));
       syncRestPositions();
     });
@@ -440,27 +427,12 @@
     phoneQuery.addEventListener('change', syncAccordion);
   }
 
-  /* ===== Раскрытие описания кейса ===== */
-  document.querySelectorAll('[data-case-toggle]').forEach((btn) => {
-    const card = btn.closest('.case-card');
-    const title = card.querySelector('h3').textContent.trim();
-    btn.addEventListener('click', () => {
-      const open = card.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.setAttribute('aria-label', `${open ? 'Скрыть' : 'Показать'} описание кейса «${title}»`);
-    });
-  });
-
   document.querySelectorAll('[data-close-lightbox]').forEach((el) => {
     el.addEventListener('click', closeLightbox);
   });
-  btnPrev.addEventListener('click', () => step(-1));
-  btnNext.addEventListener('click', () => step(1));
   document.addEventListener('keydown', (e) => {
     if (lightbox.hidden) return;
     if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') step(-1);
-    if (e.key === 'ArrowRight') step(1);
   });
 
   /* ===== Lead form ===== */
