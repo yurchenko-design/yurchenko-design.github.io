@@ -2071,8 +2071,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
        настолько, чтобы строка влезала целиком */
     white-space: nowrap;
     font-size: 14px;
+    /* ⚠️ Правое поле держит круг, а не текст: 20px отрывали его от края
+       кнопки, тогда как в Hero и в липкой кнопке круг стоит в 6px
+       (замечание заказчицы 5 сентября 2026). Левое поле осталось узким —
+       строка «Отправить заявку» кеглем 14 иначе не помещается в колонку */
     padding-left: 20px;
-    padding-right: 20px;
+    padding-right: 6px;
   }
   .form-status { grid-column: 1 / -1; }
 }
