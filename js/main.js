@@ -437,8 +437,13 @@
 
   /* ===== Lead form ===== */
   const WEB3FORMS_ACCESS_KEY = 'e5d4e756-f6d4-47b0-9ca5-daa078340c32';
-  const TELEGRAM_BOT_TOKEN = '8987685732:AAGIyRRcJyP0zJ2_vDZu7dAwPZ10HvXJx2Y';
-  const TELEGRAM_CHAT_ID = '1762557557';
+  /* ⚠️ Токен бота во фронтенде НЕ хранится: он лежит секретом в Cloudflare
+     Worker `tg-lead-form`, сайт обращается только к адресу прокси.
+     Токен и chat_id сюда не возвращать — см. telegram-proxy-nastroika.md.
+     ⚠️ Эта строка один раз уже была затёрта старой версией файла из рабочей
+     копии: правку вносили в saitvizitka/, а деплой копирует из
+     saitvizitka-redesign/. Менять оба файла или копировать в одну сторону */
+  const TELEGRAM_PROXY_URL = 'https://tg-lead-form.levcenkovitalia.workers.dev';
 
   const form = document.getElementById('lead-form');
   const statusEl = document.getElementById('form-status');
@@ -490,27 +495,24 @@
         );
       }
 
-      if (!TELEGRAM_BOT_TOKEN.startsWith('YOUR_') && !TELEGRAM_CHAT_ID.startsWith('YOUR_')) {
-        const text = [
-          '📩 Новая заявка с сайта',
-          `Имя: ${name}`,
-          `Контакт: ${contact}`,
-          `Тип проекта: ${projectType}`,
-          message ? `Комментарий: ${message}` : null,
-        ].filter(Boolean).join('\n');
-
+      if (TELEGRAM_PROXY_URL) {
         tasks.push(
-          fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          fetch(TELEGRAM_PROXY_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text }),
+            body: JSON.stringify({
+              name,
+              contact,
+              project_type: projectType,
+              message,
+            }),
           })
         );
       }
 
       if (tasks.length === 0) {
         submitBtn.disabled = false;
-        setStatus('Форма пока не настроена: добавьте ключ Web3Forms и/или данные Telegram-бота в js/main.js.', 'error');
+        setStatus('Форма пока не настроена: добавьте ключ Web3Forms и/или адрес Telegram-прокси.', 'error');
         return;
       }
 
