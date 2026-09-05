@@ -34,14 +34,20 @@
      обводки плашек и кружков и заливка номеров шагов. Акцент в этом разделе
      должен держать только панель с цитатой */
   --outline-grad: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-  /* Обводка полей формы тише общей: на тёмной панели контакты и без того
-     читаются, а рамка в 0.12 белого выделяла поля сильнее текста рядом
-     (правка 4 сентября 2026) */
-  --field-outline: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07));
+  /* ⚠️ Обводки у полей нет вообще — она прозрачная (правка 5 сентября 2026,
+     заказчица возвращалась к этому четырежды). Ни 0.12, ни 0.07 белого
+     не годятся: на чёрной странице любая светлая рамка читается как
+     «поле обведено белым» и весит больше подписи рядом. Поле различимо
+     заливкой --field-bg, а обводка загорается градиентом только в фокусе.
+     Слой всё равно нужен: два фоновых слоя держат градиентную обводку
+     по border-box, без первого она не рисуется */
+  --field-outline: linear-gradient(transparent, transparent);
   --pill-bg: var(--bg-elevated);
   /* Фон поля формы. Непрозрачный: под ним лежит слой градиентной обводки,
-     и полупрозрачная заливка просвечивала бы его насквозь */
-  --field-bg: #090909;
+     и полупрозрачная заливка просвечивала бы его насквозь.
+     ⚠️ Чуть светлее фона страницы: обводки у поля больше нет, и границу
+     поля показывает только эта заливка */
+  --field-bg: #131313;
   --num-fill: linear-gradient(#ffffff, #ffffff);
   --slide-inset: 10px;
   /* 4.4vw, а не 6.4: при 6.4 имя на ширинах 960–1040 не помещалось в свою
@@ -1489,7 +1495,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   backdrop-filter: blur(6px);
   color: #ffffff;
   cursor: pointer;
-  opacity: 0;
+  /* ⚠️ Стрелки видны всегда, а не по наведению: заказчица не находила их
+     на слайде (замечание 5 сентября 2026). Полупрозрачны в покое,
+     под курсором наливаются */
+  opacity: 0.75;
   transition: opacity 0.25s var(--ease), background 0.25s var(--ease);
 }
 .case-preview:hover .case-arrow,
@@ -1526,9 +1535,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   display: block;
   font-family: var(--font-heading);
   font-weight: 700;
-  /* На телефоне 33 — ступень заголовка раздела: 60px там перекрывает
-     полэкрана. Верхняя граница совпадает с именем в Hero */
-  font-size: clamp(33px, 8vw, 60px);
+  /* ⚠️ 33 — потолок: это кегль заголовка раздела. Крупнее номер спорит
+     с «Моими работами» и ломает иерархию (замечание заказчицы
+     5 сентября 2026, до этого было 60). На телефоне 26 */
+  font-size: clamp(26px, 5vw, 33px);
   line-height: 0.85;
   letter-spacing: -0.02em;
   background-image: linear-gradient(#D91FBF, #9333EA);
@@ -1540,9 +1550,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .case-info h3 {
   font-family: var(--font-heading);
   font-weight: 700;
-  /* 24 на телефоне — та же ступень, что у заголовка раздела: при 33px
-     «Маркетинговая» не помещалось в 285px и обрезалось */
-  font-size: clamp(24px, 3.4vw, 33px);
+  /* ⚠️ 26 на десктопе, а не 33: название кейса — подзаголовок внутри
+     раздела и обязано быть мельче «Моих работ» (33). На телефоне 24 —
+     при 33 «Маркетинговая» не помещалось в 285px и обрезалось */
+  font-size: clamp(24px, 2.6vw, 26px);
   line-height: 1.12;
   margin-bottom: 26px;
 }
@@ -1858,7 +1869,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   [data-contact-variant="plain"] .form-row input,
   [data-contact-variant="plain"] .form-row select,
   [data-contact-variant="plain"] .form-row textarea {
-    --field-bg: var(--bg-elevated);
+    /* Та же заливка, что в базовом наборе: обводки у полей нет, и границу
+       поля показывает только она — --bg-elevated был бы неотличим от фона */
+    --field-bg: #131313;
   }
 }
 
@@ -2297,8 +2310,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     width: 1px;
     background-image: var(--rule-fade-v);
   }
+  /* Горизонтальной линии между рядами нет (решение заказчицы 5 сентября
+     2026): вертикальные разделители колонок и так держат сетку, а линия
+     поперёк резала блок пополам. Верхнее поле у второго ряда осталось */
   [data-services-variant="cards"] .service-card:nth-child(n+4) {
-    border-top: 1px solid var(--border);
     padding-top: 30px;
   }
   [data-services-variant="cards"] .service-card:hover {
