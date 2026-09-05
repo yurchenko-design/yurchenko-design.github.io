@@ -223,7 +223,7 @@
     },
     'webinar': {
       title: 'Презентация для вебинара',
-      images: ['images/gallery/webinar-1.jpg', 'images/gallery/webinar-2.jpg', 'images/gallery/webinar-3.jpg'],
+      images: ['images/gallery/webinar-1.jpg?v=2', 'images/gallery/webinar-2.jpg?v=2', 'images/gallery/webinar-3.jpg?v=2'],
     },
     'marketing-strategy': {
       title: 'Маркетинговая стратегия',
