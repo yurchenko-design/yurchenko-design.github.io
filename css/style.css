@@ -2180,10 +2180,19 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.04);
 }
+/* ⚠️ Бокс картинки обязан совпадать с ней самой, иначе радиус ложится
+   на прозрачные поля и углы слайда выглядят острыми. Поэтому не
+   width/height: 100% + contain, а пропорция 16:9 с cover: слайды у нас
+   ровно этой пропорции, ничего не обрезается */
 .lightbox-slides img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  justify-self: center;
+  align-self: center;
   border-radius: var(--radius);
   display: block;
 }
@@ -2671,4 +2680,112 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
   .hero-stat:first-child::before { display: none; }
   .hero-stat-label { text-align: left; }
+}
+
+
+/* ===== Телефон: кейс по референсу (5 сентября 2026) =====
+   Номер и название одной строкой обычным начертанием, слайд на матовой
+   подложке со свечением, под ним «Результат», ниже список работ
+   со стрелками. Параметры свечения выбраны заказчицей на превью */
+@media (max-width: 899px) {
+  .case-card.is-active {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+    position: relative;
+    z-index: 0;
+  }
+  .case-card.is-active > * { position: relative; z-index: 1; }
+  /* Шапка распускается, чтобы номер и название встали одной строкой */
+  .case-info { display: contents; }
+  .case-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.25;
+    background: none;
+    -webkit-text-fill-color: var(--text);
+    color: var(--text);
+    margin: 0;
+  }
+  .case-info h3 {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0;
+  }
+  .case-preview,
+  .case-body { grid-column: 1 / -1; }
+
+  /* Подложка со стеклом — как на десктопе и как у панели про нейросеть */
+  .case-preview {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius);
+    padding: 8px;
+    aspect-ratio: auto;
+    overflow: visible;
+    cursor: zoom-in;
+  }
+  .case-slides {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .case-slides img { border-radius: var(--radius); }
+  /* Свечение за подложкой */
+  .case-card.is-active::before {
+    content: "";
+    position: absolute;
+    left: 42%;
+    top: 26%;
+    width: 720px;
+    height: 612px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(closest-side circle, rgba(217, 31, 191, 0.28), transparent 70%),
+      radial-gradient(closest-side circle at 58% 60%, rgba(147, 51, 234, 0.23), transparent 68%);
+  }
+  /* Листания по одному нет: касание по слайду открывает все три сразу */
+  .case-arrow,
+  .case-dots { display: none; }
+
+  /* Под слайдом остаётся только «Результат»: «Задача» и «Что сделала»
+     на телефоне растягивают экран, а главное — результат */
+  .case-facts { display: block; }
+  .case-facts dt:nth-of-type(-n+2),
+  .case-facts dd:nth-of-type(-n+2) { display: none; }
+  .case-facts dt:nth-of-type(3) {
+    display: block;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .case-facts dd:nth-of-type(3) { display: block; margin: 8px 0 0; }
+
+  /* Список работ: номер magenta, название, стрелка у правого края */
+  .case-rest { margin-top: 22px; }
+  .case-rest button {
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 0;
+    padding: 16px 0;
+  }
+  .case-rest-num { color: var(--accent-pink); }
+  .case-rest b {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .case-rest b br { display: none; }
+  .case-rest-result { display: none; }
+  .case-rest-arrow { width: 18px; height: 18px; margin-left: 0; flex: none; }
 }
