@@ -1832,10 +1832,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-size: 14px;
   color: var(--text);
 }
+/* 14px — базовый кегль основного текста сайта. На 16 отзыв весил больше,
+   чем описания кейсов и услуг, и тянул на себя внимание (правка 7 сентября 2026) */
 .review-text {
   color: var(--text);
-  font-size: 16px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.6;
   margin: 0;
 }
 /* Автор прижат к низу — строки авторов стоят на одной линии во всех карточках */
@@ -2157,10 +2159,17 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+/* ⚠️ Подложка облегает слайды, а не растягивается на 1000px: иначе слайды
+   вписываются по высоте, а по бокам остаются пустые поля в сотни пикселей —
+   поля и зазоры перестают быть одного размера. Считаем от одного слайда:
+   ширина = слайд + два поля по 10, высота = три слайда 16:9 + два зазора
+   по 10 + два поля. Ограничитель — что окажется меньше: ширина окна или
+   высота (80vh, оставшиеся 20 нужны крестику сверху и воздуху снизу) */
 .lightbox-content {
   position: relative;
-  width: min(92vw, 1000px);
-  height: 88vh;
+  --lb-slide: min(92vw - 20px, (80vh - 40px) * 16 / 27);
+  width: calc(var(--lb-slide) + 20px);
+  height: calc(var(--lb-slide) * 27 / 16 + 40px);
   opacity: 0;
   transform: scale(0.96);
   transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
@@ -2185,10 +2194,8 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    width/height: 100% + contain, а пропорция 16:9 с cover: слайды у нас
    ровно этой пропорции, ничего не обрезается */
 .lightbox-slides img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   justify-self: center;
@@ -2196,17 +2203,49 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   border-radius: var(--radius);
   display: block;
 }
+/* Крестик в языке сайта: тот же круг 38px, что у стрелки в кнопках,
+   со стеклом и тонкой обводкой. Штрих белый, magenta появляется при
+   наведении — по правилу «чистый magenta только на иконках и стрелках».
+   14px до подложки: вплотную не ставим */
 .lightbox-close {
   position: absolute;
-  top: -44px;
+  top: -52px;
   right: 0;
-  font-size: 28px;
-  color: #fff;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+.lightbox-close svg {
+  width: 15px;
+  height: 15px;
+}
+/* ⚠️ При открытии просмотра фокус уходит на крестик (это нужно для
+   клавиатуры), и браузер рисует поверх него своё синее кольцо — именно оно
+   выглядело чужеродным. Кольцо снимаем, но состояние фокуса показываем
+   своим приёмом: обводка и штрих становятся magenta */
+.lightbox-close:focus { outline: none; }
+/* Наведение и фокус — нейтральные: круг светлеет, штрих остаётся белым.
+   Magenta здесь не берём: крестик не действие сайта, а служебная кнопка */
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 @media (max-width: 720px) {
-  .lightbox-content { width: 94vw; height: 84vh; }
-  .lightbox-close { top: -38px; }
+  .lightbox-content { --lb-slide: min(94vw - 20px, (80vh - 40px) * 16 / 27); }
+  .lightbox-close { top: -48px; }
 }
 
 
