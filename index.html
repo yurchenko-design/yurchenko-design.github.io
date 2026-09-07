@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Onest:wght@400;500;600;700&family=Big+Shoulders:opsz,wght@72,900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=r105">
+<link rel="stylesheet" href="css/style.css?v=r107">
 </head>
 <body>
 
@@ -580,7 +580,12 @@
 <div class="lightbox" id="lightbox" hidden>
   <div class="lightbox-backdrop" data-close-lightbox></div>
   <div class="lightbox-content">
+    <p class="lightbox-title" id="lightbox-title"><span class="lightbox-num" aria-hidden="true"></span><span data-lightbox-name></span></p>
     <button class="lightbox-close" data-close-lightbox aria-label="Закрыть" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <!-- Листание кейсов в просмотре: только на десктопе, на телефоне
+         кейсы переключаются списком под слайдом -->
+    <button class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Предыдущий кейс" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+    <button class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Следующий кейс" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
     <div class="lightbox-slides" id="lightbox-slides"></div>
   </div>
 </div>
@@ -591,6 +596,6 @@
   <a class="btn btn-primary" href="#contact">Обсудить проект<span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></svg></span></a>
 </div>
 
-<script src="js/main.js?v=r105"></script>
+<script src="js/main.js?v=r107"></script>
 </body>
 </html>

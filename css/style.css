@@ -2247,6 +2247,62 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .lightbox-content { --lb-slide: min(94vw - 20px, (80vh - 40px) * 16 / 27); }
   .lightbox-close { top: -48px; }
 }
+/* Название кейса — на одной строке с крестиком, слева. В просмотре кейсы
+   листаются, и без подписи непонятно, чью работу видишь. Номер magenta —
+   тот же приём, что в списке работ под слайдом */
+.lightbox-title {
+  position: absolute;
+  top: -52px;
+  left: 0;
+  right: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lightbox-num { font-weight: 600; color: var(--accent-pink); }
+
+/* Стрелки листания кейсов — по бокам от подложки, тем же кругом, что
+   и крестик. На телефоне их нет: там кейсы переключаются списком */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+.lightbox-nav svg { width: 20px; height: 20px; }
+.lightbox-prev { left: -64px; }
+.lightbox-next { right: -64px; }
+.lightbox-nav:focus { outline: none; }
+.lightbox-nav:hover,
+.lightbox-nav:focus-visible {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+}
+@media (max-width: 899px) {
+  .lightbox-nav { display: none; }
+}
+
 
 
 /* Услуги ниже 960px: карточки идут одна под другой, выравнивать по ряду

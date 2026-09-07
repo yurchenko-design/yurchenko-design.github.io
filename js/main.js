@@ -241,16 +241,38 @@
   const lightbox = document.getElementById('lightbox');
   const lightboxSlides = document.getElementById('lightbox-slides');
   const lightboxClose = lightbox && lightbox.querySelector('.lightbox-close');
+  const lightboxNum = lightbox && lightbox.querySelector('.lightbox-num');
+  const lightboxName = lightbox && lightbox.querySelector('[data-lightbox-name]');
   let lastFocused = null;
+
+  /* Порядок листания берём из разметки, а не из объекта `cases`: на странице
+     кейсы идут 01 «Маркетинговая стратегия» … 04, а в объекте порядок другой,
+     и стрелки листали бы не то, что подписано номером */
+  const caseCards = [...document.querySelectorAll('.case-card')];
+  const caseOrder = caseCards.map((card) => card.getAttribute('data-case'));
+  /* ⚠️ Название для подписи берём из карточки, а не из `cases[].title`:
+     там служебные подписи для alt («Примеры графиков и дашбордов»), а на
+     сайте кейс называется «Графики и дашборды» — подпись расходилась бы
+     со списком работ */
+  const caseNames = caseCards.map((card) => {
+    const h = card.querySelector('h3');
+    return h ? h.textContent.trim() : '';
+  });
+  let caseIndex = 0;
+  /* Заполняется блоком «Переключение кейса» ниже: листание в просмотре
+     поднимает тот же кейс и на самой странице, чтобы после закрытия
+     наверху остался тот, который смотрели */
+  let activateCaseAt = null;
 
   /* Просмотр кейса: сразу все три слайда, вписанные в экран.
      ⚠️ Листания по одному больше нет — по трём слайдам сразу видна
      стилистика презентации, а по одному она теряется (решение
      заказчицы 5 сентября 2026) */
-  const openLightbox = (caseKey) => {
+  const fillLightbox = (index) => {
+    const caseKey = caseOrder[index];
     const c = cases[caseKey];
-    if (!c) return;
-    lastFocused = document.activeElement;
+    if (!c) return false;
+    caseIndex = index;
     lightboxSlides.innerHTML = '';
     c.images.forEach((src, i) => {
       const img = document.createElement('img');
@@ -258,6 +280,24 @@
       img.alt = `${c.title} — слайд ${i + 1}`;
       lightboxSlides.appendChild(img);
     });
+    if (lightboxNum) lightboxNum.textContent = String(index + 1).padStart(2, '0');
+    if (lightboxName) lightboxName.textContent = caseNames[index] || c.title;
+    return true;
+  };
+
+  /* Листание кейсов прямо в просмотре — по кругу, как в списке под слайдом.
+     Кейс поднимается и на странице: закрыв просмотр, видишь тот же */
+  const stepCase = (dir) => {
+    const next = (caseIndex + dir + caseOrder.length) % caseOrder.length;
+    if (!fillLightbox(next)) return;
+    if (activateCaseAt) activateCaseAt(next);
+  };
+
+  const openLightbox = (caseKey) => {
+    const index = caseOrder.indexOf(caseKey);
+    if (index < 0) return;
+    lastFocused = document.activeElement;
+    if (!fillLightbox(index)) return;
     lightbox.hidden = false;
     requestAnimationFrame(() => lightbox.classList.add('is-open'));
     document.body.style.overflow = 'hidden';
@@ -322,14 +362,18 @@
     const cards = [...document.querySelectorAll('.case-card')];
     const rows = [...caseRest.children];
 
-    caseRest.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-go]');
-      if (!btn) return;
-      const index = Number(btn.getAttribute('data-go'));
-
+    const activate = (index) => {
       cards.forEach((card, i) => card.classList.toggle('is-active', i === index));
       rows.forEach((row, i) => row.classList.toggle('is-current', i === index));
       syncRestPositions();
+    };
+    /* Тем же путём кейс поднимают стрелки в просмотре */
+    activateCaseAt = activate;
+
+    caseRest.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-go]');
+      if (!btn) return;
+      activate(Number(btn.getAttribute('data-go')));
     });
 
     /* Порядок и позиции строк.
@@ -430,9 +474,16 @@
   document.querySelectorAll('[data-close-lightbox]').forEach((el) => {
     el.addEventListener('click', closeLightbox);
   });
+  const lightboxPrev = lightbox.querySelector('[data-lightbox-prev]');
+  const lightboxNext = lightbox.querySelector('[data-lightbox-next]');
+  if (lightboxPrev) lightboxPrev.addEventListener('click', () => stepCase(-1));
+  if (lightboxNext) lightboxNext.addEventListener('click', () => stepCase(1));
+
   document.addEventListener('keydown', (e) => {
     if (lightbox.hidden) return;
     if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') stepCase(-1);
+    if (e.key === 'ArrowRight') stepCase(1);
   });
 
   /* ===== Lead form ===== */
