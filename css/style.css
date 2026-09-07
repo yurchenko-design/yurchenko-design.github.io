@@ -2652,7 +2652,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .reviews-grid {
     grid-auto-flow: column;
     grid-template-columns: none;
-    grid-auto-columns: calc(100vw - 96px);
+    /* ⚠️ Ширина карточки — 100%, а не calc(100vw - 96px): процент в треке
+       считается от content box, из которого поля 44px уже вычтены, поэтому
+       поле + карточка + поле точно складываются в ширину ленты. При счёте
+       от 100vw получалось на 6px больше, последняя карточка не доезжала
+       до своего поля и лента отскакивала назад (7 сентября 2026) */
+    grid-auto-columns: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 14px;
@@ -2664,9 +2669,31 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
   .reviews-grid::-webkit-scrollbar { display: none; }
   .review-card { scroll-snap-align: start; padding: 0; margin: 0; }
+  /* ⚠️ Отступы соседа сбрасываем тем же селектором `+`: правило
+     `.review-card + .review-card { margin-top: 22px; padding-top: 22px }`
+     написано для колонки, где отзывы идут друг под другом, и по
+     специфичности перебивало `margin: 0` у `.review-card`. В ленте оно
+     опускало второй и третий отзыв на 22 и 44px — полоски «5,0» стояли
+     на трёх разных уровнях */
+  .review-card + .review-card { margin-top: 0; padding-top: 0; }
   /* Разделительная линия между отзывами не нужна: в ленте карточки
      разделяет промежуток, а линия превращалась бы в обрубок */
   .review-card + .review-card::before { display: none; }
+  /* ⚠️ Индивидуальная анимация появления в ленте отключена. Наблюдатель
+     следит за вертикалью, а карточки уезжают по горизонтали: второй и
+     третий отзыв висели прозрачными со сдвигом 24px и «выпрыгивали»
+     в момент свайпа. Секция целиком по-прежнему появляется анимацией */
+  .review-card[data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  /* Подпись автора идёт сразу под цитатой, а не прижимается к низу.
+     В колонке `margin-top: auto` выравнивает авторов по одной линии,
+     но в ленте карточки тянутся по самому длинному отзыву, и под
+     короткими оставалась пустота в четверть экрана */
+  .review-card { align-self: start; }
+  .review-author { margin-top: 18px; }
 }
 
 /* ===== Печать / экспорт в PDF =====
