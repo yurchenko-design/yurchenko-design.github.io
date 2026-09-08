@@ -759,8 +759,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    что и --gradient */
 .ai-mark-wrap {
   position: relative;
-  display: inline-block;
-  margin-bottom: 34px;
+  /* ⚠️ block, а не inline-block: у строчного элемента под глифом остаётся
+     ещё 8px от line-box, и отступ на глаз оказывается больше заданного */
+  display: block;
+  width: fit-content;
+  /* 28, а не 34: block вместо inline-block снял ещё 8px от line-box,
+     и глиф выходит за низ viewBox — на глаз остаётся ровно 23px */
+  margin-bottom: 28px;
   filter: drop-shadow(0 0 12px rgba(217, 31, 191, 0.9)) drop-shadow(0 0 34px rgba(147, 51, 234, 0.5));
 }
 .ai-mark { display: block; width: 100%; height: auto; max-width: 330px; }
@@ -866,7 +871,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    поэтому пятно с z-index: -1 остаётся внутри панели, а не уходит на фон */
 .ai-panel {
   position: relative;
-  margin-top: 34px;
+  /* 12, а не 34: последняя пара уже несёт 22px нижнего паддинга, и вместе
+     выходило 58px пустоты. Раньше её заполняли три столпа, теперь между
+     парами и панелью пусто (правка 8 сентября 2026) */
+  margin-top: 12px;
   padding: 28px 24px 30px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -2888,6 +2896,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .case-card.is-active > * { position: relative; z-index: 1; }
   /* Шапка распускается, чтобы номер и название встали одной строкой */
   .case-info { display: contents; }
+  /* ⚠️ Поднимать над свечением нужно сами номер и название, а не `.case-info`:
+     у неё `display: contents`, собственного бокса нет, и `z-index` на ней
+     не действует — заголовок оказывался ПОД свечением и переставал быть
+     чисто белым (замер пикселя дал 249, 227, 248 вместо 255) */
+  .case-info > * { position: relative; z-index: 1; }
   .case-num {
     grid-column: 1;
     grid-row: 1;
