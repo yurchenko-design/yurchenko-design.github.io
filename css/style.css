@@ -3046,49 +3046,59 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    коробки строк и паддинги показывают ровные числа там, где глаз видит
    разницу в полтора сантиметра */
 
-/* Первый источник: на телефоне первая карточка услуг несёт своё верхнее
-   поле 16px, и воздух под заголовком становился в полтора раза больше */
+/* Первый источник: карточки услуг несут собственное верхнее поле — 16px
+   на телефоне, 22 на планшете, 26 в трёхколоночной сетке. У первой карточки
+   (в сетке — у всего первого ряда) оно складывается с отступом шапки,
+   и воздух под заголовком раздувается в полтора раза */
 @media (max-width: 639px) {
   .services .service-card:first-child { padding-top: 0; }
+}
+@media (min-width: 640px) and (max-width: 959px) {
+  [data-services-variant="cards"] .service-card:first-child { padding-top: 0; }
+}
+@media (min-width: 960px) {
+  [data-services-variant="cards"] .service-card:nth-child(-n+3) { padding-top: 0; }
 }
 
 /* Второй источник: контурная надпись «AI?» — глиф выходит за границы своего
    контейнера и сверху, и снизу, поэтому «на глаз» отступ здесь всегда меньше
    заданного. Компенсируем полем самой надписи */
 @media (min-width: 640px) and (max-width: 899px) {
-  #ai .ai-mark-wrap { margin-top: 21px; }
+  #ai .ai-mark-wrap { margin-top: 0; }
 }
 @media (max-width: 639px) {
-  #ai .ai-mark-wrap { margin-top: 20px; }
+  #ai .ai-mark-wrap { margin-top: 0; }
 }
 
 /* Остаток выравниваем поправкой к отступу шапки. Значения подобраны замером
    оптических границ: от нижнего края букв заголовка до верхнего края того,
    что стоит под ним, — везде 32px */
 @media (min-width: 900px) {
-  #services .section-head { margin-bottom: 6px; }
-  #ai .section-head { margin-bottom: 29px; }
-  #about .section-head { margin-bottom: 13px; }
-  #works .section-head { margin-bottom: 33px; }
-  #reviews .section-head { margin-bottom: 4px; }
-  #contact .section-head { margin-bottom: 21px; }
-  .strip-title { margin-bottom: 34px; }
+  #services .section-head { margin-bottom: 29px; }
+  #ai .section-head { margin-bottom: 25px; }
+  #about .section-head { margin-bottom: 25px; }
+  #works .section-head { margin-bottom: 27px; }
+  #reviews .section-head { margin-bottom: 22px; }
+  #contact .section-head { margin-bottom: 25px; }
+  .strip-title { margin-bottom: 28px; }
 }
 @media (min-width: 640px) and (max-width: 899px) {
-  #services .section-head { margin-bottom: 11px; }
-  #about .section-head { margin-bottom: 15px; }
+  #services .section-head { margin-bottom: 29px; }
+  #ai .section-head { margin-bottom: 20px; }
+  #about .section-head { margin-bottom: 27px; }
   #works .section-head { margin-bottom: 27px; }
-  #reviews .section-head { margin-bottom: 6px; }
-  #contact .section-head { margin-bottom: 21px; }
-  .strip-title { margin-bottom: 23px; }
+  #reviews .section-head { margin-bottom: 22px; }
+  #contact .section-head { margin-bottom: 25px; }
+  .strip-title { margin-bottom: 18px; }
 }
 @media (max-width: 639px) {
-  #services .section-head { margin-bottom: 30px; }
-  #about .section-head { margin-bottom: 14px; }
-  #works .section-head { margin-bottom: 26px; }
-  #reviews .section-head { margin-bottom: 33px; }
-  #contact .section-head { margin-bottom: 21px; }
-  .strip-title { margin-bottom: 23px; }
+  #services .section-head { margin-bottom: 24px; }
+  #ai .section-head { margin-bottom: 20px; }
+  #about .section-head { margin-bottom: 26px; }
+  #works .section-head { margin-bottom: 27px; }
+  #reviews .section-head { margin-bottom: 20px; }
+  #contact .section-head { margin-bottom: 24px; }
+  .strip-title { margin-bottom: 18px; }
 }
 
 /* Остаток выравниваем поправкой к отступу шапки. Значения подобраны
