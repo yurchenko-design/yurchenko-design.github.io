@@ -406,6 +406,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     linear-gradient(135deg, rgba(217, 31, 191, 0.85), rgba(147, 51, 234, 0.85));
 }
 
+/* Ромб в строке «Сначала смысл. Потом слайды» — 16px, а не общие 18:
+   на десктопе он стоит при тексте 14px, и в полный размер перевешивал строку
+   (выбор заказчицы на превью 8 сентября 2026) */
+@media (min-width: 900px) {
+  .hero-badge { --badge-size: 16px; }
+}
+
 /* Правая колонка: бейдж со смыслом + цифры */
 .hero-aside {
   display: flex;
@@ -3026,4 +3033,65 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .case-rest b br { display: none; }
   .case-rest-result { display: none; }
   .case-rest-arrow { width: 18px; height: 18px; margin-left: 0; flex: none; }
+}
+
+/* ===== Ритм под заголовками разделов (8 сентября 2026) =====
+   Заказчица заметила, что отступ от названия раздела до содержимого разный.
+   Замер по пикселям подтвердил: на десктопе 26–40px, на телефоне 29–50.
+   ⚠️ Одного `margin-bottom: 24px` у шапки мало: под ней стоит разное —
+   текст, крупная цифра Unbounded, полоска рейтинга, контурная надпись, —
+   и у каждого свой внутренний зазор сверху. Поэтому сначала убираем сами
+   источники разницы, а остаток добираем поправкой к отступу шапки.
+   Цель — 32px видимого воздуха везде. Проверять пикселями, не боксами:
+   коробки строк и паддинги показывают ровные числа там, где глаз видит
+   разницу в полтора сантиметра */
+
+/* Первый источник: на телефоне первая карточка услуг несёт своё верхнее
+   поле 16px, и воздух под заголовком становился в полтора раза больше */
+@media (max-width: 639px) {
+  .services .service-card:first-child { padding-top: 0; }
+}
+
+/* Второй источник: контурная надпись «AI?» — глиф выходит за границы своего
+   контейнера и сверху, и снизу, поэтому «на глаз» отступ здесь всегда меньше
+   заданного. Компенсируем полем самой надписи */
+@media (min-width: 640px) and (max-width: 899px) {
+  #ai .ai-mark-wrap { margin-top: 21px; }
+}
+@media (max-width: 639px) {
+  #ai .ai-mark-wrap { margin-top: 20px; }
+}
+
+/* Остаток выравниваем поправкой к отступу шапки. Значения подобраны замером
+   оптических границ: от нижнего края букв заголовка до верхнего края того,
+   что стоит под ним, — везде 32px */
+@media (min-width: 900px) {
+  #services .section-head { margin-bottom: 6px; }
+  #ai .section-head { margin-bottom: 29px; }
+  #about .section-head { margin-bottom: 13px; }
+  #works .section-head { margin-bottom: 33px; }
+  #reviews .section-head { margin-bottom: 4px; }
+  #contact .section-head { margin-bottom: 21px; }
+  .strip-title { margin-bottom: 34px; }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  #services .section-head { margin-bottom: 11px; }
+  #about .section-head { margin-bottom: 15px; }
+  #works .section-head { margin-bottom: 27px; }
+  #reviews .section-head { margin-bottom: 6px; }
+  #contact .section-head { margin-bottom: 21px; }
+  .strip-title { margin-bottom: 23px; }
+}
+@media (max-width: 639px) {
+  #services .section-head { margin-bottom: 30px; }
+  #about .section-head { margin-bottom: 14px; }
+  #works .section-head { margin-bottom: 26px; }
+  #reviews .section-head { margin-bottom: 33px; }
+  #contact .section-head { margin-bottom: 21px; }
+  .strip-title { margin-bottom: 23px; }
+}
+
+/* Остаток выравниваем поправкой к отступу шапки. Значения подобраны
+   замером: цель — 32px от нижней границы букв заголовка до верхней
+   границы того, что под ним */
 }
