@@ -2441,6 +2441,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .ai-arrow svg { width: 17px; height: 17px; transform: none; }
 }
 
+/* Доказательство отдельной ячейкой существует только в трёхколоночной
+   сетке (от 960px). Ниже строка живёт внутри пятой услуги */
+@media (max-width: 959px) {
+  .service-proof-cell { display: none; }
+}
+
 /* ===== Услуги: три колонки с крупными номерами =====
    Раскладка 4 сентября 2026 по референсу заказчицы. Иконок в услугах
    больше нет — их место занял номер 01–06, набранный градиентом.
@@ -2542,6 +2548,37 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   [data-services-variant="cards"] .service-card:nth-child(n+4) {
     padding-top: 30px;
   }
+  /* ===== Шестая ячейка сетки: доказательство (8 сентября 2026) =====
+     Услуг стало пять, и шестая клетка ряда осталась бы пустой. Вместо
+     пустоты — строка «Этот сайт я собрала сама без разработчиков»
+     с фирменным ромбом и без номера: она и так относилась к услуге
+     «Сайты и презентации в HTML», но крупнее и отдельно работает как
+     доказательство, а не как сноска внутри карточки.
+     ⚠️ Ячейка живёт только от 960px, где сетка трёхколоночная. Ниже
+     она скрыта, а строка читается внутри пятой услуги — иначе на
+     телефоне появился бы пустой пункт без номера и заголовка */
+  [data-services-variant="cards"] .service-proof-cell {
+    grid-row: span 4;
+    display: grid;
+    align-content: center;
+    padding: 30px 0 30px 28px;
+  }
+  .service-proof-cell p {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  /* Ромб крупнее, чем в строке внутри карточки: там он стоял при 14px
+     тексте и роль у него была служебная, здесь — смысловой акцент */
+  .service-proof-cell .spark { --badge-size: 15px; }
+  /* Внутри карточки строку прячем — но только там, где ячейка реально есть:
+     на сайте без шестой ячейки строка должна остаться в своей услуге */
+  [data-services-variant="cards"]:has(.service-proof-cell) .service-card .service-proof { display: none; }
+
   [data-services-variant="cards"] .service-card:hover {
     transform: none;
     box-shadow: none;
@@ -2943,9 +2980,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      не действует — заголовок оказывался ПОД свечением и переставал быть
      чисто белым (замер пикселя дал 249, 227, 248 вместо 255) */
   .case-info > * { position: relative; z-index: 1; }
+  /* Порядок на телефоне: слайд → номер и название → линия → «Результат».
+     Название стоит под работой, а не над ней (решение заказчицы
+     8 сентября 2026): сначала видно саму работу, потом её имя */
+  .case-preview { grid-column: 1 / -1; grid-row: 1; }
   .case-num {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 16px;
@@ -2957,15 +2998,14 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   }
   .case-info h3 {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 2;
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 16px;
     line-height: 1.25;
     margin: 0;
   }
-  .case-preview,
-  .case-body { grid-column: 1 / -1; }
+  .case-body { grid-column: 1 / -1; grid-row: 3; }
 
   /* Подложка со стеклом — как на десктопе и как у панели про нейросеть */
   .case-preview {
@@ -3035,6 +3075,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .case-rest-arrow { width: 18px; height: 18px; margin-left: 0; flex: none; }
 }
 
+
 /* ===== Ритм под заголовками разделов (8 сентября 2026) =====
    Заказчица заметила, что отступ от названия раздела до содержимого разный.
    Замер по пикселям подтвердил: на десктопе 26–40px, на телефоне 29–50.
@@ -3101,7 +3142,46 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .strip-title { margin-bottom: 18px; }
 }
 
-/* Остаток выравниваем поправкой к отступу шапки. Значения подобраны
-   замером: цель — 32px от нижней границы букв заголовка до верхней
-   границы того, что под ним */
+
+
+/* ===== Ритм между разделами (8 сентября 2026) =====
+   Заказчица заметила, что от конца одного блока до заголовка следующего
+   воздух разный. Замер по видимым пикселям подтвердил: на десктопе
+   46–97px, на телефоне 44–82. Причина та же, что и под заголовками:
+   `--section-gap` у всех секций одинаковый, но последний элемент каждого
+   блока несёт собственный нижний отступ — у кнопки, тегов, панели, ленты
+   отзывов он разный. Поэтому верхнее поле задаём каждой секции отдельно,
+   чтобы видимый зазор везде был одинаковым: 70px на десктопе, 60 на
+   телефоне. ⚠️ Мерить только по видимым пикселям с отключёнными скролл-
+   анимациями и медианой трёх замеров — расчёт по боксам здесь врёт */
+@media (min-width: 900px) {
+  .services { padding-top: 64px; }
+  .ai { padding-top: 24px; }
+  .strip { padding-top: 13px; }
+  .works { padding-top: 56px; }
+  .reviews { padding-top: 30px; }
+  .contact { padding-top: 50px; }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .services { padding-top: 61px; }
+  .ai { padding-top: 29px; }
+  .strip { padding-top: 15px; }
+  .works { padding-top: 41px; }
+  .reviews { padding-top: 35px; }
+  .contact { padding-top: 47px; }
+}
+@media (max-width: 639px) {
+  .services { padding-top: 32px; }
+  .ai { padding-top: 26px; }
+  .strip { padding-top: 10px; }
+  .works { padding-top: 36px; }
+  .reviews { padding-top: 30px; }
+  .contact { padding-top: 48px; }
+}
+
+/* ⚠️ Около 400px заголовок «С чем я могу помочь» перестаёт переноситься
+   и встаёт в одну строку — его нижняя граница смещается, и воздух под ним
+   становится 27px вместо 32. Поправка только для этого диапазона */
+@media (min-width: 400px) and (max-width: 639px) {
+  #services .section-head { margin-bottom: 29px; }
 }
