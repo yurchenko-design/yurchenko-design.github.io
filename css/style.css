@@ -2820,6 +2820,22 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 
 
+/* Смена работы свайпом: новая въезжает с той стороны, откуда пришёл жест.
+   Сдвиг маленький (14px) — это подсказка о направлении, а не карусель.
+   Направление передаётся из JS переменной --case-from */
+@media (max-width: 899px) {
+  .case-card.is-active {
+    animation: case-in 0.26s var(--ease);
+  }
+  @keyframes case-in {
+    from { opacity: 0.4; transform: translateX(var(--case-from, 0)); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-card.is-active { animation: none; }
+}
+
 /* ===== Телефон: кейс по референсу (5 сентября 2026) =====
    Номер и название одной строкой обычным начертанием, слайд на матовой
    подложке со свечением, под ним «Результат», ниже список работ
