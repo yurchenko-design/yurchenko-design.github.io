@@ -243,6 +243,7 @@
   const lightboxClose = lightbox && lightbox.querySelector('.lightbox-close');
   const lightboxNum = lightbox && lightbox.querySelector('.lightbox-num');
   const lightboxName = lightbox && lightbox.querySelector('[data-lightbox-name]');
+  const lightboxDots = document.getElementById('lightbox-dots');
   let lastFocused = null;
 
   /* Порядок листания берём из разметки, а не из объекта `cases`: на странице
@@ -282,8 +283,54 @@
     });
     if (lightboxNum) lightboxNum.textContent = String(index + 1).padStart(2, '0');
     if (lightboxName) lightboxName.textContent = caseNames[index] || c.title;
+    buildLightboxDots(c.images.length);
+    /* Лента всегда открывается с первого слайда — иначе после смены кейса
+       новая работа показывалась бы с середины */
+    lightboxSlides.scrollLeft = 0;
     return true;
   };
+
+  /* Полоски-точки просмотра. Нужны только там, где слайды идут лентой —
+     на телефоне; на десктопе видны все три сразу и показывать нечего.
+     Порог совпадает с CSS: 900px */
+  const isFeed = () => window.matchMedia('(max-width: 899px)').matches;
+
+  function buildLightboxDots(count) {
+    if (!lightboxDots) return;
+    lightboxDots.innerHTML = '';
+    if (!isFeed()) return;
+    for (let i = 0; i < count; i += 1) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Слайд ${i + 1}`);
+      if (i === 0) dot.classList.add('is-active');
+      dot.addEventListener('click', () => {
+        const slide = lightboxSlides.children[i];
+        if (slide) lightboxSlides.scrollTo({ left: slide.offsetLeft - lightboxSlides.offsetLeft, behavior: 'smooth' });
+      });
+      lightboxDots.appendChild(dot);
+    }
+  }
+
+  /* Поворот телефона меняет раскладку просмотра: в альбомной ориентации
+     слайды могут стать столбиком, и точки надо либо убрать, либо построить */
+  window.addEventListener('resize', () => {
+    if (!lightbox || lightbox.hidden) return;
+    buildLightboxDots(lightboxSlides.children.length);
+  });
+
+  if (lightboxSlides) {
+    lightboxSlides.addEventListener('scroll', () => {
+      if (!lightboxDots || !lightboxDots.children.length) return;
+      const slides = [...lightboxSlides.children];
+      const middle = lightboxSlides.scrollLeft + lightboxSlides.clientWidth / 2;
+      let current = 0;
+      slides.forEach((slide, i) => {
+        if (slide.offsetLeft - lightboxSlides.offsetLeft < middle) current = i;
+      });
+      [...lightboxDots.children].forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+    }, { passive: true });
+  }
 
   /* Листание кейсов прямо в просмотре — по кругу, как в списке под слайдом.
      Кейс поднимается и на странице: закрыв просмотр, видишь тот же */
@@ -362,14 +409,9 @@
     const cards = [...document.querySelectorAll('.case-card')];
     const rows = [...caseRest.children];
 
-    const stage = document.querySelector('.case-stage');
-
-    const activate = (index, dir) => {
+    const activate = (index) => {
       cards.forEach((card, i) => card.classList.toggle('is-active', i === index));
       rows.forEach((row, i) => row.classList.toggle('is-current', i === index));
-      /* Направление нужно анимации: новая работа въезжает с той стороны,
-         откуда её «принёс» свайп. Без этого смена читается как мигание */
-      if (stage && dir) stage.style.setProperty('--case-from', dir > 0 ? '14px' : '-14px');
       syncRestPositions();
     };
     /* Тем же путём кейс поднимают стрелки в просмотре */
@@ -380,66 +422,6 @@
       if (!btn) return;
       activate(Number(btn.getAttribute('data-go')));
     });
-
-    /* ===== Свайп по слайду (телефон) =====
-       Рука сама тянется листать работы прямо по картинке — замечание
-       заказчицы 8 сентября 2026. Тап по слайду по-прежнему открывает
-       просмотр, поэтому жест и нажатие различаем по пройденному пути:
-       короче 45px по горизонтали — это тап.
-       ⚠️ preventDefault не зовём и слушатели держим passive: иначе жест
-       перехватывает вертикальную прокрутку страницы */
-    if (stage) {
-      const SWIPE_MIN = 45;
-      let startX = 0;
-      let startY = 0;
-      let tracking = false;
-      let swiped = false;
-
-      const stepCard = (dir) => {
-        const current = cards.findIndex((card) => card.classList.contains('is-active'));
-        if (current < 0) return;
-        activate((current + dir + cards.length) % cards.length, dir);
-      };
-
-      stage.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) { tracking = false; return; }
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        tracking = true;
-        /* ⚠️ Флаг сбрасываем в начале нового касания, а не полагаемся
-           на клик после свайпа: браузер его может и не прислать, и тогда
-           поднятый флаг съел бы следующий настоящий тап */
-        swiped = false;
-      }, { passive: true });
-
-      stage.addEventListener('touchend', (e) => {
-        if (!tracking) return;
-        tracking = false;
-        const touch = e.changedTouches[0];
-        const dx = touch.clientX - startX;
-        const dy = touch.clientY - startY;
-        /* Горизонталь должна заметно перевешивать вертикаль, иначе
-           случайный увод пальца при прокрутке листал бы работы */
-        if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * 1.4) return;
-        swiped = true;
-        /* Клик после жеста браузер присылает не всегда. Снимаем флаг и по
-           таймеру, иначе на гибридных устройствах (тач + мышь) он мог бы
-           съесть следующее нажатие */
-        setTimeout(() => { swiped = false; }, 500);
-        stepCard(dx < 0 ? 1 : -1);
-      }, { passive: true });
-
-      stage.addEventListener('touchcancel', () => { tracking = false; }, { passive: true });
-
-      /* Клик после свайпа гасим на всплытии — иначе поверх пролистанной
-         работы сразу открывался бы просмотр */
-      stage.addEventListener('click', (e) => {
-        if (!swiped) return;
-        swiped = false;
-        e.stopPropagation();
-        e.preventDefault();
-      }, true);
-    }
 
     /* Порядок и позиции строк.
        ⚠️ Порядок круговой, а не исходный: после активного кейса идут

@@ -2243,9 +2243,63 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
-@media (max-width: 720px) {
-  .lightbox-content { --lb-slide: min(94vw - 20px, (80vh - 40px) * 16 / 27); }
+/* ===== Просмотр на телефоне (8 сентября 2026) =====
+   Три слайда столбиком на узком экране выходят по 90px высотой — работу
+   не рассмотреть. Поэтому на телефоне слайды идут лентой: один на экран,
+   листаются свайпом, под подложкой полоски-точки показывают, сколько их */
+@media (max-width: 899px) {
+  /* Высота считается от одного слайда, а не от трёх */
+  .lightbox-content {
+    --lb-slide: min(94vw - 20px, (78vh - 20px) * 16 / 9);
+    width: calc(var(--lb-slide) + 20px);
+    height: calc(var(--lb-slide) * 9 / 16 + 20px);
+  }
+  .lightbox-slides {
+    grid-auto-flow: column;
+    grid-template-rows: none;
+    /* ⚠️ Ширина слайда — 100%: процент считается от content box, из которого
+       поля 10px уже вычтены, поэтому поле + слайд + поле точно складываются
+       в ширину подложки и последний слайд доезжает до своего поля.
+       Те же грабли, что были в ленте отзывов */
+    grid-auto-columns: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 10px;
+    scrollbar-width: none;
+  }
+  .lightbox-slides::-webkit-scrollbar { display: none; }
+  .lightbox-slides img {
+    width: 100%;
+    height: auto;
+    scroll-snap-align: start;
+  }
   .lightbox-close { top: -48px; }
+}
+
+/* Полоски-точки под подложкой — той же формы, что на слайде карточки */
+.lightbox-dots {
+  position: absolute;
+  left: 50%;
+  bottom: -26px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 7px;
+}
+.lightbox-dots:empty { display: none; }
+.lightbox-dots button {
+  width: 22px;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transition: background 0.25s var(--ease);
+}
+.lightbox-dots button.is-active { background: #ffffff; }
+@media (min-width: 900px) {
+  .lightbox-dots { display: none; }
 }
 /* Название кейса — на одной строке с крестиком, слева. В просмотре кейсы
    листаются, и без подписи непонятно, чью работу видишь. Номер magenta —
@@ -2819,22 +2873,6 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .hero-stat-label { text-align: left; }
 }
 
-
-/* Смена работы свайпом: новая въезжает с той стороны, откуда пришёл жест.
-   Сдвиг маленький (14px) — это подсказка о направлении, а не карусель.
-   Направление передаётся из JS переменной --case-from */
-@media (max-width: 899px) {
-  .case-card.is-active {
-    animation: case-in 0.26s var(--ease);
-  }
-  @keyframes case-in {
-    from { opacity: 0.4; transform: translateX(var(--case-from, 0)); }
-    to   { opacity: 1; transform: none; }
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .case-card.is-active { animation: none; }
-}
 
 /* ===== Телефон: кейс по референсу (5 сентября 2026) =====
    Номер и название одной строкой обычным начертанием, слайд на матовой
