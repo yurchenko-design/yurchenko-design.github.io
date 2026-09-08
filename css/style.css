@@ -3127,7 +3127,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   #services .section-head { margin-bottom: 29px; }
   #ai .section-head { margin-bottom: 20px; }
   #about .section-head { margin-bottom: 27px; }
-  #works .section-head { margin-bottom: 27px; }
+  #works .section-head { margin-bottom: 21px; }
   #reviews .section-head { margin-bottom: 22px; }
   #contact .section-head { margin-bottom: 25px; }
   .strip-title { margin-bottom: 18px; }
@@ -3136,7 +3136,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   #services .section-head { margin-bottom: 24px; }
   #ai .section-head { margin-bottom: 20px; }
   #about .section-head { margin-bottom: 26px; }
-  #works .section-head { margin-bottom: 27px; }
+  #works .section-head { margin-bottom: 21px; }
   #reviews .section-head { margin-bottom: 20px; }
   #contact .section-head { margin-bottom: 24px; }
   .strip-title { margin-bottom: 18px; }
@@ -3151,32 +3151,35 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    `--section-gap` у всех секций одинаковый, но последний элемент каждого
    блока несёт собственный нижний отступ — у кнопки, тегов, панели, ленты
    отзывов он разный. Поэтому верхнее поле задаём каждой секции отдельно,
-   чтобы видимый зазор везде был одинаковым: 70px на десктопе, 60 на
-   телефоне. ⚠️ Мерить только по видимым пикселям с отключёнными скролл-
+   чтобы видимый зазор везде был одинаковым: 56px на десктопе, 52 на планшете,
+   48 на телефоне.
+   ⚠️ Мерить нужно от НИЖНЕГО КРАЯ блока, а не от последней строки текста:
+   у раздела про нейросеть внизу стоит панель со стеклом, её край ниже
+   текста внутри. По тексту выходило 97px там, где на глаз было 21. ⚠️ Мерить только по видимым пикселям с отключёнными скролл-
    анимациями и медианой трёх замеров — расчёт по боксам здесь врёт */
 @media (min-width: 900px) {
-  .services { padding-top: 64px; }
-  .ai { padding-top: 24px; }
-  .strip { padding-top: 13px; }
-  .works { padding-top: 56px; }
-  .reviews { padding-top: 30px; }
-  .contact { padding-top: 50px; }
+  .services { padding-top: 61px; }
+  .ai { padding-top: 48px; }
+  .strip { padding-top: 48px; }
+  .works { padding-top: 50px; }
+  .reviews { padding-top: 48px; }
+  .contact { padding-top: 52px; }
 }
 @media (min-width: 640px) and (max-width: 899px) {
-  .services { padding-top: 61px; }
-  .ai { padding-top: 29px; }
-  .strip { padding-top: 15px; }
-  .works { padding-top: 41px; }
-  .reviews { padding-top: 35px; }
-  .contact { padding-top: 47px; }
+  .services { padding-top: 52px; }
+  .ai { padding-top: 44px; }
+  .strip { padding-top: 44px; }
+  .works { padding-top: 44px; }
+  .reviews { padding-top: 44px; }
+  .contact { padding-top: 48px; }
 }
 @media (max-width: 639px) {
-  .services { padding-top: 32px; }
-  .ai { padding-top: 26px; }
-  .strip { padding-top: 10px; }
-  .works { padding-top: 36px; }
-  .reviews { padding-top: 30px; }
-  .contact { padding-top: 48px; }
+  .services { padding-top: 24px; }
+  .ai { padding-top: 41px; }
+  .strip { padding-top: 40px; }
+  .works { padding-top: 40px; }
+  .reviews { padding-top: 40px; }
+  .contact { padding-top: 55px; }
 }
 
 /* ⚠️ Около 400px заголовок «С чем я могу помочь» перестаёт переноситься
