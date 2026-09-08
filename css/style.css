@@ -1514,6 +1514,30 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 }
 .case-dots button.is-active { background: #ffffff; }
 
+/* Счётчик слайдов — подсказка, что по слайду можно нажать (8 сентября 2026).
+   Без плашки: на телефоне слайд и так тесный, а стеклянная капсула занимала
+   вдвое больше места по обеим сторонам при том же кегле. Тень обязательна —
+   слайды бывают и белые, и тёмные, на светлом надпись без неё пропадает.
+   На десктопе не нужен: слайд реагирует на курсор, рядом стрелки листания */
+.case-count { display: none; }
+@media (max-width: 899px) {
+  .case-count {
+    display: block;
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 3;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75);
+    pointer-events: none;
+  }
+}
+
 /* --- текст кейса --- */
 .case-info { padding-top: 2px; }
 .case-num {

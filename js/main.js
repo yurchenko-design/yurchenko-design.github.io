@@ -366,10 +366,19 @@
     const dots = card.querySelectorAll('[data-slide-dot]');
     let activeIndex = 0;
 
+    /* Счётчик подставляем из числа слайдов, а не доверяем разметке:
+       если у работы их станет больше или меньше, подсказка не соврёт */
+    const counter = card.querySelector('.case-count');
+    const showCount = (index) => {
+      if (counter) counter.textContent = `${index + 1} / ${slides.length}`;
+    };
+    showCount(0);
+
     const setActive = (index) => {
       activeIndex = index;
       slides.forEach((img, i) => img.classList.toggle('is-active', i === index));
       dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+      showCount(index);
     };
 
     const arrowPrev = card.querySelector('[data-slide-prev]');
