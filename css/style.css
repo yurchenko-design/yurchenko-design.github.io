@@ -2870,10 +2870,13 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .hero-stats {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
-    justify-content: space-between;
+    /* Две цифры стоят подряд у левого края, а не разъезжаются по краям:
+       с уходом «срока готовности» разнесённая пара переставала читаться
+       строкой и подпирала кнопку (выбор заказчицы 8 сентября 2026) */
+    justify-content: start;
     /* 20px между колонками и 8px внутри пары «значение → подпись»:
        внутренний зазор всегда меньше внешнего, иначе пара распадается */
-    column-gap: 20px;
+    column-gap: 34px;
   }
   .hero-stat {
     display: grid;
