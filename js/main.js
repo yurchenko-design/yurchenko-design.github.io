@@ -284,11 +284,26 @@
     if (lightboxNum) lightboxNum.textContent = String(index + 1).padStart(2, '0');
     if (lightboxName) lightboxName.textContent = caseNames[index] || c.title;
     buildLightboxDots(c.images.length);
-    /* Лента всегда открывается с первого слайда — иначе после смены кейса
-       новая работа показывалась бы с середины */
-    lightboxSlides.scrollLeft = 0;
+    resetSlides();
     return true;
   };
+
+  /* ⚠️ Лента всегда открывается с первого слайда, и сбрасывать её нужно
+     ПОСЛЕ показа: у скрытого элемента (`hidden`, то есть display: none)
+     прокрутка не применяется, браузер возвращает прежнюю позицию при
+     показе — и просмотр открывался на третьем слайде, если в прошлый раз
+     на нём закончили (найдено 8 сентября 2026).
+     scroll-snap на время сброса выключаем: с `mandatory` браузер может
+     дотянуть ленту обратно к ближайшей точке */
+  function resetSlides() {
+    if (!lightboxSlides) return;
+    lightboxSlides.style.scrollSnapType = 'none';
+    lightboxSlides.scrollLeft = 0;
+    lightboxSlides.style.scrollSnapType = '';
+    if (lightboxDots) {
+      [...lightboxDots.children].forEach((dot, i) => dot.classList.toggle('is-active', i === 0));
+    }
+  }
 
   /* Полоски-точки просмотра. Нужны только там, где слайды идут лентой —
      на телефоне; на десктопе видны все три сразу и показывать нечего.
@@ -340,13 +355,22 @@
     if (activateCaseAt) activateCaseAt(next);
   };
 
+  /* ⚠️ Закрытие прячет окно с задержкой на анимацию. Таймер обязан быть
+     отменяемым: без этого нажатие по слайду сразу после закрытия открывало
+     просмотр, и через мгновение старый таймер прятал его обратно */
+  let hideTimer = null;
+
   const openLightbox = (caseKey) => {
     const index = caseOrder.indexOf(caseKey);
     if (index < 0) return;
     lastFocused = document.activeElement;
     if (!fillLightbox(index)) return;
+    clearTimeout(hideTimer);
     lightbox.hidden = false;
-    requestAnimationFrame(() => lightbox.classList.add('is-open'));
+    requestAnimationFrame(() => {
+      lightbox.classList.add('is-open');
+      resetSlides();
+    });
     document.body.style.overflow = 'hidden';
     if (lightboxClose) lightboxClose.focus();
   };
@@ -354,7 +378,8 @@
   const closeLightbox = () => {
     lightbox.classList.remove('is-open');
     document.body.style.overflow = '';
-    setTimeout(() => { lightbox.hidden = true; }, 250);
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => { lightbox.hidden = true; }, 250);
     if (lastFocused) lastFocused.focus();
   };
 
