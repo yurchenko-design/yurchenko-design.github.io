@@ -763,8 +763,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      ещё 8px от line-box, и отступ на глаз оказывается больше заданного */
   display: block;
   width: fit-content;
-  /* 28, а не 34: block вместо inline-block снял ещё 8px от line-box,
-     и глиф выходит за низ viewBox — на глаз остаётся ровно 23px */
+  /* ⚠️ Глиф выходит за границы viewBox и сверху, и снизу, поэтому отступы
+     заданы не «на глаз по коду», а подобраны по замеру его настоящего bbox:
+     сверху от заголовка раздела остаётся 24px, снизу до текста 23px.
+     До правки сверху было 9px против 23 снизу — надпись липла к заголовку */
+  margin-top: 15px;
   margin-bottom: 28px;
   filter: drop-shadow(0 0 12px rgba(217, 31, 191, 0.9)) drop-shadow(0 0 34px rgba(147, 51, 234, 0.5));
 }
@@ -2066,11 +2069,18 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b9adc4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"),
     linear-gradient(var(--field-bg), var(--field-bg)),
     var(--field-outline);
-  background-position: right 14px center, 0 0, 0 0;
+  /* 10px, а не 14: у самой иконки внутри квадрата 16×16 есть поля
+     по 4px (path занимает середину viewBox), и на глаз стрелка
+     оказывается в 14px от края — ровно как текст слева */
+  background-position: right 10px center, 0 0, 0 0;
   background-size: 16px 16px, auto, auto;
   background-repeat: no-repeat, repeat, repeat;
-  background-origin: content-box, border-box, border-box;
-  background-clip: content-box, padding-box, border-box;
+  /* ⚠️ У слоя со стрелкой origin/clip именно padding-box: с content-box
+     точка отсчёта — край текстовой области, из которой уже вычтен
+     padding-right: 40px, и стрелка вставала не в 14px от края поля,
+     а в 54px — висела где-то посреди строки (правка 8 сентября 2026) */
+  background-origin: padding-box, border-box, border-box;
+  background-clip: padding-box, padding-box, border-box;
 }
 .form-row select:focus {
   background-image:
@@ -2599,6 +2609,14 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   /* Кнопка своей ширины и по центру: растянутая во всю полосу читалась
      как панель приложения, а не как кнопка сайта (правка 2 сентября 2026) */
   .sticky-cta { display: flex; justify-content: center; }
+
+  /* Кнопка отправки — своей ширины и по центру, как липкая «Обсудить
+     проект». Растянутая во всю форму читалась полосой, а не кнопкой
+     (решение заказчицы 8 сентября 2026) */
+  .form-submit {
+    justify-self: center;
+    width: auto;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .sticky-cta { transition: none; }
