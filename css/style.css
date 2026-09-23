@@ -2441,10 +2441,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .ai-arrow svg { width: 17px; height: 17px; transform: none; }
 }
 
-/* Доказательство отдельной ячейкой существует только в трёхколоночной
-   сетке (от 960px). Ниже строка живёт внутри пятой услуги */
+/* Манифест «ХАОС → СИСТЕМА» существует только в трёхколоночной сетке
+   (от 960px). Ниже его нет: на телефоне и планшете просто пять услуг */
 @media (max-width: 959px) {
-  .service-proof-cell { display: none; }
+  .svc-manifest { display: none; }
 }
 
 /* ===== Услуги: три колонки с крупными номерами =====
@@ -2548,36 +2548,72 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   [data-services-variant="cards"] .service-card:nth-child(n+4) {
     padding-top: 30px;
   }
-  /* ===== Шестая ячейка сетки: доказательство (8 сентября 2026) =====
-     Услуг стало пять, и шестая клетка ряда осталась бы пустой. Вместо
-     пустоты — строка «Этот сайт я собрала сама без разработчиков»
-     с фирменным ромбом и без номера: она и так относилась к услуге
-     «Сайты и презентации в HTML», но крупнее и отдельно работает как
-     доказательство, а не как сноска внутри карточки.
-     ⚠️ Ячейка живёт только от 960px, где сетка трёхколоночная. Ниже
-     она скрыта, а строка читается внутри пятой услуги — иначе на
-     телефоне появился бы пустой пункт без номера и заголовка */
-  [data-services-variant="cards"] .service-proof-cell {
+  /* ===== Шестая ячейка сетки: манифест «ХАОС → СИСТЕМА» =====
+     Услуг пять, и шестая клетка ряда осталась бы пустой. Вместо пустоты —
+     та же мысль, что в «Сначала смысл. Потом слайды», сказанная двумя
+     словами: сверху контурный «ХАОС», под ним линия, дальше плотная
+     «СИСТЕМА». Приёмы все свои: обводка как у надписи «AI?», линия как
+     между цифрами Hero, свечение как у панели про нейросеть.
+     Кегль 22, а не 26: капслок в Unbounded читается крупнее строчных, и при
+     26 «ХАОС / СИСТЕМА» перевешивали «Сначала смысл. Потом слайды» (решение
+     заказчицы 23 сентября 2026).
+     ⚠️ Ячейка живёт только от 960px, где сетка трёхколоночная. Ниже —
+     просто пять услуг, шестого пункта нет (решение заказчицы) */
+  [data-services-variant="cards"] .svc-manifest {
+    position: relative;
     grid-row: span 4;
     display: grid;
+    justify-items: center;
     align-content: center;
-    padding: 30px 0 30px 28px;
-  }
-  .service-proof-cell p {
-    display: flex;
-    align-items: center;
     gap: 14px;
-    margin: 0;
-    color: var(--text);
-    font-size: 16px;
-    line-height: 1.5;
+    padding: 30px 0 30px 28px;
+    text-align: center;
   }
-  /* Ромб крупнее, чем в строке внутри карточки: там он стоял при 14px
-     тексте и роль у него была служебная, здесь — смысловой акцент */
-  .service-proof-cell .spark { --badge-size: 15px; }
-  /* Внутри карточки строку прячем — но только там, где ячейка реально есть:
-     на сайте без шестой ячейки строка должна остаться в своей услуге */
-  [data-services-variant="cards"]:has(.service-proof-cell) .service-card .service-proof { display: none; }
+  /* Свечение — то же двухцветное пятно, что за панелью «Сначала смысл» */
+  [data-services-variant="cards"] .svc-manifest::before {
+    content: "";
+    position: absolute;
+    left: 56%;
+    top: 50%;
+    width: 420px;
+    height: 340px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(closest-side circle, rgba(217, 31, 191, 0.16), transparent 70%),
+      radial-gradient(closest-side circle at 58% 60%, rgba(147, 51, 234, 0.13), transparent 68%);
+  }
+  [data-services-variant="cards"] .svc-manifest > * { position: relative; z-index: 1; }
+
+  /* ⚠️ Контур делается -webkit-text-stroke с прозрачной заливкой: обводке
+     текста градиент средствами CSS не задаётся, а чистый magenta закреплён
+     за иконками — поэтому здесь светлый контур, как у «ХАОС» в референсе */
+  .svc-manifest-chaos {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.42);
+    text-stroke: 1px rgba(255, 255, 255, 0.42);
+  }
+  /* Линия между словами — тот же градиент, что между цифрами Hero */
+  .svc-manifest-rule {
+    width: 100%;
+    max-width: 210px;
+    height: 1px;
+    background-image: linear-gradient(90deg, rgba(217, 31, 191, 0), rgba(217, 31, 191, 0.9), rgba(147, 51, 234, 0.85), rgba(147, 51, 234, 0));
+  }
+  .svc-manifest-system {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
 
   [data-services-variant="cards"] .service-card:hover {
     transform: none;
@@ -3187,4 +3223,47 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
    становится 27px вместо 32. Поправка только для этого диапазона */
 @media (min-width: 400px) and (max-width: 639px) {
   #services .section-head { margin-bottom: 29px; }
+}
+
+/* ===== Баланс строк: браузер сам не оставляет одно слово в последней
+   строке абзаца. Правило «строки в параллельных блоках» (23 сентября 2026):
+   замер показал, что это снимает около половины коротких хвостов без
+   правки текста. Браузеры без поддержки просто игнорируют свойство */
+p, span, dd, li, blockquote { text-wrap: pretty; }
+
+/* Короткие параллельные описания раскладываются на строки равной длины:
+   без этого одна карточка кончалась словом «зал», а соседняя шла до края
+   (замечание заказчицы 23 сентября 2026). balance, а не pretty: тут важно
+   не только убрать одинокое слово, но и чтобы строки весили одинаково */
+.service-what, .service-when, .ai-expect, .ai-reality,
+.case-rest-result, .case-facts dd { text-wrap: balance; }
+
+/* «Не просто…» — в одну строку на широком экране: колонке отдаётся ширина
+   самого длинного пункта, «реальность» забирает остаток.
+   ⚠️ Только от 1180px (контейнер на полной ширине). На 960–1100 правая
+   колонка при этом сжималась до 4–7 строк — там оба столбца по две строки */
+@media (min-width: 1180px) {
+  /* ⚠️ Колонки общие на все четыре пары (subgrid): у каждой пары своя
+     сетка с max-content давала свою ширину, и стрелки с правым текстом
+     съезжали лесенкой (замечание заказчицы 23 сентября 2026).
+     Зазор 14, а не 18 (тот же, что у пары на планшете): общая колонка
+     «Не просто…» берёт ширину самого длинного пункта, и при 18 четвёртая
+     «реальность» уходила в три строки. При 14 все четыре — по две */
+  .ai-pairs { grid-template-columns: auto max-content auto minmax(0, 1fr); column-gap: 14px; }
+  .ai-pair { grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: 14px; }
+  .ai-expect { white-space: nowrap; }
+}
+
+/* Панель «Сначала смысл. Потом слайды»: заявление и «Я тоже работаю с AI»
+   стоят на одном уровне, подпись — под заявлением в две строки.
+   Раньше правая колонка центрировалась по заявлению вместе с подписью
+   и вставала ниже, а подпись в одну строку тянулась через полпанели.
+   display: contents поднимает заявление и подпись в сетку панели */
+@media (min-width: 900px) {
+  .ai-claim-col { display: contents; }
+  .ai-panel { row-gap: 14px; }
+  .ai-claim { grid-column: 1; grid-row: 1; }
+  .ai-claim-note { grid-column: 1; grid-row: 2; margin-top: 0; max-width: 40ch; text-wrap: balance; }
+  /* По центру панели по высоте, а не по заявлению: так просила заказчица */
+  .ai-final { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
 }

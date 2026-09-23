@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Onest:wght@400;500;600;700&family=Big+Shoulders:opsz,wght@72,900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=r128">
+<link rel="stylesheet" href="css/style.css?v=r129">
 </head>
 <body>
 
@@ -103,41 +103,36 @@
       <article class="service-card" data-animate="fade-up" data-animate-delay="0">
         <span class="svc-num" aria-hidden="true">01</span>
         <h3>Презентация с&nbsp;нуля</h3>
-        <p class="service-what">Концепция, структура и&nbsp;готовые слайды под&nbsp;ключ</p>
-        <p class="service-when">Когда идти к&nbsp;инвестору или&nbsp;на&nbsp;защиту, а&nbsp;материала пока нет</p>
+        <p class="service-what">Разберу материал, выстрою структуру и&nbsp;соберу готовые слайды</p>
+        <p class="service-when">Когда нужен питч-дек или&nbsp;презентация проекта, а&nbsp;материала нет</p>
       </article>
 
       <article class="service-card" data-animate="fade-up" data-animate-delay="70">
         <span class="svc-num" aria-hidden="true">02</span>
         <h3>Редизайн презентации</h3>
-        <p class="service-what">Приведу в&nbsp;порядок то,&nbsp;что&nbsp;уже&nbsp;есть</p>
-        <p class="service-when">Когда презентация есть, но&nbsp;показывать стыдно</p>
+        <p class="service-what">Обновлю дизайн и&nbsp;расставлю акценты, сохранив важное</p>
+        <p class="service-when">Когда материал готов, но&nbsp;его сложно читать и&nbsp;воспринимать</p>
       </article>
 
       <article class="service-card" data-animate="fade-up" data-animate-delay="140">
         <span class="svc-num" aria-hidden="true">03</span>
-        <h3>Стена текста → понятные слайды</h3>
-        <p class="service-what">Разберу материал на&nbsp;тезисы и&nbsp;выстрою логику</p>
-        <p class="service-when">Когда всё важное в&nbsp;тексте есть, но&nbsp;никто не&nbsp;дочитывает</p>
+        <h3>Презентация для&nbsp;выступления</h3>
+        <p class="service-what">Соберу слайды под&nbsp;устную подачу и&nbsp;добавлю анимацию к&nbsp;месту</p>
+        <p class="service-when">Когда вы&nbsp;выступаете, зал должен слушать, а&nbsp;не&nbsp;читать слайды</p>
       </article>
 
       <article class="service-card" data-animate="fade-up" data-animate-delay="210">
         <span class="svc-num" aria-hidden="true">04</span>
-        <h3>Понятные цифры</h3>
-        <p class="service-what">Графики и&nbsp;дашборды, по&nbsp;которым видно вывод</p>
-        <p class="service-when">Когда цифры сильные, но&nbsp;по&nbsp;ним не&nbsp;видно, что&nbsp;они доказывают</p>
+        <h3>Бизнес-отчёты и&nbsp;дашборды</h3>
+        <p class="service-what">Оформлю цифры в&nbsp;графики и&nbsp;отчёты с&nbsp;понятными выводами</p>
+        <p class="service-when">Когда нужно показать результаты клиентам или&nbsp;руководству</p>
       </article>
 
       <article class="service-card" data-animate="fade-up" data-animate-delay="280">
         <span class="svc-num" aria-hidden="true">05</span>
-        <h3>Презентация для&nbsp;выступления</h3>
-        <p class="service-what">Слайды под&nbsp;устную подачу, анимация к&nbsp;месту</p>
-        <p class="service-when">Когда выступать со&nbsp;сцены или&nbsp;на&nbsp;вебинаре и&nbsp;нужно удержать зал</p>
-      </article>
-
-      <article class="service-card" data-animate="fade-up" data-animate-delay="350">
-        <span class="svc-num" aria-hidden="true">06</span>
         <h3>Сайты и&nbsp;презентации в&nbsp;HTML</h3>
+        <!-- Доказательство живёт здесь: на телефоне шестой ячейки нет,
+             и строка читается внутри своей услуги -->
         <p class="service-proof">
           <span class="spark" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5c.95 5.4 4.1 8.55 9.5 9.5 0 0 .55.1.55 1s-.55 1-.55 1c-5.4.95-8.55 4.1-9.5 9.5 0 0-.1.55-1 .55s-1-.55-1-.55c-.95-5.4-4.1-8.55-9.5-9.5 0 0-.55-.1-.55-1s.55-1 .55-1c5.4-.95 8.55-4.1 9.5-9.5 0 0 .1-.55 1-.55s1 .55 1 .55Z"/></svg>
@@ -145,6 +140,16 @@
           <span>Этот сайт я&nbsp;собрала сама без&nbsp;разработчиков</span>
         </p>
         <p class="service-when">Когда нужна страница для&nbsp;заявок или&nbsp;интерактивная презентация</p>
+      </article>
+
+      <!-- Шестая ячейка десктопной сетки — не услуга, а манифест:
+           «ХАОС» контуром, линия, «СИСТЕМА» плотным набором. Это та же мысль,
+           что «Сначала смысл. Потом слайды», но сказанная двумя словами.
+           На телефоне ячейки нет — там просто пять услуг -->
+      <article class="svc-manifest" data-animate="fade-up" data-animate-delay="350" aria-hidden="true">
+        <span class="svc-manifest-chaos">ХАОС</span>
+        <span class="svc-manifest-rule"></span>
+        <span class="svc-manifest-system">СИСТЕМА</span>
       </article>
 
     </div>
@@ -194,13 +199,13 @@
           <span class="ai-num" aria-hidden="true">03</span>
           <span class="ai-expect">Не&nbsp;просто нарисовать график</span>
           <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-          <span class="ai-reality">Выбрать визуализацию, которая помогает понять цифры и&nbsp;увидеть главное</span>
+          <span class="ai-reality">Подобрать визуализацию, в&nbsp;которой цифры понятны с&nbsp;первого взгляда</span>
         </li>
         <li class="ai-pair" data-animate="fade-up" data-animate-delay="210">
           <span class="ai-num" aria-hidden="true">04</span>
-          <span class="ai-expect">Не&nbsp;просто выбрать красивый шаблон</span>
+          <span class="ai-expect">Не&nbsp;просто сделать красиво</span>
           <span class="ai-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-5-5m5 5-5 5"/></svg></span>
-          <span class="ai-reality">Управлять вниманием: расставить акценты и&nbsp;сохранить визуальную логику от&nbsp;первого слайда до&nbsp;последнего</span>
+          <span class="ai-reality">Управлять вниманием: акценты и&nbsp;единая логика от&nbsp;первого слайда до&nbsp;последнего</span>
         </li>
       </ul>
     </div>
@@ -317,7 +322,7 @@
               <dt>Что&nbsp;сделала</dt>
               <dd>Перевела текст, выстроила вёрстку и&nbsp;акценты под&nbsp;этот объём</dd>
               <dt>Результат</dt>
-              <dd>Клиент успешно защитил стратегию перед работодателем и&nbsp;получил работу</dd>
+              <dd>Клиент защитил стратегию и&nbsp;получил работу</dd>
               </dl>
             </div>
           </div>
@@ -389,7 +394,7 @@
               <dt>Что&nbsp;сделала</dt>
               <dd>Собрала дашборды и&nbsp;графики: выделила ключевые показатели, убрала лишнее, задала иерархию</dd>
               <dt>Результат</dt>
-              <dd>Дашборды ушли в&nbsp;регулярную отчётность, время на&nbsp;подготовку сократилось в&nbsp;несколько раз</dd>
+              <dd>Дашборды ушли в&nbsp;регулярную отчётность, подготовка ускорилась в&nbsp;разы</dd>
               </dl>
             </div>
           </div>
@@ -437,7 +442,7 @@
           <button type="button" data-go="0">
             <span class="case-rest-num" aria-hidden="true">01</span>
             <b>Маркетинговая <br>стратегия<svg class="case-rest-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></svg></b>
-            <span class="case-rest-result">Клиент успешно защитил стратегию перед работодателем и&nbsp;получил работу</span>
+            <span class="case-rest-result">Клиент защитил стратегию и&nbsp;получил работу</span>
           </button>
         </li>
         <li>
@@ -451,7 +456,7 @@
           <button type="button" data-go="2">
             <span class="case-rest-num" aria-hidden="true">03</span>
             <b>Примеры графиков <br>и&nbsp;дашбордов<svg class="case-rest-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></svg></b>
-            <span class="case-rest-result">Дашборды ушли в&nbsp;регулярную отчётность, время на&nbsp;подготовку сократилось в&nbsp;несколько раз</span>
+            <span class="case-rest-result">Дашборды ушли в&nbsp;регулярную отчётность, подготовка ускорилась в&nbsp;разы</span>
           </button>
         </li>
         <li>
@@ -501,7 +506,7 @@
       <span class="spark spark-end" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5c.95 5.4 4.1 8.55 9.5 9.5 0 0 .55.1.55 1s-.55 1-.55 1c-5.4.95-8.55 4.1-9.5 9.5 0 0-.1.55-1 .55s-1-.55-1-.55c-.95-5.4-4.1-8.55-9.5-9.5 0 0-.55-.1-.55-1s.55-1 .55-1c5.4-.95 8.55-4.1 9.5-9.5 0 0 .1-.55 1-.55s1 .55 1 .55Z"/></svg></span>
     </div>
 
-    <p class="contact-lead" data-animate="fade-up">Расскажите о&nbsp;задаче&nbsp;— отвечу и&nbsp;предложу, как&nbsp;лучше подойти к&nbsp;проекту</p>
+    <p class="contact-lead" data-animate="fade-up">Расскажите о&nbsp;задаче&nbsp;— отвечу и&nbsp;предложу, с&nbsp;чего начать</p>
 
     <div class="contact-panel">
 
@@ -608,6 +613,6 @@
   <a class="btn btn-primary" href="#contact">Обсудить проект<span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></svg></span></a>
 </div>
 
-<script src="js/main.js?v=r128"></script>
+<script src="js/main.js?v=r129"></script>
 </body>
 </html>
