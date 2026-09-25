@@ -360,7 +360,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .hero-sub {
   color: var(--text-muted);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   max-width: 380px;
   margin-bottom: 24px;
 }
@@ -425,7 +425,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   align-items: center;
   gap: 14px;
   font-size: 14px;
-  line-height: 1.35;
+  line-height: 1.45;
   color: var(--text);
 }
 /* Ромб белый, а горит акцентным цветом: белое ядро на цветном ореоле
@@ -789,7 +789,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 
 .ai-lead {
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.5;
   color: var(--text);
   max-width: 420px;
 }
@@ -851,7 +851,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   color: var(--accent-pink);
 }
 .ai-arrow svg { width: 17px; height: 17px; transform: rotate(90deg); }
-.ai-expect  { grid-column: 2; grid-row: 1; color: var(--text-muted); font-size: 12px; line-height: 1.45; }
+/* 1.5, а не 1.45: медиазапросы ставят «ожиданию» 14px на всех ширинах,
+   а 14px по шкале интерлиньяжа — 1.5 */
+.ai-expect  { grid-column: 2; grid-row: 1; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
 .ai-reality { grid-column: 2; grid-row: 2; color: var(--text); font-size: 14px; line-height: 1.5; }
 
 /* С 960px пара идёт одной строкой: номер, ожидание, стрелка, реальность.
@@ -979,10 +981,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .strip-grid {
   display: grid;
   grid-template-columns: 1fr;
-  /* 44px, а не 32: ниже 900px колонки складываются друг под друга, и теги
-     в 32px под цитатой читались как её хвост, а не как отдельный блок.
-     Заголовка у них больше нет, поэтому отделяет только воздух */
-  gap: 44px;
+  /* 20px в коде — это ~40 на глаз (от рамки цитаты до тегов, от тегов
+     до заголовка «Как проходит работа»). Было 44 → 63–67 на глаз, больше,
+     чем между разделами (53): части одного раздела читались как три
+     отдельных раздела (аудит отступов 25 сентября 2026). Правило: внутри
+     раздела отступ всегда меньше, чем между разделами */
+  gap: 20px;
 }
 
 /* Заголовки колонок набраны так же, как заголовки разделов, только мельче:
@@ -996,7 +1000,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-family: var(--font-heading);
   font-size: 20px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.15;
   color: var(--text);
   margin-bottom: 22px;
 }
@@ -1073,7 +1077,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.5;
   color: var(--text);
 }
 
@@ -1123,7 +1127,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
     grid-row: 2;
     padding-left: 0;
     margin-left: 0;
-    padding-top: 26px;
+    /* 8, а не 26: с row-gap 28 выходило 67 на глаз — столько же, сколько
+       между разделами. Стало 49 (аудит отступов 25 сентября 2026) */
+    padding-top: 8px;
   }
   /* Разделителя над полосой процесса нет (решение 22 августа 2026).
      Он и вертикальные линии между шагами делали блок похожим на таблицу */
@@ -1398,9 +1404,11 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   min-height: 2.5em;
   margin-bottom: 10px;
 }
-/* «Что получаете» — основной вес карточки */
+/* «Что получаете» — серым, а не белым (решение заказчицы 25 сентября 2026):
+   белым в карточке остаётся только заголовок, иначе он сливался с описанием
+   на 2px мельче. Лесенка: белый 16 → серый 14 → серый 12 */
 .service-what {
-  color: var(--text);
+  color: var(--text-muted);
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 8px;
@@ -1425,9 +1433,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   gap: 9px;
   margin-top: auto;
   padding-top: 14px;
-  color: var(--text);
+  color: var(--text-muted);
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 /* Мельче эталона: рядом строка в 14px, и ромб в полный размер её перевешивал.
    Ореол ужимается сам — задан пропорцией от размера */
@@ -1576,7 +1584,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   margin: 6px 0 0;
   color: var(--text);
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 .case-facts dd + dt { margin-top: 16px; }
 
@@ -1858,7 +1866,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .review-text {
   color: var(--text);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   margin: 0;
 }
 /* Автор прижат к низу — строки авторов стоят на одной линии во всех карточках */
@@ -1941,7 +1949,7 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
 .contact-lead {
   color: var(--text-muted);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   max-width: 560px;
   margin-bottom: 28px;
 }
@@ -2547,6 +2555,10 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      поперёк резала блок пополам. Верхнее поле у второго ряда осталось */
   [data-services-variant="cards"] .service-card:nth-child(n+4) {
     padding-top: 30px;
+    /* Нижнего поля у последнего ряда нет: в нём нет текста, и оно
+       добавляло 30px пустоты перед следующим разделом — было 98 на глаз
+       против 63–73 у остальных переходов (аудит 25 сентября 2026) */
+    padding-bottom: 0;
   }
   /* ===== Шестая ячейка сетки: манифест «ХАОС → СИСТЕМА» =====
      Услуг пять, и шестая клетка ряда осталась бы пустой. Вместо пустоты —
@@ -2856,7 +2868,12 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
      но в ленте карточки тянутся по самому длинному отзыву, и под
      короткими оставалась пустота в четверть экрана */
   .review-card { align-self: start; }
-  .review-author { margin-top: 18px; }
+  /* padding-top обнулён: вместе с margin выходило 46 на глаз — автор
+     отрывался от своей цитаты дальше, чем звёзды над ней (27). Стало 28 */
+  .review-author { margin-top: 18px; padding-top: 0; }
+  /* Пункты контактов через 31 на глаз, а не 43: список плотнее, чем
+     расстояние до соседних блоков (39–43) — иначе он рассыпается */
+  .contact-list li { padding: 10px 0; }
 }
 
 /* ===== Печать / экспорт в PDF =====
@@ -3215,7 +3232,9 @@ main#main > .container { padding-top: 24px; padding-bottom: 24px; }
   .strip { padding-top: 40px; }
   .works { padding-top: 40px; }
   .reviews { padding-top: 40px; }
-  .contact { padding-top: 55px; }
+  /* 38, а не 55: над контактами стоят точки ленты отзывов, и от них
+     выходило ~73 на глаз против 53 у остальных разделов (25 сентября 2026) */
+  .contact { padding-top: 38px; }
 }
 
 /* ⚠️ Около 400px заголовок «С чем я могу помочь» перестаёт переноситься
